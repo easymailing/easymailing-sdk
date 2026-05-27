@@ -1,5 +1,26 @@
 # @easymailing/sdk
 
+## 0.2.0
+
+### Minor Changes
+
+- [`d99748c`](https://github.com/easymailing/easymailing-sdk/commit/d99748cb560736a4802db63c26d21bc2796dd5ee) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Expose Hydra IRIs as first-class fields on every parsed entity.
+
+  `parseEntity(input)` (and by extension `parseCollection`) now emits `iri`
+  (verbatim copy of the response `@id`) alongside the existing `uuid` derived
+  field. Both are first-class properties on the generated TypeScript types
+  because the normalize step now projects them into the OpenAPI schema for
+  every Hydra entity.
+
+  This unblocks consumers that need the IRI for deep-linking, dynamic
+  dropdowns (Zapier), and cross-resource relationship resolution. The
+  contract is identical across all SDK language bindings (Node, PHP, future).
+
+  - Existing `iri` or `uuid` fields on the input are NOT overwritten.
+  - Non-string or empty `@id` values do not produce an `iri` field.
+  - `@id`, `@type`, `@context` are still stripped from the output, as before.
+  - Nested entities each get their own `iri`/`uuid`.
+
 ## 0.1.1
 
 ### Patch Changes
