@@ -151,3 +151,9 @@ jobs:
         working-directory: packages/php
         run: composer test
 
+      - name: PHPStan level 8
+        working-directory: packages/php
+        # PHPStan needs more than the default 128M to analyse the full DTO set.
+        # Keep this in sync with the local `composer analyse` invocation.
+        run: vendor/bin/phpstan analyse src tests --level=8 --memory-limit=512M --no-progress
+
