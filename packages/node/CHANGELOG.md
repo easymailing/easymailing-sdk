@@ -1,5 +1,11 @@
 # @easymailing/sdk
 
+## 0.1.1
+
+### Patch Changes
+
+- [`213948c`](https://github.com/easymailing/easymailing-sdk/commit/213948c3c496834b74e97a8156888a1b13d4129f) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Add `TypedWebhookEvent` discriminated union and `KnownEventType` literal type generated from the upstream `WebhookEventType` catalogue. Default `parseWebhookEvent(payload)` calls now narrow to `TypedWebhookEvent`; pass an explicit `T` to keep the previous loose `WebhookEventBase<T>` behavior. `KnownEventTypeMap` is exported so future patches can tighten `data` per event_type. No runtime behavior changes.
+
 ## 0.1.0
 
 ### Minor Changes
