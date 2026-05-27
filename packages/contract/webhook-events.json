@@ -1,0 +1,99 @@
+{
+  "events": [
+    {
+      "event_type": "custom_automation_step",
+      "constant": "CUSTOM_AUTOMATION_STEP",
+      "description": "triggered by a Send Webhook automation step"
+    },
+    {
+      "event_type": "member_added_to_group",
+      "constant": "MEMBER_ADDED_TO_GROUP",
+      "description": "triggered when a member is added to a group"
+    },
+    {
+      "event_type": "member_automation_cancelled",
+      "constant": "MEMBER_AUTOMATION_CANCELLED",
+      "description": "triggered when a member cancels an automation"
+    },
+    {
+      "event_type": "member_automation_completed",
+      "constant": "MEMBER_AUTOMATION_COMPLETED",
+      "description": "triggered when a member completes an automation"
+    },
+    {
+      "event_type": "member_automation_started",
+      "constant": "MEMBER_AUTOMATION_STARTED",
+      "description": "triggered when a member starts an automation"
+    },
+    {
+      "event_type": "member_campaign_bounced",
+      "constant": "MEMBER_CAMPAIGN_BOUNCED",
+      "description": "triggered when a member's email address bounces"
+    },
+    {
+      "event_type": "member_campaign_clicked",
+      "constant": "MEMBER_CAMPAIGN_CLICKED",
+      "description": "triggered when a member clicks a link in a campaign"
+    },
+    {
+      "event_type": "member_campaign_complained",
+      "constant": "MEMBER_CAMPAIGN_COMPLAINED",
+      "description": "triggered when a member reports a campaign as spam"
+    },
+    {
+      "event_type": "member_campaign_delivered",
+      "constant": "MEMBER_CAMPAIGN_DELIVERED",
+      "description": "triggered when a campaign email is delivered"
+    },
+    {
+      "event_type": "member_campaign_opened",
+      "constant": "MEMBER_CAMPAIGN_OPENED",
+      "description": "triggered when a member opens a campaign"
+    },
+    {
+      "event_type": "member_removed_from_group",
+      "constant": "MEMBER_REMOVED_FROM_GROUP",
+      "description": "triggered when a member is removed from a group"
+    },
+    {
+      "event_type": "member_sms_bounced",
+      "constant": "MEMBER_SMS_BOUNCED",
+      "description": "triggered when an SMS hard-bounces (failed delivery)"
+    },
+    {
+      "event_type": "member_sms_clicked",
+      "constant": "MEMBER_SMS_CLICKED",
+      "description": "triggered when a member clicks a link in an SMS campaign"
+    },
+    {
+      "event_type": "member_sms_delivered",
+      "constant": "MEMBER_SMS_DELIVERED",
+      "description": "triggered when an SMS is delivered"
+    },
+    {
+      "event_type": "member_sms_replied",
+      "constant": "MEMBER_SMS_REPLIED",
+      "description": "triggered when a contact replies to an SMS campaign"
+    },
+    {
+      "event_type": "member_sms_subscribed",
+      "constant": "MEMBER_SMS_SUBSCRIBED",
+      "description": "triggered when a contact opts in to SMS"
+    },
+    {
+      "event_type": "member_sms_unsubscribed",
+      "constant": "MEMBER_SMS_UNSUBSCRIBED",
+      "description": "triggered when a contact opts out of SMS"
+    },
+    {
+      "event_type": "member_subscribed",
+      "constant": "MEMBER_SUBSCRIBED",
+      "description": "triggered when a member subscribes to an audience"
+    },
+    {
+      "event_type": "member_unsubscribed",
+      "constant": "MEMBER_UNSUBSCRIBED",
+      "description": "triggered when a member unsubscribes from an audience"
+    }
+  ]
+}

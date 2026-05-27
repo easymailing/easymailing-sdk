@@ -11,6 +11,7 @@
   "scripts": {
     "normalize": "node scripts/normalize.mjs openapi.json",
     "generate:resources": "node scripts/generator/index.mjs --input openapi.json --map sdk-map.yml --ts-out ../node/src/generated/resources --php-out ../php/src/Generated/Resources --node-docs-out ../node/docs/resources.md --php-docs-out ../php/docs/resources.md",
+    "extract:webhooks": "node scripts/extract-webhook-events.mjs --input ../../../easymailingv2-docker/bundles/CoreBundle/src/Enum/App/Config/WebhookEventType.php --output webhook-events.json",
     "lint": "redocly lint openapi.json",
     "check:breaking": "node scripts/check-breaking.mjs",
     "test": "find test -name '*.test.mjs' -print0 | xargs -0 node --test && corepack pnpm --filter @easymailing/sdk typecheck:samples",
