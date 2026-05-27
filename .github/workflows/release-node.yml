@@ -27,9 +27,17 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # npm Trusted Publishing requires npm CLI 11.5.1+ and Node 22.14+.
+          # Node 22 LTS ships with npm 10 by default but the bundled version
+          # is recent enough; the explicit npm bump below guarantees ≥11.5.1.
+          node-version: '22'
           cache: pnpm
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Ensure npm ≥11.5.1 (Trusted Publishing OIDC requirement)
+        run: |
+          npm install -g npm@latest
+          npm --version
 
       - name: Install
         run: pnpm install --frozen-lockfile
