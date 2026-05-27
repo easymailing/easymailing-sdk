@@ -1,7 +1,6 @@
 {
   "name": "@easymailing/sdk",
   "version": "0.1.0",
-  "private": true,
   "description": "Official Easymailing SDK for Node and TypeScript backends.",
   "license": "MIT",
   "repository": {

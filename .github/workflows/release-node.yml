@@ -40,13 +40,14 @@ jobs:
       - name: Create release PR or publish
         uses: changesets/action@v1
         with:
-          # --provenance: signs the npm publish with the GitHub OIDC token
-          # (matches the id-token: write permission above). Provides
-          # cryptographic linkage from package → workflow → source commit.
-          publish: pnpm changeset publish --provenance
+          # Provenance signing is enabled via:
+          #   - NPM_CONFIG_PROVENANCE env var below
+          #   - publishConfig.provenance in packages/node/package.json
+          #   - id-token: write permission in this workflow
+          # The CLI itself does NOT accept --provenance (that's an npm flag, not a changesets one).
+          publish: pnpm changeset publish
           version: pnpm changeset version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # publishConfig.provenance also requires this — belt + braces.
           NPM_CONFIG_PROVENANCE: "true"
