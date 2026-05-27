@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.4.0-alpha.0...v0.4.1-alpha.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* **transport:** auto-inject Content-Type: application/json on body requests ([b88e368](https://github.com/easymailing/easymailing-sdk/commit/b88e368865f62551366f1aa3578df5c716fa740c))
+
 ## [0.4.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.3.0-alpha.0...v0.4.0-alpha.0) (2026-05-27)
 
 
