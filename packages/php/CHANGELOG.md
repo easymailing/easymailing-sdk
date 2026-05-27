@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.3.0-alpha.0...v0.4.0-alpha.0) (2026-05-27)
+
+
+### Features
+
+* **hydra:** expose IRI on parsed entities (Node + PHP, contract-wide) ([d99748c](https://github.com/easymailing/easymailing-sdk/commit/d99748cb560736a4802db63c26d21bc2796dd5ee))
+
 ## [0.3.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.2.0-alpha.0...v0.3.0-alpha.0) (2026-05-27)
 
 
