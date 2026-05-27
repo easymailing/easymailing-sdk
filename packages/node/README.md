@@ -180,6 +180,33 @@ if (em.webhooks.verify(rawBody, headers["x-easymailing-signature"], secret)) {
 
 `verify()` is synchronous and uses `crypto.timingSafeEqual()` to avoid timing attacks. The signature must start with `sha256=` followed by hex.
 
+### Typed events
+
+`parseWebhookEvent(payload)` returns a `TypedWebhookEvent` discriminated union over `KnownEventType`. Narrow with a `switch` or `if` on `event_type`:
+
+```ts
+import { parseWebhookEvent, type KnownEventType } from "@easymailing/sdk";
+
+const event = parseWebhookEvent(rawBody);
+
+switch (event.event_type) {
+  case "member_subscribed":
+    // handler for new subscribers — event.data is `unknown` for now
+    break;
+  case "member_campaign_bounced":
+    // handle bounces
+    break;
+}
+```
+
+The full list of known event types is exported as the `KnownEventType` literal union (generated from the upstream `WebhookEventType` enum — keep `pnpm extract:webhooks` + `pnpm generate:webhooks` in sync). `data` is typed as `unknown` at the moment; a follow-up plan will tighten it to concrete payload DTOs per event type.
+
+For custom or yet-uncatalogued events, pass an explicit type parameter to fall back to the loose envelope:
+
+```ts
+const event = parseWebhookEvent<{ uuid: string }>(rawBody);
+```
+
 ## Status
 
 Implementation tracked in:

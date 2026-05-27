@@ -178,6 +178,24 @@ if ($em->webhooks->verify($rawBody, $signature, $secret)) {
 
 `verify()` uses `hash_hmac` + `hash_equals` (constant-time). Signature must start with `sha256=` followed by hex.
 
+### Typed events
+
+The `WebhookEvents` class exposes one `public const` per known `event_type`. Compare against it instead of hand-writing string literals:
+
+```php
+use Easymailing\Sdk\Generated\Webhooks\WebhookEvents;
+use Easymailing\Sdk\Webhooks\EventParser;
+
+$event = EventParser::parse($rawBody);
+match ($event['event_type']) {
+    WebhookEvents::MEMBER_SUBSCRIBED => handleSubscribed($event['data']),
+    WebhookEvents::MEMBER_CAMPAIGN_BOUNCED => handleBounce($event['data']),
+    default => null, // unknown event types still arrive
+};
+```
+
+`WebhookEvents::all()` returns the full list. The catalogue is generated from the upstream `WebhookEventType` PHP enum (`composer generate:webhooks`). `$event['data']` stays loosely typed (`mixed`) for now; a follow-up plan will tighten it once the upstream payload DTOs are catalogued.
+
 ## Status
 
 Implementation tracked in:
