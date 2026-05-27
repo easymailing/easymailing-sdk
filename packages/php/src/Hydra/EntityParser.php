@@ -10,7 +10,12 @@ final class EntityParser
 
     /**
      * Strip JSON-LD/Hydra metadata keys from an entity recursively.
-     * If `uuid` is absent and `@id` is present, derive uuid from the IRI.
+     *
+     * - `@id`, `@type`, `@context` are removed from the output.
+     * - If `@id` is a non-empty string, expose it as `iri` (unless the
+     *   input already has its own `iri` key, which is preserved).
+     * - If `@id` is a non-empty string and `uuid` is not already present,
+     *   derive `uuid` from the trailing UUID segment of the IRI.
      *
      * @param array<string, mixed> $input
      * @return array<string, mixed>
@@ -27,10 +32,16 @@ final class EntityParser
             $result[$key] = self::stripValue($value);
         }
 
-        if (!array_key_exists('uuid', $result) && is_string($id)) {
-            $uuid = IriExtractor::extract($id);
-            if ($uuid !== null) {
-                $result['uuid'] = $uuid;
+        // Identity projection: only when `@id` is a non-empty string.
+        if (is_string($id) && $id !== '') {
+            if (!array_key_exists('iri', $result)) {
+                $result['iri'] = $id;
+            }
+            if (!array_key_exists('uuid', $result)) {
+                $uuid = IriExtractor::extract($id);
+                if ($uuid !== null) {
+                    $result['uuid'] = $uuid;
+                }
             }
         }
 

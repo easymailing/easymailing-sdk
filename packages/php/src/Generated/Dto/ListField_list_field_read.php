@@ -11,6 +11,7 @@ final class ListField_list_field_read
 {
     public function __construct(
         public readonly ?\DateTimeImmutable $created_at = null,
+        public readonly ?string $iri = null,
         /** @var list<ListFieldOption_list_field_read>|null */
         public readonly ?array $list_field_options = null,
         /** @var array<string,mixed>|null */
@@ -32,6 +33,7 @@ final class ListField_list_field_read
     {
         return new self(
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
+            iri: $data['iri'] ?? null,
             list_field_options: isset($data['list_field_options']) ? array_map(fn($x) => ListFieldOption_list_field_read::fromArray($x), $data['list_field_options']) : null,
             options: $data['options'] ?? null,
             public: $data['public'] ?? null,
@@ -50,6 +52,7 @@ final class ListField_list_field_read
     {
         return [
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
+            'iri' => $this->iri,
             'list_field_options' => $this->list_field_options !== null ? array_map(fn($x) => $x->toArray(), $this->list_field_options) : null,
             'options' => $this->options,
             'public' => $this->public,
@@ -67,6 +70,7 @@ final class ListField_list_field_read
     {
         return new self(
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             list_field_options: array_key_exists('list_field_options', $fields) ? $fields['list_field_options'] : $this->list_field_options,
             options: array_key_exists('options', $fields) ? $fields['options'] : $this->options,
             public: array_key_exists('public', $fields) ? $fields['public'] : $this->public,

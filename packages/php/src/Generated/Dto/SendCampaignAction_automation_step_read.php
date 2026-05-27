@@ -12,6 +12,7 @@ final class SendCampaignAction_automation_step_read
     public function __construct(
         public readonly ?string $from_email = null,
         public readonly ?string $from_name = null,
+        public readonly ?string $iri = null,
         public readonly ?string $preview_text = null,
         public readonly ?string $reply_to = null,
         public readonly ?string $subject = null,
@@ -22,6 +23,7 @@ final class SendCampaignAction_automation_step_read
         public readonly ?bool $track_clicks = null,
         public readonly ?bool $track_opens = null,
         public readonly ?bool $use_conversations = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -31,6 +33,7 @@ final class SendCampaignAction_automation_step_read
         return new self(
             from_email: $data['from_email'] ?? null,
             from_name: $data['from_name'] ?? null,
+            iri: $data['iri'] ?? null,
             preview_text: $data['preview_text'] ?? null,
             reply_to: $data['reply_to'] ?? null,
             subject: $data['subject'] ?? null,
@@ -40,6 +43,7 @@ final class SendCampaignAction_automation_step_read
             track_clicks: $data['track_clicks'] ?? null,
             track_opens: $data['track_opens'] ?? null,
             use_conversations: $data['use_conversations'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -49,6 +53,7 @@ final class SendCampaignAction_automation_step_read
         return [
             'from_email' => $this->from_email,
             'from_name' => $this->from_name,
+            'iri' => $this->iri,
             'preview_text' => $this->preview_text,
             'reply_to' => $this->reply_to,
             'subject' => $this->subject,
@@ -58,6 +63,7 @@ final class SendCampaignAction_automation_step_read
             'track_clicks' => $this->track_clicks,
             'track_opens' => $this->track_opens,
             'use_conversations' => $this->use_conversations,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -66,6 +72,7 @@ final class SendCampaignAction_automation_step_read
         return new self(
             from_email: array_key_exists('from_email', $fields) ? $fields['from_email'] : $this->from_email,
             from_name: array_key_exists('from_name', $fields) ? $fields['from_name'] : $this->from_name,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             preview_text: array_key_exists('preview_text', $fields) ? $fields['preview_text'] : $this->preview_text,
             reply_to: array_key_exists('reply_to', $fields) ? $fields['reply_to'] : $this->reply_to,
             subject: array_key_exists('subject', $fields) ? $fields['subject'] : $this->subject,
@@ -75,6 +82,7 @@ final class SendCampaignAction_automation_step_read
             track_clicks: array_key_exists('track_clicks', $fields) ? $fields['track_clicks'] : $this->track_clicks,
             track_opens: array_key_exists('track_opens', $fields) ? $fields['track_opens'] : $this->track_opens,
             use_conversations: array_key_exists('use_conversations', $fields) ? $fields['use_conversations'] : $this->use_conversations,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

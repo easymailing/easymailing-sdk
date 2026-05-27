@@ -10,6 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class AudienceNotificationsDto_audience_read
 {
     public function __construct(
+        public readonly ?string $iri = null,
         public readonly ?string $opt_in = null,
         public readonly ?string $opt_in_notify_email = null,
         public readonly ?string $opt_out = null,
@@ -17,6 +18,7 @@ final class AudienceNotificationsDto_audience_read
         public readonly ?string $sms_sender = null,
         public readonly ?bool $unsubscribe_hard_bounces = null,
         public readonly ?bool $unsubscribe_soft_bounces = null,
+        public readonly ?string $uuid = null,
         public readonly ?bool $welcome_email = null,
     ) {
     }
@@ -25,6 +27,7 @@ final class AudienceNotificationsDto_audience_read
     public static function fromArray(array $data): self
     {
         return new self(
+            iri: $data['iri'] ?? null,
             opt_in: $data['opt_in'] ?? null,
             opt_in_notify_email: $data['opt_in_notify_email'] ?? null,
             opt_out: $data['opt_out'] ?? null,
@@ -32,6 +35,7 @@ final class AudienceNotificationsDto_audience_read
             sms_sender: $data['sms_sender'] ?? null,
             unsubscribe_hard_bounces: $data['unsubscribe_hard_bounces'] ?? null,
             unsubscribe_soft_bounces: $data['unsubscribe_soft_bounces'] ?? null,
+            uuid: $data['uuid'] ?? null,
             welcome_email: $data['welcome_email'] ?? null,
         );
     }
@@ -40,6 +44,7 @@ final class AudienceNotificationsDto_audience_read
     public function toArray(): array
     {
         return [
+            'iri' => $this->iri,
             'opt_in' => $this->opt_in,
             'opt_in_notify_email' => $this->opt_in_notify_email,
             'opt_out' => $this->opt_out,
@@ -47,6 +52,7 @@ final class AudienceNotificationsDto_audience_read
             'sms_sender' => $this->sms_sender,
             'unsubscribe_hard_bounces' => $this->unsubscribe_hard_bounces,
             'unsubscribe_soft_bounces' => $this->unsubscribe_soft_bounces,
+            'uuid' => $this->uuid,
             'welcome_email' => $this->welcome_email,
         ];
     }
@@ -54,6 +60,7 @@ final class AudienceNotificationsDto_audience_read
     public function with(mixed ...$fields): self
     {
         return new self(
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             opt_in: array_key_exists('opt_in', $fields) ? $fields['opt_in'] : $this->opt_in,
             opt_in_notify_email: array_key_exists('opt_in_notify_email', $fields) ? $fields['opt_in_notify_email'] : $this->opt_in_notify_email,
             opt_out: array_key_exists('opt_out', $fields) ? $fields['opt_out'] : $this->opt_out,
@@ -61,6 +68,7 @@ final class AudienceNotificationsDto_audience_read
             sms_sender: array_key_exists('sms_sender', $fields) ? $fields['sms_sender'] : $this->sms_sender,
             unsubscribe_hard_bounces: array_key_exists('unsubscribe_hard_bounces', $fields) ? $fields['unsubscribe_hard_bounces'] : $this->unsubscribe_hard_bounces,
             unsubscribe_soft_bounces: array_key_exists('unsubscribe_soft_bounces', $fields) ? $fields['unsubscribe_soft_bounces'] : $this->unsubscribe_soft_bounces,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             welcome_email: array_key_exists('welcome_email', $fields) ? $fields['welcome_email'] : $this->welcome_email,
         );
     }

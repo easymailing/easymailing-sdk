@@ -11,6 +11,8 @@ final class TriggerAutomationAction_automation_step_read
 {
     public function __construct(
         public readonly ?string $automation = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -19,6 +21,8 @@ final class TriggerAutomationAction_automation_step_read
     {
         return new self(
             automation: $data['automation'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -27,6 +31,8 @@ final class TriggerAutomationAction_automation_step_read
     {
         return [
             'automation' => $this->automation,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -34,6 +40,8 @@ final class TriggerAutomationAction_automation_step_read
     {
         return new self(
             automation: array_key_exists('automation', $fields) ? $fields['automation'] : $this->automation,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

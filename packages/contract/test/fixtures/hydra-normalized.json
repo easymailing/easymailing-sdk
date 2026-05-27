@@ -1,0 +1,64 @@
+{
+  "components": {
+    "schemas": {
+      "Audience-audience.read": {
+        "properties": {
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Audience.jsonld-audience.read": {
+        "properties": {
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "AudienceCompanyDto-audience.read": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Webhook-webhook.read": {
+        "properties": {
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "domain-owned uuid - do not overwrite",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "Hydra fixture",
+    "version": "1.0"
+  },
+  "openapi": "3.1.0"
+}

@@ -11,10 +11,6 @@ final class DesignSetting_jsonld_design_setting_read
 {
     public function __construct(
         public readonly string $title,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?ButtonDto_jsonld_design_setting_read $button = null,
         /** @var list<array<string,mixed>>|null */
         public readonly ?array $color_palette = null,
@@ -26,6 +22,7 @@ final class DesignSetting_jsonld_design_setting_read
         public readonly ?array $default_fonts = null,
         public readonly ?int $email_width = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?string $logo_dark_url = null,
         public readonly ?string $logo_light_url = null,
         public readonly ?int $page_width = null,
@@ -43,9 +40,6 @@ final class DesignSetting_jsonld_design_setting_read
     {
         return new self(
             title: $data['title'],
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             button: isset($data['button']) ? ButtonDto_jsonld_design_setting_read::fromArray($data['button']) : null,
             color_palette: $data['color_palette'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
@@ -54,6 +48,7 @@ final class DesignSetting_jsonld_design_setting_read
             default_fonts: isset($data['default_fonts']) ? array_map(fn($x) => DefaultFontDto_jsonld_design_setting_read::fromArray($x), $data['default_fonts']) : null,
             email_width: $data['email_width'] ?? null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             logo_dark_url: $data['logo_dark_url'] ?? null,
             logo_light_url: $data['logo_light_url'] ?? null,
             page_width: $data['page_width'] ?? null,
@@ -70,9 +65,6 @@ final class DesignSetting_jsonld_design_setting_read
     {
         return [
             'title' => $this->title,
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'button' => $this->button?->toArray(),
             'color_palette' => $this->color_palette,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
@@ -81,6 +73,7 @@ final class DesignSetting_jsonld_design_setting_read
             'default_fonts' => $this->default_fonts !== null ? array_map(fn($x) => $x->toArray(), $this->default_fonts) : null,
             'email_width' => $this->email_width,
             'id' => $this->id,
+            'iri' => $this->iri,
             'logo_dark_url' => $this->logo_dark_url,
             'logo_light_url' => $this->logo_light_url,
             'page_width' => $this->page_width,
@@ -96,9 +89,6 @@ final class DesignSetting_jsonld_design_setting_read
     {
         return new self(
             title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             button: array_key_exists('button', $fields) ? $fields['button'] : $this->button,
             color_palette: array_key_exists('color_palette', $fields) ? $fields['color_palette'] : $this->color_palette,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
@@ -107,6 +97,7 @@ final class DesignSetting_jsonld_design_setting_read
             default_fonts: array_key_exists('default_fonts', $fields) ? $fields['default_fonts'] : $this->default_fonts,
             email_width: array_key_exists('email_width', $fields) ? $fields['email_width'] : $this->email_width,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             logo_dark_url: array_key_exists('logo_dark_url', $fields) ? $fields['logo_dark_url'] : $this->logo_dark_url,
             logo_light_url: array_key_exists('logo_light_url', $fields) ? $fields['logo_light_url'] : $this->logo_light_url,
             page_width: array_key_exists('page_width', $fields) ? $fields['page_width'] : $this->page_width,

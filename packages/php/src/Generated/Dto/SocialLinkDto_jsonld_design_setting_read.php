@@ -13,12 +13,10 @@ final class SocialLinkDto_jsonld_design_setting_read
         public readonly ?\Easymailing\Sdk\Generated\Enum\SocialLink $key,
         public readonly string $title,
         public readonly string $url,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?string $icon_url = null,
         public readonly ?string $icon_url_white = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -29,11 +27,10 @@ final class SocialLinkDto_jsonld_design_setting_read
             key: isset($data['key']) ? \Easymailing\Sdk\Generated\Enum\SocialLink::from($data['key']) : null,
             title: $data['title'],
             url: $data['url'],
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             icon_url: $data['icon_url'] ?? null,
             icon_url_white: $data['icon_url_white'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -44,11 +41,10 @@ final class SocialLinkDto_jsonld_design_setting_read
             'key' => $this->key?->value,
             'title' => $this->title,
             'url' => $this->url,
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'icon_url' => $this->icon_url,
             'icon_url_white' => $this->icon_url_white,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -58,11 +54,10 @@ final class SocialLinkDto_jsonld_design_setting_read
             key: array_key_exists('key', $fields) ? $fields['key'] : $this->key,
             title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,
             url: array_key_exists('url', $fields) ? $fields['url'] : $this->url,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             icon_url: array_key_exists('icon_url', $fields) ? $fields['icon_url'] : $this->icon_url,
             icon_url_white: array_key_exists('icon_url_white', $fields) ? $fields['icon_url_white'] : $this->icon_url_white,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

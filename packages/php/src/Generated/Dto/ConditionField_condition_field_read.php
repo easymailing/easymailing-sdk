@@ -12,6 +12,7 @@ final class ConditionField_condition_field_read
     public function __construct(
         public readonly ?string $category = null,
         public readonly ?string $input_type = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $multiple = null,
         public readonly ?string $name = null,
         /** @var list<string>|null */
@@ -29,6 +30,7 @@ final class ConditionField_condition_field_read
         return new self(
             category: $data['category'] ?? null,
             input_type: $data['input_type'] ?? null,
+            iri: $data['iri'] ?? null,
             multiple: $data['multiple'] ?? null,
             name: $data['name'] ?? null,
             operators: $data['operators'] ?? null,
@@ -44,6 +46,7 @@ final class ConditionField_condition_field_read
         return [
             'category' => $this->category,
             'input_type' => $this->input_type,
+            'iri' => $this->iri,
             'multiple' => $this->multiple,
             'name' => $this->name,
             'operators' => $this->operators,
@@ -58,6 +61,7 @@ final class ConditionField_condition_field_read
         return new self(
             category: array_key_exists('category', $fields) ? $fields['category'] : $this->category,
             input_type: array_key_exists('input_type', $fields) ? $fields['input_type'] : $this->input_type,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             multiple: array_key_exists('multiple', $fields) ? $fields['multiple'] : $this->multiple,
             name: array_key_exists('name', $fields) ? $fields['name'] : $this->name,
             operators: array_key_exists('operators', $fields) ? $fields['operators'] : $this->operators,

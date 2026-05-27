@@ -10,13 +10,10 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class Contact_jsonld_contact_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?string $client_ip = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $email = null,
+        public readonly ?string $iri = null,
         public readonly ?string $locale = null,
         public readonly ?Location_jsonld_contact_read $location = null,
         public readonly ?string $phone = null,
@@ -31,12 +28,10 @@ final class Contact_jsonld_contact_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             client_ip: $data['client_ip'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             email: $data['email'] ?? null,
+            iri: $data['iri'] ?? null,
             locale: $data['locale'] ?? null,
             location: isset($data['location']) ? Location_jsonld_contact_read::fromArray($data['location']) : null,
             phone: $data['phone'] ?? null,
@@ -50,12 +45,10 @@ final class Contact_jsonld_contact_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'client_ip' => $this->client_ip,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'email' => $this->email,
+            'iri' => $this->iri,
             'locale' => $this->locale,
             'location' => $this->location?->toArray(),
             'phone' => $this->phone,
@@ -68,12 +61,10 @@ final class Contact_jsonld_contact_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             client_ip: array_key_exists('client_ip', $fields) ? $fields['client_ip'] : $this->client_ip,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             email: array_key_exists('email', $fields) ? $fields['email'] : $this->email,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             locale: array_key_exists('locale', $fields) ? $fields['locale'] : $this->locale,
             location: array_key_exists('location', $fields) ? $fields['location'] : $this->location,
             phone: array_key_exists('phone', $fields) ? $fields['phone'] : $this->phone,

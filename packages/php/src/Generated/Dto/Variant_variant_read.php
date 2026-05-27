@@ -15,11 +15,13 @@ final class Variant_variant_read
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $image_url = null,
         public readonly ?int $inventory_quantity = null,
+        public readonly ?string $iri = null,
         public readonly ?int $price = null,
         public readonly ?string $product = null,
         public readonly ?string $sku = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $url = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -32,11 +34,13 @@ final class Variant_variant_read
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             image_url: $data['image_url'] ?? null,
             inventory_quantity: $data['inventory_quantity'] ?? null,
+            iri: $data['iri'] ?? null,
             price: $data['price'] ?? null,
             product: $data['product'] ?? null,
             sku: $data['sku'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
             url: $data['url'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -49,11 +53,13 @@ final class Variant_variant_read
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'image_url' => $this->image_url,
             'inventory_quantity' => $this->inventory_quantity,
+            'iri' => $this->iri,
             'price' => $this->price,
             'product' => $this->product,
             'sku' => $this->sku,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
             'url' => $this->url,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -65,11 +71,13 @@ final class Variant_variant_read
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             image_url: array_key_exists('image_url', $fields) ? $fields['image_url'] : $this->image_url,
             inventory_quantity: array_key_exists('inventory_quantity', $fields) ? $fields['inventory_quantity'] : $this->inventory_quantity,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             price: array_key_exists('price', $fields) ? $fields['price'] : $this->price,
             product: array_key_exists('product', $fields) ? $fields['product'] : $this->product,
             sku: array_key_exists('sku', $fields) ? $fields['sku'] : $this->sku,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
             url: array_key_exists('url', $fields) ? $fields['url'] : $this->url,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

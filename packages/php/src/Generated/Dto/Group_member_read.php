@@ -13,7 +13,9 @@ final class Group_member_read
         public readonly string $color,
         public readonly string $title,
         public readonly ?string $description = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $public = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -24,7 +26,9 @@ final class Group_member_read
             color: $data['color'],
             title: $data['title'],
             description: $data['description'] ?? null,
+            iri: $data['iri'] ?? null,
             public: $data['public'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -35,7 +39,9 @@ final class Group_member_read
             'color' => $this->color,
             'title' => $this->title,
             'description' => $this->description,
+            'iri' => $this->iri,
             'public' => $this->public,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -45,7 +51,9 @@ final class Group_member_read
             color: array_key_exists('color', $fields) ? $fields['color'] : $this->color,
             title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,
             description: array_key_exists('description', $fields) ? $fields['description'] : $this->description,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             public: array_key_exists('public', $fields) ? $fields['public'] : $this->public,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

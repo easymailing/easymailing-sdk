@@ -14,8 +14,10 @@ final class SmsSender_sms_sender_read
         public readonly string $name,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?string $status = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -27,8 +29,10 @@ final class SmsSender_sms_sender_read
             name: $data['name'],
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             status: $data['status'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -40,8 +44,10 @@ final class SmsSender_sms_sender_read
             'name' => $this->name,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'id' => $this->id,
+            'iri' => $this->iri,
             'status' => $this->status,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -52,8 +58,10 @@ final class SmsSender_sms_sender_read
             name: array_key_exists('name', $fields) ? $fields['name'] : $this->name,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             status: array_key_exists('status', $fields) ? $fields['status'] : $this->status,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

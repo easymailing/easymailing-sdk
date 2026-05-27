@@ -1,0 +1,125 @@
+{
+  "description": "Cross-language parity fixtures for parseEntity Hydra → identity projection. Both Node (parseEntity) and PHP (EntityParser::parse) must produce expected from input for every case.",
+  "cases": [
+    {
+      "name": "entity_with_id_adds_iri_and_uuid",
+      "input": {
+        "@id": "/sms_campaigns/11111111-1111-1111-1111-111111111111",
+        "@type": "SmsCampaign",
+        "@context": "/contexts/SmsCampaign",
+        "title": "Promo"
+      },
+      "expected": {
+        "title": "Promo",
+        "iri": "/sms_campaigns/11111111-1111-1111-1111-111111111111",
+        "uuid": "11111111-1111-1111-1111-111111111111"
+      }
+    },
+    {
+      "name": "entity_without_id_unchanged",
+      "input": {
+        "title": "Audience preferences",
+        "sender_name": "QA"
+      },
+      "expected": {
+        "title": "Audience preferences",
+        "sender_name": "QA"
+      }
+    },
+    {
+      "name": "existing_iri_not_overwritten",
+      "input": {
+        "@id": "/sms_campaigns/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "iri": "/custom/pre-existing",
+        "title": "Keep iri"
+      },
+      "expected": {
+        "iri": "/custom/pre-existing",
+        "title": "Keep iri",
+        "uuid": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      }
+    },
+    {
+      "name": "existing_uuid_not_overwritten",
+      "input": {
+        "@id": "/sms_campaigns/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "uuid": "domain-owned-uuid",
+        "title": "Keep uuid"
+      },
+      "expected": {
+        "iri": "/sms_campaigns/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "uuid": "domain-owned-uuid",
+        "title": "Keep uuid"
+      }
+    },
+    {
+      "name": "empty_id_string_omits_iri",
+      "input": {
+        "@id": "",
+        "title": "Empty id"
+      },
+      "expected": {
+        "title": "Empty id"
+      }
+    },
+    {
+      "name": "non_string_id_omits_iri",
+      "input": {
+        "@id": null,
+        "title": "Null id"
+      },
+      "expected": {
+        "title": "Null id"
+      }
+    },
+    {
+      "name": "nested_entity_gets_its_own_iri",
+      "input": {
+        "@id": "/audiences/cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "@type": "Audience",
+        "title": "Outer",
+        "preferences": {
+          "@id": "/audience_preferences/dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "@type": "AudiencePreferences",
+          "sender_name": "QA"
+        }
+      },
+      "expected": {
+        "title": "Outer",
+        "preferences": {
+          "sender_name": "QA",
+          "iri": "/audience_preferences/dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "uuid": "dddddddd-dddd-dddd-dddd-dddddddddddd"
+        },
+        "iri": "/audiences/cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "uuid": "cccccccc-cccc-cccc-cccc-cccccccccccc"
+      }
+    },
+    {
+      "name": "array_of_entities_each_gets_iri",
+      "input": {
+        "@id": "/audiences/eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+        "title": "Audience",
+        "groups": [
+          {
+            "@id": "/audiences/eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee/groups/ffffffff-ffff-ffff-ffff-ffffffffffff",
+            "@type": "Group",
+            "name": "Active"
+          }
+        ]
+      },
+      "expected": {
+        "title": "Audience",
+        "groups": [
+          {
+            "name": "Active",
+            "iri": "/audiences/eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee/groups/ffffffff-ffff-ffff-ffff-ffffffffffff",
+            "uuid": "ffffffff-ffff-ffff-ffff-ffffffffffff"
+          }
+        ],
+        "iri": "/audiences/eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+        "uuid": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+      }
+    }
+  ]
+}

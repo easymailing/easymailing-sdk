@@ -10,8 +10,10 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListFieldOptionTranslation_audience_read
 {
     public function __construct(
+        public readonly ?string $iri = null,
         public readonly ?string $locale = null,
         public readonly ?string $name = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -19,8 +21,10 @@ final class ListFieldOptionTranslation_audience_read
     public static function fromArray(array $data): self
     {
         return new self(
+            iri: $data['iri'] ?? null,
             locale: $data['locale'] ?? null,
             name: $data['name'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -28,16 +32,20 @@ final class ListFieldOptionTranslation_audience_read
     public function toArray(): array
     {
         return [
+            'iri' => $this->iri,
             'locale' => $this->locale,
             'name' => $this->name,
+            'uuid' => $this->uuid,
         ];
     }
 
     public function with(mixed ...$fields): self
     {
         return new self(
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             locale: array_key_exists('locale', $fields) ? $fields['locale'] : $this->locale,
             name: array_key_exists('name', $fields) ? $fields['name'] : $this->name,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

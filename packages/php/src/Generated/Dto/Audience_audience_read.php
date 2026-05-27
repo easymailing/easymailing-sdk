@@ -24,6 +24,7 @@ final class Audience_audience_read
         /** @var list<Group_audience_read>|null */
         public readonly ?array $groups = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         /** @var list<ListField_audience_read>|null */
         public readonly ?array $list_fields = null,
         /** @var list<ListSegment_audience_read>|null */
@@ -53,6 +54,7 @@ final class Audience_audience_read
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             groups: isset($data['groups']) ? array_map(fn($x) => Group_audience_read::fromArray($x), $data['groups']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             list_fields: isset($data['list_fields']) ? array_map(fn($x) => ListField_audience_read::fromArray($x), $data['list_fields']) : null,
             list_segments: isset($data['list_segments']) ? array_map(fn($x) => ListSegment_audience_read::fromArray($x), $data['list_segments']) : null,
             notifications: isset($data['notifications']) ? AudienceNotificationsDto_audience_read::fromArray($data['notifications']) : null,
@@ -80,6 +82,7 @@ final class Audience_audience_read
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'groups' => $this->groups !== null ? array_map(fn($x) => $x->toArray(), $this->groups) : null,
             'id' => $this->id,
+            'iri' => $this->iri,
             'list_fields' => $this->list_fields !== null ? array_map(fn($x) => $x->toArray(), $this->list_fields) : null,
             'list_segments' => $this->list_segments !== null ? array_map(fn($x) => $x->toArray(), $this->list_segments) : null,
             'notifications' => $this->notifications?->toArray(),
@@ -106,6 +109,7 @@ final class Audience_audience_read
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             groups: array_key_exists('groups', $fields) ? $fields['groups'] : $this->groups,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             list_fields: array_key_exists('list_fields', $fields) ? $fields['list_fields'] : $this->list_fields,
             list_segments: array_key_exists('list_segments', $fields) ? $fields['list_segments'] : $this->list_segments,
             notifications: array_key_exists('notifications', $fields) ? $fields['notifications'] : $this->notifications,

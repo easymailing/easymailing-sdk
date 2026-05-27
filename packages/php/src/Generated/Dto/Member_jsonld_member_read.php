@@ -10,10 +10,6 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class Member_jsonld_member_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?string $audience = null,
         public readonly ?string $client_ip = null,
         public readonly ?\DateTimeImmutable $created_at = null,
@@ -27,6 +23,7 @@ final class Member_jsonld_member_read
         /** @var list<Group_jsonld_member_read>|null */
         public readonly ?array $groups = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?string $last_name = null,
         public readonly ?string $locale = null,
         public readonly ?Location_jsonld_member_read $location = null,
@@ -50,9 +47,6 @@ final class Member_jsonld_member_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             audience: $data['audience'] ?? null,
             client_ip: $data['client_ip'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
@@ -64,6 +58,7 @@ final class Member_jsonld_member_read
             first_name: $data['first_name'] ?? null,
             groups: isset($data['groups']) ? array_map(fn($x) => Group_jsonld_member_read::fromArray($x), $data['groups']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             last_name: $data['last_name'] ?? null,
             locale: $data['locale'] ?? null,
             location: isset($data['location']) ? Location_jsonld_member_read::fromArray($data['location']) : null,
@@ -87,9 +82,6 @@ final class Member_jsonld_member_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'audience' => $this->audience,
             'client_ip' => $this->client_ip,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
@@ -101,6 +93,7 @@ final class Member_jsonld_member_read
             'first_name' => $this->first_name,
             'groups' => $this->groups !== null ? array_map(fn($x) => $x->toArray(), $this->groups) : null,
             'id' => $this->id,
+            'iri' => $this->iri,
             'last_name' => $this->last_name,
             'locale' => $this->locale,
             'location' => $this->location?->toArray(),
@@ -123,9 +116,6 @@ final class Member_jsonld_member_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
             client_ip: array_key_exists('client_ip', $fields) ? $fields['client_ip'] : $this->client_ip,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
@@ -137,6 +127,7 @@ final class Member_jsonld_member_read
             first_name: array_key_exists('first_name', $fields) ? $fields['first_name'] : $this->first_name,
             groups: array_key_exists('groups', $fields) ? $fields['groups'] : $this->groups,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             last_name: array_key_exists('last_name', $fields) ? $fields['last_name'] : $this->last_name,
             locale: array_key_exists('locale', $fields) ? $fields['locale'] : $this->locale,
             location: array_key_exists('location', $fields) ? $fields['location'] : $this->location,

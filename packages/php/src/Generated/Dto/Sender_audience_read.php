@@ -12,6 +12,7 @@ final class Sender_audience_read
     public function __construct(
         public readonly string $email,
         public readonly ?bool $confirmed = null,
+        public readonly ?string $iri = null,
         public readonly ?string $uuid = null,
     ) {
     }
@@ -22,6 +23,7 @@ final class Sender_audience_read
         return new self(
             email: $data['email'],
             confirmed: $data['confirmed'] ?? null,
+            iri: $data['iri'] ?? null,
             uuid: $data['uuid'] ?? null,
         );
     }
@@ -32,6 +34,7 @@ final class Sender_audience_read
         return [
             'email' => $this->email,
             'confirmed' => $this->confirmed,
+            'iri' => $this->iri,
             'uuid' => $this->uuid,
         ];
     }
@@ -41,6 +44,7 @@ final class Sender_audience_read
         return new self(
             email: array_key_exists('email', $fields) ? $fields['email'] : $this->email,
             confirmed: array_key_exists('confirmed', $fields) ? $fields['confirmed'] : $this->confirmed,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }

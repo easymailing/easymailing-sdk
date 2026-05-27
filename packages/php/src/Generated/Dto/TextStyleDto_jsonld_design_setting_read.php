@@ -16,10 +16,8 @@ final class TextStyleDto_jsonld_design_setting_read
         public readonly string $font_weight,
         public readonly string $line_height,
         public readonly string $link_color,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -33,9 +31,8 @@ final class TextStyleDto_jsonld_design_setting_read
             font_weight: $data['font_weight'],
             line_height: $data['line_height'],
             link_color: $data['link_color'],
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -49,9 +46,8 @@ final class TextStyleDto_jsonld_design_setting_read
             'font_weight' => $this->font_weight,
             'line_height' => $this->line_height,
             'link_color' => $this->link_color,
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -64,9 +60,8 @@ final class TextStyleDto_jsonld_design_setting_read
             font_weight: array_key_exists('font_weight', $fields) ? $fields['font_weight'] : $this->font_weight,
             line_height: array_key_exists('line_height', $fields) ? $fields['line_height'] : $this->line_height,
             link_color: array_key_exists('link_color', $fields) ? $fields['link_color'] : $this->link_color,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

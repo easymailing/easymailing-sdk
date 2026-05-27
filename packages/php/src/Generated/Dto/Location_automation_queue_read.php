@@ -13,10 +13,12 @@ final class Location_automation_queue_read
         public readonly ?string $city = null,
         public readonly ?string $country = null,
         public readonly ?string $country_code = null,
+        public readonly ?string $iri = null,
         public readonly ?float $lat = null,
         public readonly ?float $lng = null,
         public readonly ?string $postal_code = null,
         public readonly ?string $timezone = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -27,10 +29,12 @@ final class Location_automation_queue_read
             city: $data['city'] ?? null,
             country: $data['country'] ?? null,
             country_code: $data['country_code'] ?? null,
+            iri: $data['iri'] ?? null,
             lat: $data['lat'] ?? null,
             lng: $data['lng'] ?? null,
             postal_code: $data['postal_code'] ?? null,
             timezone: $data['timezone'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -41,10 +45,12 @@ final class Location_automation_queue_read
             'city' => $this->city,
             'country' => $this->country,
             'country_code' => $this->country_code,
+            'iri' => $this->iri,
             'lat' => $this->lat,
             'lng' => $this->lng,
             'postal_code' => $this->postal_code,
             'timezone' => $this->timezone,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -54,10 +60,12 @@ final class Location_automation_queue_read
             city: array_key_exists('city', $fields) ? $fields['city'] : $this->city,
             country: array_key_exists('country', $fields) ? $fields['country'] : $this->country,
             country_code: array_key_exists('country_code', $fields) ? $fields['country_code'] : $this->country_code,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             lat: array_key_exists('lat', $fields) ? $fields['lat'] : $this->lat,
             lng: array_key_exists('lng', $fields) ? $fields['lng'] : $this->lng,
             postal_code: array_key_exists('postal_code', $fields) ? $fields['postal_code'] : $this->postal_code,
             timezone: array_key_exists('timezone', $fields) ? $fields['timezone'] : $this->timezone,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

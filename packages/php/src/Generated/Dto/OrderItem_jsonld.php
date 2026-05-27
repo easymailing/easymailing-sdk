@@ -13,12 +13,10 @@ final class OrderItem_jsonld
         public readonly int $price,
         public readonly int $quantity,
         public readonly ?string $variant,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?int $discount = null,
+        public readonly ?string $iri = null,
         public readonly ?string $order = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -29,11 +27,10 @@ final class OrderItem_jsonld
             price: $data['price'],
             quantity: $data['quantity'],
             variant: $data['variant'],
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             discount: $data['discount'] ?? null,
+            iri: $data['iri'] ?? null,
             order: $data['order'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -44,11 +41,10 @@ final class OrderItem_jsonld
             'price' => $this->price,
             'quantity' => $this->quantity,
             'variant' => $this->variant,
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'discount' => $this->discount,
+            'iri' => $this->iri,
             'order' => $this->order,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -58,11 +54,10 @@ final class OrderItem_jsonld
             price: array_key_exists('price', $fields) ? $fields['price'] : $this->price,
             quantity: array_key_exists('quantity', $fields) ? $fields['quantity'] : $this->quantity,
             variant: array_key_exists('variant', $fields) ? $fields['variant'] : $this->variant,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             discount: array_key_exists('discount', $fields) ? $fields['discount'] : $this->discount,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             order: array_key_exists('order', $fields) ? $fields['order'] : $this->order,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

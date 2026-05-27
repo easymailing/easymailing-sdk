@@ -14,6 +14,7 @@ final class Sender_sender_read
         public readonly ?bool $confirmed = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
     ) {
@@ -27,6 +28,7 @@ final class Sender_sender_read
             confirmed: $data['confirmed'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
             uuid: $data['uuid'] ?? null,
         );
@@ -40,6 +42,7 @@ final class Sender_sender_read
             'confirmed' => $this->confirmed,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'id' => $this->id,
+            'iri' => $this->iri,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
             'uuid' => $this->uuid,
         ];
@@ -52,6 +55,7 @@ final class Sender_sender_read
             confirmed: array_key_exists('confirmed', $fields) ? $fields['confirmed'] : $this->confirmed,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
             uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );

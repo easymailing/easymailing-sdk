@@ -10,10 +10,6 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class MySuscription_jsonld_my_suscription_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?int $ai_cost_limit_cents = null,
         public readonly ?int $ai_cost_used_cents = null,
         public readonly ?int $ai_overage_limit_cents = null,
@@ -26,6 +22,7 @@ final class MySuscription_jsonld_my_suscription_read
         public readonly ?int $credits_used = null,
         public readonly ?string $domain = null,
         public readonly ?\DateTimeImmutable $expiration_date = null,
+        public readonly ?string $iri = null,
         public readonly ?string $locale = null,
         public readonly ?int $max_subscribers = null,
         public readonly ?bool $sms_campaigns_enabled = null,
@@ -35,6 +32,7 @@ final class MySuscription_jsonld_my_suscription_read
         public readonly ?int $subscribers_used = null,
         public readonly ?string $tier = null,
         public readonly ?AuthenticatedUser_jsonld_my_suscription_read $user = null,
+        public readonly ?string $uuid = null,
         public readonly ?int $websites = null,
     ) {
     }
@@ -43,9 +41,6 @@ final class MySuscription_jsonld_my_suscription_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             ai_cost_limit_cents: $data['ai_cost_limit_cents'] ?? null,
             ai_cost_used_cents: $data['ai_cost_used_cents'] ?? null,
             ai_overage_limit_cents: $data['ai_overage_limit_cents'] ?? null,
@@ -58,6 +53,7 @@ final class MySuscription_jsonld_my_suscription_read
             credits_used: $data['credits_used'] ?? null,
             domain: $data['domain'] ?? null,
             expiration_date: isset($data['expiration_date']) ? new \DateTimeImmutable($data['expiration_date']) : null,
+            iri: $data['iri'] ?? null,
             locale: $data['locale'] ?? null,
             max_subscribers: $data['max_subscribers'] ?? null,
             sms_campaigns_enabled: $data['sms_campaigns_enabled'] ?? null,
@@ -67,6 +63,7 @@ final class MySuscription_jsonld_my_suscription_read
             subscribers_used: $data['subscribers_used'] ?? null,
             tier: $data['tier'] ?? null,
             user: isset($data['user']) ? AuthenticatedUser_jsonld_my_suscription_read::fromArray($data['user']) : null,
+            uuid: $data['uuid'] ?? null,
             websites: $data['websites'] ?? null,
         );
     }
@@ -75,9 +72,6 @@ final class MySuscription_jsonld_my_suscription_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'ai_cost_limit_cents' => $this->ai_cost_limit_cents,
             'ai_cost_used_cents' => $this->ai_cost_used_cents,
             'ai_overage_limit_cents' => $this->ai_overage_limit_cents,
@@ -90,6 +84,7 @@ final class MySuscription_jsonld_my_suscription_read
             'credits_used' => $this->credits_used,
             'domain' => $this->domain,
             'expiration_date' => $this->expiration_date?->format(\DateTimeInterface::ATOM),
+            'iri' => $this->iri,
             'locale' => $this->locale,
             'max_subscribers' => $this->max_subscribers,
             'sms_campaigns_enabled' => $this->sms_campaigns_enabled,
@@ -99,6 +94,7 @@ final class MySuscription_jsonld_my_suscription_read
             'subscribers_used' => $this->subscribers_used,
             'tier' => $this->tier,
             'user' => $this->user?->toArray(),
+            'uuid' => $this->uuid,
             'websites' => $this->websites,
         ];
     }
@@ -106,9 +102,6 @@ final class MySuscription_jsonld_my_suscription_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             ai_cost_limit_cents: array_key_exists('ai_cost_limit_cents', $fields) ? $fields['ai_cost_limit_cents'] : $this->ai_cost_limit_cents,
             ai_cost_used_cents: array_key_exists('ai_cost_used_cents', $fields) ? $fields['ai_cost_used_cents'] : $this->ai_cost_used_cents,
             ai_overage_limit_cents: array_key_exists('ai_overage_limit_cents', $fields) ? $fields['ai_overage_limit_cents'] : $this->ai_overage_limit_cents,
@@ -121,6 +114,7 @@ final class MySuscription_jsonld_my_suscription_read
             credits_used: array_key_exists('credits_used', $fields) ? $fields['credits_used'] : $this->credits_used,
             domain: array_key_exists('domain', $fields) ? $fields['domain'] : $this->domain,
             expiration_date: array_key_exists('expiration_date', $fields) ? $fields['expiration_date'] : $this->expiration_date,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             locale: array_key_exists('locale', $fields) ? $fields['locale'] : $this->locale,
             max_subscribers: array_key_exists('max_subscribers', $fields) ? $fields['max_subscribers'] : $this->max_subscribers,
             sms_campaigns_enabled: array_key_exists('sms_campaigns_enabled', $fields) ? $fields['sms_campaigns_enabled'] : $this->sms_campaigns_enabled,
@@ -130,6 +124,7 @@ final class MySuscription_jsonld_my_suscription_read
             subscribers_used: array_key_exists('subscribers_used', $fields) ? $fields['subscribers_used'] : $this->subscribers_used,
             tier: array_key_exists('tier', $fields) ? $fields['tier'] : $this->tier,
             user: array_key_exists('user', $fields) ? $fields['user'] : $this->user,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             websites: array_key_exists('websites', $fields) ? $fields['websites'] : $this->websites,
         );
     }

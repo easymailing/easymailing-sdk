@@ -11,7 +11,9 @@ final class TreatmentPurpose_contact_read
 {
     public function __construct(
         public readonly ?string $description = null,
+        public readonly ?string $iri = null,
         public readonly ?string $name = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -20,7 +22,9 @@ final class TreatmentPurpose_contact_read
     {
         return new self(
             description: $data['description'] ?? null,
+            iri: $data['iri'] ?? null,
             name: $data['name'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -29,7 +33,9 @@ final class TreatmentPurpose_contact_read
     {
         return [
             'description' => $this->description,
+            'iri' => $this->iri,
             'name' => $this->name,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -37,7 +43,9 @@ final class TreatmentPurpose_contact_read
     {
         return new self(
             description: array_key_exists('description', $fields) ? $fields['description'] : $this->description,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             name: array_key_exists('name', $fields) ? $fields['name'] : $this->name,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

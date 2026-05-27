@@ -10,16 +10,14 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class PopupBehaviorDto_jsonld_suscription_form_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $frequency = null,
+        public readonly ?string $iri = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $schedule = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $triggers = null,
+        public readonly ?string $uuid = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $visibility = null,
     ) {
@@ -29,12 +27,11 @@ final class PopupBehaviorDto_jsonld_suscription_form_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             frequency: $data['frequency'] ?? null,
+            iri: $data['iri'] ?? null,
             schedule: $data['schedule'] ?? null,
             triggers: $data['triggers'] ?? null,
+            uuid: $data['uuid'] ?? null,
             visibility: $data['visibility'] ?? null,
         );
     }
@@ -43,12 +40,11 @@ final class PopupBehaviorDto_jsonld_suscription_form_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'frequency' => $this->frequency,
+            'iri' => $this->iri,
             'schedule' => $this->schedule,
             'triggers' => $this->triggers,
+            'uuid' => $this->uuid,
             'visibility' => $this->visibility,
         ];
     }
@@ -56,12 +52,11 @@ final class PopupBehaviorDto_jsonld_suscription_form_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             frequency: array_key_exists('frequency', $fields) ? $fields['frequency'] : $this->frequency,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             schedule: array_key_exists('schedule', $fields) ? $fields['schedule'] : $this->schedule,
             triggers: array_key_exists('triggers', $fields) ? $fields['triggers'] : $this->triggers,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             visibility: array_key_exists('visibility', $fields) ? $fields['visibility'] : $this->visibility,
         );
     }

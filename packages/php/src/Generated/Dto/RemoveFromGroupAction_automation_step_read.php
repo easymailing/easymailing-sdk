@@ -11,6 +11,8 @@ final class RemoveFromGroupAction_automation_step_read
 {
     public function __construct(
         public readonly ?string $group = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -19,6 +21,8 @@ final class RemoveFromGroupAction_automation_step_read
     {
         return new self(
             group: $data['group'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -27,6 +31,8 @@ final class RemoveFromGroupAction_automation_step_read
     {
         return [
             'group' => $this->group,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -34,6 +40,8 @@ final class RemoveFromGroupAction_automation_step_read
     {
         return new self(
             group: array_key_exists('group', $fields) ? $fields['group'] : $this->group,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

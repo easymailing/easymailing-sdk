@@ -22,6 +22,7 @@ final class MySuscription_my_suscription_read
         public readonly ?int $credits_used = null,
         public readonly ?string $domain = null,
         public readonly ?\DateTimeImmutable $expiration_date = null,
+        public readonly ?string $iri = null,
         public readonly ?string $locale = null,
         public readonly ?int $max_subscribers = null,
         public readonly ?bool $sms_campaigns_enabled = null,
@@ -31,6 +32,7 @@ final class MySuscription_my_suscription_read
         public readonly ?int $subscribers_used = null,
         public readonly ?string $tier = null,
         public readonly ?AuthenticatedUser_my_suscription_read $user = null,
+        public readonly ?string $uuid = null,
         public readonly ?int $websites = null,
     ) {
     }
@@ -51,6 +53,7 @@ final class MySuscription_my_suscription_read
             credits_used: $data['credits_used'] ?? null,
             domain: $data['domain'] ?? null,
             expiration_date: isset($data['expiration_date']) ? new \DateTimeImmutable($data['expiration_date']) : null,
+            iri: $data['iri'] ?? null,
             locale: $data['locale'] ?? null,
             max_subscribers: $data['max_subscribers'] ?? null,
             sms_campaigns_enabled: $data['sms_campaigns_enabled'] ?? null,
@@ -60,6 +63,7 @@ final class MySuscription_my_suscription_read
             subscribers_used: $data['subscribers_used'] ?? null,
             tier: $data['tier'] ?? null,
             user: isset($data['user']) ? AuthenticatedUser_my_suscription_read::fromArray($data['user']) : null,
+            uuid: $data['uuid'] ?? null,
             websites: $data['websites'] ?? null,
         );
     }
@@ -80,6 +84,7 @@ final class MySuscription_my_suscription_read
             'credits_used' => $this->credits_used,
             'domain' => $this->domain,
             'expiration_date' => $this->expiration_date?->format(\DateTimeInterface::ATOM),
+            'iri' => $this->iri,
             'locale' => $this->locale,
             'max_subscribers' => $this->max_subscribers,
             'sms_campaigns_enabled' => $this->sms_campaigns_enabled,
@@ -89,6 +94,7 @@ final class MySuscription_my_suscription_read
             'subscribers_used' => $this->subscribers_used,
             'tier' => $this->tier,
             'user' => $this->user?->toArray(),
+            'uuid' => $this->uuid,
             'websites' => $this->websites,
         ];
     }
@@ -108,6 +114,7 @@ final class MySuscription_my_suscription_read
             credits_used: array_key_exists('credits_used', $fields) ? $fields['credits_used'] : $this->credits_used,
             domain: array_key_exists('domain', $fields) ? $fields['domain'] : $this->domain,
             expiration_date: array_key_exists('expiration_date', $fields) ? $fields['expiration_date'] : $this->expiration_date,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             locale: array_key_exists('locale', $fields) ? $fields['locale'] : $this->locale,
             max_subscribers: array_key_exists('max_subscribers', $fields) ? $fields['max_subscribers'] : $this->max_subscribers,
             sms_campaigns_enabled: array_key_exists('sms_campaigns_enabled', $fields) ? $fields['sms_campaigns_enabled'] : $this->sms_campaigns_enabled,
@@ -117,6 +124,7 @@ final class MySuscription_my_suscription_read
             subscribers_used: array_key_exists('subscribers_used', $fields) ? $fields['subscribers_used'] : $this->subscribers_used,
             tier: array_key_exists('tier', $fields) ? $fields['tier'] : $this->tier,
             user: array_key_exists('user', $fields) ? $fields['user'] : $this->user,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             websites: array_key_exists('websites', $fields) ? $fields['websites'] : $this->websites,
         );
     }

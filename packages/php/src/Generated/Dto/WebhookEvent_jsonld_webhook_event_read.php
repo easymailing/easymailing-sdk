@@ -10,15 +10,12 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class WebhookEvent_jsonld_webhook_event_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $event_data = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\WebhookEventType $event_type = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
         public readonly ?string $webhook = null,
@@ -30,13 +27,11 @@ final class WebhookEvent_jsonld_webhook_event_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             event_data: $data['event_data'] ?? null,
             event_type: isset($data['event_type']) ? \Easymailing\Sdk\Generated\Enum\WebhookEventType::from($data['event_type']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
             uuid: $data['uuid'] ?? null,
             webhook: $data['webhook'] ?? null,
@@ -48,13 +43,11 @@ final class WebhookEvent_jsonld_webhook_event_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'event_data' => $this->event_data,
             'event_type' => $this->event_type?->value,
             'id' => $this->id,
+            'iri' => $this->iri,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
             'uuid' => $this->uuid,
             'webhook' => $this->webhook,
@@ -65,13 +58,11 @@ final class WebhookEvent_jsonld_webhook_event_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             event_data: array_key_exists('event_data', $fields) ? $fields['event_data'] : $this->event_data,
             event_type: array_key_exists('event_type', $fields) ? $fields['event_type'] : $this->event_type,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
             uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             webhook: array_key_exists('webhook', $fields) ? $fields['webhook'] : $this->webhook,

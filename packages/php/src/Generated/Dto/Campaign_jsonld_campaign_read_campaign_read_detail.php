@@ -10,10 +10,6 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class Campaign_jsonld_campaign_read_campaign_read_detail
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?string $audience = null,
         public readonly ?CampaignConfig_jsonld_campaign_read_campaign_read_detail $campaign_config = null,
         public readonly ?CampaignConfigSend_jsonld_campaign_read_campaign_read_detail $campaign_config_send = null,
@@ -26,6 +22,7 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
         public readonly ?array $groups = null,
         public readonly ?string $hash = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?string $list_segment = null,
         public readonly ?int $recipient_count = null,
         public readonly ?string $send_to = null,
@@ -50,9 +47,6 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             audience: $data['audience'] ?? null,
             campaign_config: isset($data['campaign_config']) ? CampaignConfig_jsonld_campaign_read_campaign_read_detail::fromArray($data['campaign_config']) : null,
             campaign_config_send: isset($data['campaign_config_send']) ? CampaignConfigSend_jsonld_campaign_read_campaign_read_detail::fromArray($data['campaign_config_send']) : null,
@@ -64,6 +58,7 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
             groups: $data['groups'] ?? null,
             hash: $data['hash'] ?? null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             list_segment: $data['list_segment'] ?? null,
             recipient_count: $data['recipient_count'] ?? null,
             send_to: $data['send_to'] ?? null,
@@ -86,9 +81,6 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'audience' => $this->audience,
             'campaign_config' => $this->campaign_config?->toArray(),
             'campaign_config_send' => $this->campaign_config_send?->toArray(),
@@ -100,6 +92,7 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
             'groups' => $this->groups,
             'hash' => $this->hash,
             'id' => $this->id,
+            'iri' => $this->iri,
             'list_segment' => $this->list_segment,
             'recipient_count' => $this->recipient_count,
             'send_to' => $this->send_to,
@@ -121,9 +114,6 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
             campaign_config: array_key_exists('campaign_config', $fields) ? $fields['campaign_config'] : $this->campaign_config,
             campaign_config_send: array_key_exists('campaign_config_send', $fields) ? $fields['campaign_config_send'] : $this->campaign_config_send,
@@ -135,6 +125,7 @@ final class Campaign_jsonld_campaign_read_campaign_read_detail
             groups: array_key_exists('groups', $fields) ? $fields['groups'] : $this->groups,
             hash: array_key_exists('hash', $fields) ? $fields['hash'] : $this->hash,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             list_segment: array_key_exists('list_segment', $fields) ? $fields['list_segment'] : $this->list_segment,
             recipient_count: array_key_exists('recipient_count', $fields) ? $fields['recipient_count'] : $this->recipient_count,
             send_to: array_key_exists('send_to', $fields) ? $fields['send_to'] : $this->send_to,

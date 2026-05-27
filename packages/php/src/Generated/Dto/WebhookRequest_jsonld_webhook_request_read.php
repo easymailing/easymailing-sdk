@@ -10,12 +10,9 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class WebhookRequest_jsonld_webhook_request_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?string $payload = null,
         public readonly ?string $response_body = null,
         public readonly ?float $response_status_code = null,
@@ -32,11 +29,9 @@ final class WebhookRequest_jsonld_webhook_request_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             payload: $data['payload'] ?? null,
             response_body: $data['response_body'] ?? null,
             response_status_code: $data['response_status_code'] ?? null,
@@ -52,11 +47,9 @@ final class WebhookRequest_jsonld_webhook_request_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'id' => $this->id,
+            'iri' => $this->iri,
             'payload' => $this->payload,
             'response_body' => $this->response_body,
             'response_status_code' => $this->response_status_code,
@@ -71,11 +64,9 @@ final class WebhookRequest_jsonld_webhook_request_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             payload: array_key_exists('payload', $fields) ? $fields['payload'] : $this->payload,
             response_body: array_key_exists('response_body', $fields) ? $fields['response_body'] : $this->response_body,
             response_status_code: array_key_exists('response_status_code', $fields) ? $fields['response_status_code'] : $this->response_status_code,

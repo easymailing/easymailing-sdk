@@ -17,8 +17,10 @@ final class Product_product_read
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $description = null,
         public readonly ?string $image_url = null,
+        public readonly ?string $iri = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $url = null,
+        public readonly ?string $uuid = null,
         /** @var list<Variant_product_read>|null */
         public readonly ?array $variants = null,
         public readonly ?string $vendor = null,
@@ -35,8 +37,10 @@ final class Product_product_read
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             description: $data['description'] ?? null,
             image_url: $data['image_url'] ?? null,
+            iri: $data['iri'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
             url: $data['url'] ?? null,
+            uuid: $data['uuid'] ?? null,
             variants: isset($data['variants']) ? array_map(fn($x) => Variant_product_read::fromArray($x), $data['variants']) : null,
             vendor: $data['vendor'] ?? null,
         );
@@ -52,8 +56,10 @@ final class Product_product_read
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'description' => $this->description,
             'image_url' => $this->image_url,
+            'iri' => $this->iri,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
             'url' => $this->url,
+            'uuid' => $this->uuid,
             'variants' => $this->variants !== null ? array_map(fn($x) => $x->toArray(), $this->variants) : null,
             'vendor' => $this->vendor,
         ];
@@ -68,8 +74,10 @@ final class Product_product_read
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             description: array_key_exists('description', $fields) ? $fields['description'] : $this->description,
             image_url: array_key_exists('image_url', $fields) ? $fields['image_url'] : $this->image_url,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
             url: array_key_exists('url', $fields) ? $fields['url'] : $this->url,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             variants: array_key_exists('variants', $fields) ? $fields['variants'] : $this->variants,
             vendor: array_key_exists('vendor', $fields) ? $fields['vendor'] : $this->vendor,
         );

@@ -10,8 +10,10 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListFieldOption_list_field_read
 {
     public function __construct(
+        public readonly ?string $iri = null,
         /** @var list<ListFieldOptionTranslation_list_field_read>|null */
         public readonly ?array $translations = null,
+        public readonly ?string $uuid = null,
         public readonly ?string $value = null,
     ) {
     }
@@ -20,7 +22,9 @@ final class ListFieldOption_list_field_read
     public static function fromArray(array $data): self
     {
         return new self(
+            iri: $data['iri'] ?? null,
             translations: isset($data['translations']) ? array_map(fn($x) => ListFieldOptionTranslation_list_field_read::fromArray($x), $data['translations']) : null,
+            uuid: $data['uuid'] ?? null,
             value: $data['value'] ?? null,
         );
     }
@@ -29,7 +33,9 @@ final class ListFieldOption_list_field_read
     public function toArray(): array
     {
         return [
+            'iri' => $this->iri,
             'translations' => $this->translations !== null ? array_map(fn($x) => $x->toArray(), $this->translations) : null,
+            'uuid' => $this->uuid,
             'value' => $this->value,
         ];
     }
@@ -37,7 +43,9 @@ final class ListFieldOption_list_field_read
     public function with(mixed ...$fields): self
     {
         return new self(
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             translations: array_key_exists('translations', $fields) ? $fields['translations'] : $this->translations,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
         );
     }

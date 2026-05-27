@@ -13,7 +13,9 @@ final class SendNotificationAction_automation_step_read
         public readonly ?string $body = null,
         /** @var list<string>|null */
         public readonly ?array $emails = null,
+        public readonly ?string $iri = null,
         public readonly ?string $subject = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -23,7 +25,9 @@ final class SendNotificationAction_automation_step_read
         return new self(
             body: $data['body'] ?? null,
             emails: $data['emails'] ?? null,
+            iri: $data['iri'] ?? null,
             subject: $data['subject'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -33,7 +37,9 @@ final class SendNotificationAction_automation_step_read
         return [
             'body' => $this->body,
             'emails' => $this->emails,
+            'iri' => $this->iri,
             'subject' => $this->subject,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -42,7 +48,9 @@ final class SendNotificationAction_automation_step_read
         return new self(
             body: array_key_exists('body', $fields) ? $fields['body'] : $this->body,
             emails: array_key_exists('emails', $fields) ? $fields['emails'] : $this->emails,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             subject: array_key_exists('subject', $fields) ? $fields['subject'] : $this->subject,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

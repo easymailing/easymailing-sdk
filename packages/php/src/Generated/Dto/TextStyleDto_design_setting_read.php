@@ -16,6 +16,8 @@ final class TextStyleDto_design_setting_read
         public readonly string $font_weight,
         public readonly string $line_height,
         public readonly string $link_color,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -29,6 +31,8 @@ final class TextStyleDto_design_setting_read
             font_weight: $data['font_weight'],
             line_height: $data['line_height'],
             link_color: $data['link_color'],
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -42,6 +46,8 @@ final class TextStyleDto_design_setting_read
             'font_weight' => $this->font_weight,
             'line_height' => $this->line_height,
             'link_color' => $this->link_color,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -54,6 +60,8 @@ final class TextStyleDto_design_setting_read
             font_weight: array_key_exists('font_weight', $fields) ? $fields['font_weight'] : $this->font_weight,
             line_height: array_key_exists('line_height', $fields) ? $fields['line_height'] : $this->line_height,
             link_color: array_key_exists('link_color', $fields) ? $fields['link_color'] : $this->link_color,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

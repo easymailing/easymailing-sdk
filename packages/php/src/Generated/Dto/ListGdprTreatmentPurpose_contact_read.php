@@ -10,7 +10,9 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListGdprTreatmentPurpose_contact_read
 {
     public function __construct(
+        public readonly ?string $iri = null,
         public readonly ?TreatmentPurpose_contact_read $treatment_purpose = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -18,7 +20,9 @@ final class ListGdprTreatmentPurpose_contact_read
     public static function fromArray(array $data): self
     {
         return new self(
+            iri: $data['iri'] ?? null,
             treatment_purpose: isset($data['treatment_purpose']) ? TreatmentPurpose_contact_read::fromArray($data['treatment_purpose']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -26,14 +30,18 @@ final class ListGdprTreatmentPurpose_contact_read
     public function toArray(): array
     {
         return [
+            'iri' => $this->iri,
             'treatment_purpose' => $this->treatment_purpose?->toArray(),
+            'uuid' => $this->uuid,
         ];
     }
 
     public function with(mixed ...$fields): self
     {
         return new self(
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             treatment_purpose: array_key_exists('treatment_purpose', $fields) ? $fields['treatment_purpose'] : $this->treatment_purpose,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

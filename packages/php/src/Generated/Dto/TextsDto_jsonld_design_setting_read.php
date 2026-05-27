@@ -11,11 +11,9 @@ final class TextsDto_jsonld_design_setting_read
 {
     public function __construct(
         public readonly ?TextElementDto_jsonld_design_setting_read $paragraph,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
+        public readonly ?string $iri = null,
         public readonly ?TextElementDto_jsonld_design_setting_read $list = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -24,10 +22,9 @@ final class TextsDto_jsonld_design_setting_read
     {
         return new self(
             paragraph: isset($data['paragraph']) ? TextElementDto_jsonld_design_setting_read::fromArray($data['paragraph']) : null,
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
+            iri: $data['iri'] ?? null,
             list: isset($data['list']) ? TextElementDto_jsonld_design_setting_read::fromArray($data['list']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -36,10 +33,9 @@ final class TextsDto_jsonld_design_setting_read
     {
         return [
             'paragraph' => $this->paragraph?->toArray(),
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
+            'iri' => $this->iri,
             'list' => $this->list?->toArray(),
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -47,10 +43,9 @@ final class TextsDto_jsonld_design_setting_read
     {
         return new self(
             paragraph: array_key_exists('paragraph', $fields) ? $fields['paragraph'] : $this->paragraph,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             list: array_key_exists('list', $fields) ? $fields['list'] : $this->list,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

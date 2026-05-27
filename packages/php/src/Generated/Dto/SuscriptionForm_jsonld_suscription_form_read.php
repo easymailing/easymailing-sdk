@@ -10,10 +10,6 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class SuscriptionForm_jsonld_suscription_form_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?bool $active = null,
         public readonly ?string $audience = null,
         public readonly ?PopupBehaviorDto_jsonld_suscription_form_read $behavior = null,
@@ -27,6 +23,7 @@ final class SuscriptionForm_jsonld_suscription_form_read
         public readonly ?array $groups = null,
         public readonly ?string $hash = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $paused = null,
         public readonly ?bool $sms_double_opt_in = null,
         public readonly ?SuscriptionFormStatsDto_jsonld_suscription_form_read $stats = null,
@@ -43,9 +40,6 @@ final class SuscriptionForm_jsonld_suscription_form_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             active: $data['active'] ?? null,
             audience: $data['audience'] ?? null,
             behavior: isset($data['behavior']) ? PopupBehaviorDto_jsonld_suscription_form_read::fromArray($data['behavior']) : null,
@@ -57,6 +51,7 @@ final class SuscriptionForm_jsonld_suscription_form_read
             groups: $data['groups'] ?? null,
             hash: $data['hash'] ?? null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             paused: $data['paused'] ?? null,
             sms_double_opt_in: $data['sms_double_opt_in'] ?? null,
             stats: isset($data['stats']) ? SuscriptionFormStatsDto_jsonld_suscription_form_read::fromArray($data['stats']) : null,
@@ -73,9 +68,6 @@ final class SuscriptionForm_jsonld_suscription_form_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'active' => $this->active,
             'audience' => $this->audience,
             'behavior' => $this->behavior?->toArray(),
@@ -87,6 +79,7 @@ final class SuscriptionForm_jsonld_suscription_form_read
             'groups' => $this->groups,
             'hash' => $this->hash,
             'id' => $this->id,
+            'iri' => $this->iri,
             'paused' => $this->paused,
             'sms_double_opt_in' => $this->sms_double_opt_in,
             'stats' => $this->stats?->toArray(),
@@ -102,9 +95,6 @@ final class SuscriptionForm_jsonld_suscription_form_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             active: array_key_exists('active', $fields) ? $fields['active'] : $this->active,
             audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
             behavior: array_key_exists('behavior', $fields) ? $fields['behavior'] : $this->behavior,
@@ -116,6 +106,7 @@ final class SuscriptionForm_jsonld_suscription_form_read
             groups: array_key_exists('groups', $fields) ? $fields['groups'] : $this->groups,
             hash: array_key_exists('hash', $fields) ? $fields['hash'] : $this->hash,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             paused: array_key_exists('paused', $fields) ? $fields['paused'] : $this->paused,
             sms_double_opt_in: array_key_exists('sms_double_opt_in', $fields) ? $fields['sms_double_opt_in'] : $this->sms_double_opt_in,
             stats: array_key_exists('stats', $fields) ? $fields['stats'] : $this->stats,

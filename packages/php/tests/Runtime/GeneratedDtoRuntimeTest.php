@@ -130,15 +130,20 @@ final class GeneratedDtoRuntimeTest extends TestCase
     }
 
     /**
-     * Regression for P0-1 from code review.
+     * Verify the JSON-LD Audience DTO exposes `iri` and `uuid` as first-class
+     * fields after the normalize step strips `@id`/`@type`/`@context` from
+     * the schema and injects identity properties.
      *
-     * Hydra `@context` is `oneOf: [{type:string}, {type:object,...}]`. The wire value is
-     * usually a plain string (e.g. "/api/contexts/Audience"). Before the fix, the generator
-     * emitted `array $_context` and `fromArray` exploded with TypeError on the string.
+     * The consumer-facing flow is:
+     *   raw wire JSON  →  EntityParser::parse (adds `iri`, `uuid`)
+     *                  →  Audience_jsonld_audience_read::fromArray
+     *
+     * `@id`/`@type`/`@context` are transport metadata and no longer
+     * accessible from the typed DTO — consumers use `iri` / `uuid`.
      */
-    public function testJsonLdAudienceHydratesWithStringContext(): void
+    public function testJsonLdAudienceExposesIriAndUuid(): void
     {
-        $audience = \Easymailing\Sdk\Generated\Dto\Audience_jsonld_audience_read::fromArray([
+        $parsed = \Easymailing\Sdk\Hydra\EntityParser::parse([
             '@context' => '/api/contexts/Audience',
             '@id' => '/api/audiences/abc',
             '@type' => 'Audience',
@@ -150,9 +155,13 @@ final class GeneratedDtoRuntimeTest extends TestCase
             'list_gdpr' => null,
         ]);
 
-        self::assertSame('/api/contexts/Audience', $audience->_context);
-        self::assertSame('/api/audiences/abc', $audience->_id);
-        self::assertSame('Audience', $audience->_type);
+        $audience = \Easymailing\Sdk\Generated\Dto\Audience_jsonld_audience_read::fromArray($parsed);
+
+        self::assertSame('/api/audiences/abc', $audience->iri);
+        self::assertSame('abc', $audience->uuid);
+        // Transport metadata no longer reaches the DTO: the EntityParser
+        // dropped @id/@type/@context, and the DTO has no _id/_context/_type
+        // properties either (verified statically by PHPStan).
     }
 
     /**

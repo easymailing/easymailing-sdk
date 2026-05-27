@@ -5658,6 +5658,10 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             group?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AddToGroupAction-automation_step.write": {
             /**
@@ -5668,21 +5672,16 @@ export interface components {
             group?: string;
         };
         "AddToGroupAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The group to add the contact to
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             group?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AddToGroupAction.jsonld-automation_step.write": {
             /**
@@ -5707,6 +5706,8 @@ export interface components {
              * @description When the task finished (completed or failed)
              */
             finished_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Number of items processed */
             processed?: number;
             /**
@@ -5758,15 +5759,6 @@ export interface components {
             uuid?: string;
         };
         "AsyncTask.jsonld-async_task.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: datetime
              * @description When the task was created
@@ -5781,6 +5773,8 @@ export interface components {
              * @description When the task finished (completed or failed)
              */
             finished_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Number of items processed */
             processed?: number;
             /**
@@ -5882,6 +5876,8 @@ export interface components {
             description: string;
             groups?: components["schemas"]["Group-audience.read"][];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_fields?: components["schemas"]["ListField-audience.read"][];
             list_gdpr: components["schemas"]["ListGdpr-audience.read"] | null;
             list_segments?: components["schemas"]["ListSegment-audience.read"][];
@@ -5939,15 +5935,6 @@ export interface components {
             title: string;
         };
         "Audience.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Active subscribers */
             active_suscribers?: number;
             audience_resources?: components["schemas"]["AudienceResourcesDto.jsonld-audience.read"] | null;
@@ -5970,6 +5957,8 @@ export interface components {
             description: string;
             groups?: components["schemas"]["Group.jsonld-audience.read"][];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_fields?: components["schemas"]["ListField.jsonld-audience.read"][];
             list_gdpr: components["schemas"]["ListGdpr.jsonld-audience.read"] | null;
             list_segments?: components["schemas"]["ListSegment.jsonld-audience.read"][];
@@ -6031,10 +6020,14 @@ export interface components {
             city?: string | null;
             company_name?: string | null;
             country?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             logo_url?: string | null;
             phone?: string | null;
             postal_code?: string | null;
             state?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** Format: uri */
             website_url?: string | null;
         };
@@ -6050,23 +6043,18 @@ export interface components {
             website_url?: string | null;
         };
         "AudienceCompanyDto.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             address?: string | null;
             city?: string | null;
             company_name?: string | null;
             country?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             logo_url?: string | null;
             phone?: string | null;
             postal_code?: string | null;
             state?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** Format: uri */
             website_url?: string | null;
         };
@@ -6082,6 +6070,8 @@ export interface components {
             website_url?: string | null;
         };
         "AudienceNotificationsDto-audience.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             opt_in?: string | null;
             /** Format: email */
             opt_in_notify_email?: string | null;
@@ -6096,6 +6086,8 @@ export interface components {
             sms_sender?: string;
             unsubscribe_hard_bounces?: boolean | null;
             unsubscribe_soft_bounces?: boolean | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             welcome_email?: boolean | null;
         };
         "AudienceNotificationsDto-audience.write": {
@@ -6116,15 +6108,8 @@ export interface components {
             welcome_email?: boolean | null;
         };
         "AudienceNotificationsDto.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             opt_in?: string | null;
             /** Format: email */
             opt_in_notify_email?: string | null;
@@ -6139,6 +6124,8 @@ export interface components {
             sms_sender?: string;
             unsubscribe_hard_bounces?: boolean | null;
             unsubscribe_soft_bounces?: boolean | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             welcome_email?: boolean | null;
         };
         "AudienceNotificationsDto.jsonld-audience.write": {
@@ -6161,7 +6148,11 @@ export interface components {
         "AudiencePreferencesDto-audience.read": {
             from_email: components["schemas"]["Sender-audience.read"] | null;
             from_name: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             reply_to: components["schemas"]["Sender-audience.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AudiencePreferencesDto-audience.write": {
             /**
@@ -6177,18 +6168,13 @@ export interface components {
             reply_to: string | null;
         };
         "AudiencePreferencesDto.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             from_email: components["schemas"]["Sender.jsonld-audience.read"] | null;
             from_name: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             reply_to: components["schemas"]["Sender.jsonld-audience.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AudiencePreferencesDto.jsonld-audience.write": {
             /**
@@ -6206,79 +6192,76 @@ export interface components {
         "AudienceResourcesDto-audience.read": {
             automations?: number;
             campaigns?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             landing_pages?: number;
             subscription_forms?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AudienceResourcesDto.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             automations?: number;
             campaigns?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             landing_pages?: number;
             subscription_forms?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AudienceStatsDto-audience.read": {
             active?: number;
             canceled?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             score?: number | null;
             sms_score?: number | null;
             total?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AudienceStatsDto.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             active?: number;
             canceled?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             score?: number | null;
             sms_score?: number | null;
             total?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AuthenticatedUser-my_suscription.read": {
             /** @description Email of the user */
             email?: string;
             /** @description Firstname of the user */
             firstname?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Lastname of the user */
             lastname?: string;
             /** @description Role of the user */
             role?: string;
             /** @description Timezone of the user */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AuthenticatedUser.jsonld-my_suscription.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Email of the user */
             email?: string;
             /** @description Firstname of the user */
             firstname?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Lastname of the user */
             lastname?: string;
             /** @description Role of the user */
             role?: string;
             /** @description Timezone of the user */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Automation-automation.read": {
             /**
@@ -6305,6 +6288,8 @@ export interface components {
              */
             first_step?: string | null;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Steps not connected to the workflow (orphans). Can be reassigned using move_position. */
             orphan_steps?: string[];
             stats?: components["schemas"]["AutomationMetric-automation.read"] | null;
@@ -6346,6 +6331,8 @@ export interface components {
             /** @description First step of the automation workflow. */
             first_step?: components["schemas"]["AutomationStep-automation.read_automation.read.detail"] | null;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Steps not connected to the workflow (orphans). Can be reassigned using move_position. */
             orphan_steps?: components["schemas"]["AutomationStep-automation.read_automation.read.detail"][];
             stats?: components["schemas"]["AutomationMetric-automation.read_automation.read.detail"] | null;
@@ -6385,15 +6372,6 @@ export interface components {
             title: string;
         };
         "Automation.jsonld-automation.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -6418,6 +6396,8 @@ export interface components {
              */
             first_step?: string | null;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Steps not connected to the workflow (orphans). Can be reassigned using move_position. */
             orphan_steps?: string[];
             stats?: components["schemas"]["AutomationMetric.jsonld-automation.read"] | null;
@@ -6439,15 +6419,6 @@ export interface components {
             uuid?: string;
         };
         "Automation.jsonld-automation.read_automation.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -6468,6 +6439,8 @@ export interface components {
             /** @description First step of the automation workflow. */
             first_step?: components["schemas"]["AutomationStep.jsonld-automation.read_automation.read.detail"] | null;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Steps not connected to the workflow (orphans). Can be reassigned using move_position. */
             orphan_steps?: components["schemas"]["AutomationStep.jsonld-automation.read_automation.read.detail"][];
             stats?: components["schemas"]["AutomationMetric.jsonld-automation.read_automation.read.detail"] | null;
@@ -6513,11 +6486,15 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/condition_fields/39
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The comparison operator. Available operators depend on the field type. Get available operators from the condition field's operators property via GET /audiences/{uuid}/condition_fields
              * @example equals
              */
             operator?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description The value to compare against. Type is determined by the field type. */
             value?: unknown;
         };
@@ -6537,26 +6514,21 @@ export interface components {
             value?: unknown;
         };
         "AutomationConditionItem.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The condition field to evaluate. Get available fields from GET /audiences/{uuid}/condition_fields
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/condition_fields/39
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The comparison operator. Available operators depend on the field type. Get available operators from the condition field's operators property via GET /audiences/{uuid}/condition_fields
              * @example equals
              */
             operator?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description The value to compare against. Type is determined by the field type. */
             value?: unknown;
         };
@@ -6590,6 +6562,10 @@ export interface components {
             completed?: number;
             /** @description Number of subscribers in progress */
             in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationMetric-automation.read_automation.read.detail": {
             /** @description Number of subscribers canceled the automation */
@@ -6598,57 +6574,46 @@ export interface components {
             completed?: number;
             /** @description Number of subscribers in progress */
             in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationMetric.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Number of subscribers canceled the automation */
             canceled?: number;
             /** @description Number of subscribers completed the automation */
             completed?: number;
             /** @description Number of subscribers in progress */
             in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationMetric.jsonld-automation.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Number of subscribers canceled the automation */
             canceled?: number;
             /** @description Number of subscribers completed the automation */
             completed?: number;
             /** @description Number of subscribers in progress */
             in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationMetric.jsonld-automation.read_automation.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Number of subscribers canceled the automation */
             canceled?: number;
             /** @description Number of subscribers completed the automation */
             completed?: number;
             /** @description Number of subscribers in progress */
             in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationQueue-automation_queue.read": {
             /**
@@ -6658,6 +6623,8 @@ export interface components {
              */
             automation?: string | null;
             automation_trigger?: components["schemas"]["AutomationTrigger-automation_queue.read"] | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             member?: components["schemas"]["Member-automation_queue.read"] | null;
             status?: components["schemas"]["AutomationQueueStatus"];
             /**
@@ -6695,15 +6662,6 @@ export interface components {
             email: string;
         };
         "AutomationQueue.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description Automation
@@ -6711,6 +6669,8 @@ export interface components {
              */
             automation?: string | null;
             automation_trigger?: components["schemas"]["AutomationTrigger.jsonld-automation_queue.read"] | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             member?: components["schemas"]["Member.jsonld-automation_queue.read"] | null;
             status?: components["schemas"]["AutomationQueueStatus"];
             /**
@@ -6748,6 +6708,8 @@ export interface components {
             children?: unknown;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -6773,6 +6735,8 @@ export interface components {
             children?: unknown;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -6852,6 +6816,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -6866,15 +6832,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepAddToGroupResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["AddToGroupAction.jsonld-automation_step.read"] | null;
             /**
@@ -6886,6 +6843,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -6965,6 +6924,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenCondition-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -6979,15 +6940,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepConditionResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["ConditionAction.jsonld-automation_step.read"] | null;
             /**
@@ -6999,6 +6951,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenCondition.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7078,6 +7032,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7092,15 +7048,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepDelayResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["DelayAction.jsonld-automation_step.read"] | null;
             /**
@@ -7112,6 +7059,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7191,6 +7140,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             target_step_label?: string | null;
             /**
@@ -7206,15 +7157,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepMoveToStepResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["MoveToStepAction.jsonld-automation_step.read"] | null;
             /**
@@ -7226,6 +7168,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             target_step_label?: string | null;
             /**
@@ -7362,6 +7306,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7376,15 +7322,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepRemoveFromGroupResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["RemoveFromGroupAction.jsonld-automation_step.read"] | null;
             /**
@@ -7396,6 +7333,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7475,6 +7414,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7489,15 +7430,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepSendCampaignResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["SendCampaignAction.jsonld-automation_step.read"] | null;
             /**
@@ -7509,6 +7441,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7588,6 +7522,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7602,15 +7538,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepSendNotificationResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["SendNotificationAction.jsonld-automation_step.read"] | null;
             /**
@@ -7622,6 +7549,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7647,6 +7576,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7661,15 +7592,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepSendSmsResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["SendSmsAction.jsonld-automation_step.read"] | null;
             /**
@@ -7681,6 +7603,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7760,6 +7684,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7774,15 +7700,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepSendWebhookResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["SendWebhookAction.jsonld-automation_step.read"] | null;
             /**
@@ -7794,6 +7711,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7873,6 +7792,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7887,15 +7808,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepTriggerAutomationResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["TriggerAutomationAction.jsonld-automation_step.read"] | null;
             /**
@@ -7907,6 +7819,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -7986,6 +7900,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8000,15 +7916,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepUnsubscribeResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["UnsubscribeAction.jsonld-automation_step.read"] | null;
             /**
@@ -8020,6 +7927,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8099,6 +8008,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8113,15 +8024,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepUpdateCustomFieldResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["UpdateCustomFieldAction.jsonld-automation_step.read"] | null;
             /**
@@ -8133,6 +8035,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8212,6 +8116,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8226,15 +8132,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.AutomationStepUpdateScoreResource.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Action configuration. Structure varies by step_type. */
             action?: components["schemas"]["UpdateScoreAction.jsonld-automation_step.read"] | null;
             /**
@@ -8246,6 +8143,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8260,15 +8159,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.jsonld-automation.read_automation.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Action configuration. Structure depends on step_type:
              *
@@ -8296,6 +8186,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenCondition.jsonld-automation_step.read"] | components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8310,15 +8202,6 @@ export interface components {
          *     automation step types. Uses DiscriminatorMap for polymorphic serialization.
          */
         "AutomationStep.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Action configuration. Structure depends on step_type:
              *
@@ -8351,6 +8234,8 @@ export interface components {
             children?: components["schemas"]["AutomationStepChildrenCondition.jsonld-automation_step.read"] | components["schemas"]["AutomationStepChildrenNormal.jsonld-automation_step.read"] | null;
             count_automation_queue_items_completed?: number;
             count_automation_queue_items_in_queue?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             step_type?: string | null;
             /**
              * Format: uuid
@@ -8370,23 +8255,22 @@ export interface components {
             } | null;
         };
         "AutomationStepChildrenCondition-automation_step.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Step for contacts that do not match the condition (no branch). */
             no?: components["schemas"]["AutomationStep-automation_step.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Step for contacts that match the condition (yes branch). */
             yes?: components["schemas"]["AutomationStep-automation_step.read"] | null;
         };
         "AutomationStepChildrenCondition.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Step for contacts that do not match the condition (no branch). */
             no?: components["schemas"]["AutomationStep.jsonld-automation_step.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Step for contacts that match the condition (yes branch). */
             yes?: components["schemas"]["AutomationStep.jsonld-automation_step.read"] | null;
         };
@@ -8398,21 +8282,20 @@ export interface components {
             } | null;
         };
         "AutomationStepChildrenNormal-automation_step.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Next step in the workflow. */
             next?: components["schemas"]["AutomationStep-automation_step.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationStepChildrenNormal.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Next step in the workflow. */
             next?: components["schemas"]["AutomationStep.jsonld-automation_step.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AutomationTrigger-automation.read": {
             /**
@@ -8424,8 +8307,12 @@ export interface components {
             count_canceled_automation_queues?: number;
             count_completed_automation_queues?: number;
             count_queued_automation_queues?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Contact can repeat workflow? */
             workflow_repeat?: boolean;
         };
@@ -8439,8 +8326,12 @@ export interface components {
             count_canceled_automation_queues?: number;
             count_completed_automation_queues?: number;
             count_queued_automation_queues?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Contact can repeat workflow? */
             workflow_repeat?: boolean;
         };
@@ -8450,8 +8341,12 @@ export interface components {
              * @example true
              */
             active: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Contact can repeat workflow? */
             workflow_repeat?: boolean;
         };
@@ -8471,6 +8366,8 @@ export interface components {
             count_canceled_automation_queues?: number;
             count_completed_automation_queues?: number;
             count_queued_automation_queues?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
             /**
@@ -8988,15 +8885,6 @@ export interface components {
             workflow_repeat?: boolean;
         };
         "AutomationTrigger.jsonld-automation.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @default true
              * @example true
@@ -9006,21 +8894,16 @@ export interface components {
             count_canceled_automation_queues?: number;
             count_completed_automation_queues?: number;
             count_queued_automation_queues?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Contact can repeat workflow? */
             workflow_repeat?: boolean;
         };
         "AutomationTrigger.jsonld-automation.read_automation.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @default true
              * @example true
@@ -9030,41 +8913,31 @@ export interface components {
             count_canceled_automation_queues?: number;
             count_completed_automation_queues?: number;
             count_queued_automation_queues?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Contact can repeat workflow? */
             workflow_repeat?: boolean;
         };
         "AutomationTrigger.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @default true
              * @example true
              */
             active: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Contact can repeat workflow? */
             workflow_repeat?: boolean;
         };
         "AutomationTrigger.jsonld-automation_trigger.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @default true
              * @example true
@@ -9080,6 +8953,8 @@ export interface components {
             count_canceled_automation_queues?: number;
             count_completed_automation_queues?: number;
             count_queued_automation_queues?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             trigger?: unknown;
             trigger_type?: components["schemas"]["TriggerType"];
             /**
@@ -9101,6 +8976,8 @@ export interface components {
              */
             finished_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description Url to download all the operations responses. Download is only available for 15 minutes after the batch is finished. To regenerate the response body url, use `/batch_operations/{uuid}/actions/regenerate_response_body_url`
@@ -9123,15 +9000,6 @@ export interface components {
             operations?: components["schemas"]["Operation-batch_operation.write"][];
         };
         "BatchOperation.jsonld-batch_operation.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Number of operations errored */
             errored?: number;
             /** @description Number of operations finished */
@@ -9142,6 +9010,8 @@ export interface components {
              */
             finished_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description Url to download all the operations responses. Download is only available for 15 minutes after the batch is finished. To regenerate the response body url, use `/batch_operations/{uuid}/actions/regenerate_response_body_url`
@@ -9210,23 +9080,18 @@ export interface components {
                     status?: number;
                 };
             };
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Number of successful operations */
             success_count?: number;
             /** @description Number of failed operations */
             total_errors?: number;
             /** @description Total number of operations in the batch */
             total_operations?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "BatchOperationResource.BatchOperationErrorsResource.jsonld-batch_operation_errors.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description List of failed operations with error details */
             errors?: {
                 errorType?: string | null;
@@ -9243,23 +9108,18 @@ export interface components {
                     status?: number;
                 };
             };
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Number of successful operations */
             success_count?: number;
             /** @description Number of failed operations */
             total_errors?: number;
             /** @description Total number of operations in the batch */
             total_operations?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "BatchOperationResource.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Number of operations errored */
             errored?: number;
             /** @description Number of operations finished */
@@ -9270,6 +9130,8 @@ export interface components {
              */
             finished_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             operations?: string[];
             /**
              * Format: uri
@@ -9301,7 +9163,11 @@ export interface components {
             styles: components["schemas"]["ButtonStylesDto-design_setting.create"] | null;
         };
         "ButtonDto-design_setting.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             styles: components["schemas"]["ButtonStylesDto-design_setting.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ButtonDto-design_setting.write": {
             styles: components["schemas"]["ButtonStylesDto-design_setting.write"] | null;
@@ -9310,16 +9176,11 @@ export interface components {
             styles: components["schemas"]["ButtonStylesDto.jsonld-design_setting.create"] | null;
         };
         "ButtonDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             styles: components["schemas"]["ButtonStylesDto.jsonld-design_setting.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ButtonDto.jsonld-design_setting.write": {
             styles: components["schemas"]["ButtonStylesDto.jsonld-design_setting.write"] | null;
@@ -9392,11 +9253,15 @@ export interface components {
              * @example 600
              */
             font_weight: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Padding
              * @example 12px 24px
              */
             padding?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ButtonStylesDto-design_setting.write": {
             /**
@@ -9473,15 +9338,6 @@ export interface components {
             padding?: string;
         };
         "ButtonStylesDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Background color (hex)
              * @example #3B82F6
@@ -9512,11 +9368,15 @@ export interface components {
              * @example 600
              */
             font_weight: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Padding
              * @example 12px 24px
              */
             padding?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ButtonStylesDto.jsonld-design_setting.write": {
             /**
@@ -9590,6 +9450,8 @@ export interface components {
              */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -9669,6 +9531,8 @@ export interface components {
              */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -10324,15 +10188,6 @@ export interface components {
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "Campaign.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -10366,6 +10221,8 @@ export interface components {
              */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -10412,15 +10269,6 @@ export interface components {
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "Campaign.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -10454,6 +10302,8 @@ export interface components {
              */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -10579,6 +10429,8 @@ export interface components {
         "CampaignConfig-campaign.read": {
             /** @description Google analytics tag */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Publish the campaign in archive page */
             public?: boolean;
             /**
@@ -10599,11 +10451,15 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations in campaign */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfig-campaign.read_campaign.read.detail": {
             /** @description Google analytics tag */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Publish the campaign in archive page */
             public?: boolean;
             /**
@@ -10624,6 +10480,8 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations in campaign */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "CampaignConfig-campaign.write": {
             /** @description Google analytics tag */
@@ -10722,17 +10580,10 @@ export interface components {
             use_conversations?: boolean;
         };
         "CampaignConfig.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Google analytics tag */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Publish the campaign in archive page */
             public?: boolean;
             /**
@@ -10753,20 +10604,15 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations in campaign */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfig.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Google analytics tag */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Publish the campaign in archive page */
             public?: boolean;
             /**
@@ -10787,20 +10633,15 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations in campaign */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfig.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Google analytics tag */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Publish the campaign in archive page */
             public?: boolean;
             /**
@@ -10821,6 +10662,8 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations in campaign */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "CampaignConfig.jsonld-campaign.write": {
             /** @description Google analytics tag */
@@ -10933,6 +10776,8 @@ export interface components {
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfigSend-campaign.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Emails to send the confirmation email */
             mailing_confirm_emails?: string[];
             /** @description Schedule the campaign? */
@@ -10944,9 +10789,13 @@ export interface components {
             schedule_mailing_date?: string;
             /** @description Send a confirmation email when the campaign get sent */
             send_confirmation_email?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfigSend-campaign.read_campaign.read.detail": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Emails to send the confirmation email */
             mailing_confirm_emails?: string[];
             /** @description Schedule the campaign? */
@@ -10958,17 +10807,12 @@ export interface components {
             schedule_mailing_date?: string;
             /** @description Send a confirmation email when the campaign get sent */
             send_confirmation_email?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "CampaignConfigSend.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Emails to send the confirmation email */
             mailing_confirm_emails?: string[];
             /** @description Schedule the campaign? */
@@ -10980,18 +10824,13 @@ export interface components {
             schedule_mailing_date?: string;
             /** @description Send a confirmation email when the campaign get sent */
             send_confirmation_email?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfigSend.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Emails to send the confirmation email */
             mailing_confirm_emails?: string[];
             /** @description Schedule the campaign? */
@@ -11003,18 +10842,13 @@ export interface components {
             schedule_mailing_date?: string;
             /** @description Send a confirmation email when the campaign get sent */
             send_confirmation_email?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignConfigSend.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Emails to send the confirmation email */
             mailing_confirm_emails?: string[];
             /** @description Schedule the campaign? */
@@ -11026,6 +10860,8 @@ export interface components {
             schedule_mailing_date?: string;
             /** @description Send a confirmation email when the campaign get sent */
             send_confirmation_email?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /**
          * @description Campaign deferredBatchCount:
@@ -11150,6 +10986,8 @@ export interface components {
             delivered_rate?: number;
             /** @description Hard bounces */
             hard_bounces?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Open rate */
             open_rate?: number;
             /** @description Total opens */
@@ -11176,6 +11014,8 @@ export interface components {
             unsubscriptions?: number;
             /** @description Unsubscribe rate */
             unsuscribe_rate?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignStat-campaign.read_campaign.read.detail": {
@@ -11199,6 +11039,8 @@ export interface components {
             delivered_rate?: number;
             /** @description Hard bounces */
             hard_bounces?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Open rate */
             open_rate?: number;
             /** @description Total opens */
@@ -11225,17 +11067,10 @@ export interface components {
             unsubscriptions?: number;
             /** @description Unsubscribe rate */
             unsuscribe_rate?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "CampaignStat.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Bounce rate */
             bounce_rate?: number;
             /** @description Cleaned (auto unsubscriptions) */
@@ -11256,6 +11091,8 @@ export interface components {
             delivered_rate?: number;
             /** @description Hard bounces */
             hard_bounces?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Open rate */
             open_rate?: number;
             /** @description Total opens */
@@ -11282,18 +11119,11 @@ export interface components {
             unsubscriptions?: number;
             /** @description Unsubscribe rate */
             unsuscribe_rate?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignStat.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Bounce rate */
             bounce_rate?: number;
             /** @description Cleaned (auto unsubscriptions) */
@@ -11314,6 +11144,8 @@ export interface components {
             delivered_rate?: number;
             /** @description Hard bounces */
             hard_bounces?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Open rate */
             open_rate?: number;
             /** @description Total opens */
@@ -11340,18 +11172,11 @@ export interface components {
             unsubscriptions?: number;
             /** @description Unsubscribe rate */
             unsuscribe_rate?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignStat.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Bounce rate */
             bounce_rate?: number;
             /** @description Cleaned (auto unsubscriptions) */
@@ -11372,6 +11197,8 @@ export interface components {
             delivered_rate?: number;
             /** @description Hard bounces */
             hard_bounces?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Open rate */
             open_rate?: number;
             /** @description Total opens */
@@ -11398,6 +11225,8 @@ export interface components {
             unsubscriptions?: number;
             /** @description Unsubscribe rate */
             unsuscribe_rate?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /**
          * @description Campaign status:
@@ -11414,50 +11243,48 @@ export interface components {
         "CampaignTestConfigResource-campaign.read": {
             delay_unit?: string | null;
             delay_value?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             test_size?: number | null;
             type?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             winner_metric?: string | null;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignTestConfigResource-campaign.read_campaign.read.detail": {
             delay_unit?: string | null;
             delay_value?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             test_size?: number | null;
             type?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             winner_metric?: string | null;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignTestConfigResource.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             delay_unit?: string | null;
             delay_value?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             test_size?: number | null;
             type?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             winner_metric?: string | null;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignTestConfigResource.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             delay_unit?: string | null;
             delay_value?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             test_size?: number | null;
             type?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             winner_metric?: string | null;
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
@@ -11471,6 +11298,8 @@ export interface components {
              */
             from_email?: string | null;
             from_name?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number | null;
             opens?: number | null;
             preview_text?: string | null;
@@ -11497,6 +11326,8 @@ export interface components {
              */
             from_email?: string | null;
             from_name?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number | null;
             opens?: number | null;
             preview_text?: string | null;
@@ -11515,15 +11346,6 @@ export interface components {
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignTestVariantResource.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             click_rate?: number | null;
             clicks?: number | null;
             delivered?: number | null;
@@ -11533,6 +11355,8 @@ export interface components {
              */
             from_email?: string | null;
             from_name?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number | null;
             opens?: number | null;
             preview_text?: string | null;
@@ -11550,15 +11374,6 @@ export interface components {
         };
         /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
         "CampaignTestVariantResource.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             click_rate?: number | null;
             clicks?: number | null;
             delivered?: number | null;
@@ -11568,6 +11383,8 @@ export interface components {
              */
             from_email?: string | null;
             from_name?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number | null;
             opens?: number | null;
             preview_text?: string | null;
@@ -11622,6 +11439,8 @@ export interface components {
              * @description Image url
              */
             image_url?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description A unique identifier for the category
              * @example id
@@ -11637,6 +11456,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Category-category.update": {
             /**
@@ -11669,15 +11490,6 @@ export interface components {
             title: string;
         };
         "Category.jsonld-category.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
@@ -11688,6 +11500,8 @@ export interface components {
              * @description Image url
              */
             image_url?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description A unique identifier for the category
              * @example id
@@ -11703,6 +11517,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Category.jsonld-category.update": {
             /**
@@ -11719,12 +11535,16 @@ export interface components {
         "ConditionAction-automation_step.read": {
             /** @description The conditions to evaluate. */
             conditions?: components["schemas"]["AutomationConditionItem-automation_step.read"][];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description How conditions are matched: "all" (AND) or "any" (OR).
              * @default all
              * @example all
              */
             match: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ConditionAction-automation_step.write": {
             /** @description The conditions to evaluate. */
@@ -11737,23 +11557,18 @@ export interface components {
             match: string;
         };
         "ConditionAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description The conditions to evaluate. */
             conditions?: components["schemas"]["AutomationConditionItem.jsonld-automation_step.read"][];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description How conditions are matched: "all" (AND) or "any" (OR).
              * @default all
              * @example all
              */
             match: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ConditionAction.jsonld-automation_step.write": {
             /** @description The conditions to evaluate. */
@@ -11770,6 +11585,8 @@ export interface components {
             category?: string | null;
             /** @description Type of input expected: text, select, date, datetime, integer, decimal. */
             input_type?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Whether multiple values can be selected (for select type fields). */
             multiple?: boolean;
             /** @description Human-readable name of the field. */
@@ -11783,19 +11600,12 @@ export interface components {
             uuid?: string | null;
         };
         "ConditionField.jsonld-condition_field.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Category of the field (subscriber, custom_field, campaign_activity, group, ecommerce, location, consent). */
             category?: string | null;
             /** @description Type of input expected: text, select, date, datetime, integer, decimal. */
             input_type?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Whether multiple values can be selected (for select type fields). */
             multiple?: boolean;
             /** @description Human-readable name of the field. */
@@ -11825,6 +11635,8 @@ export interface components {
              * @description Contact email
              */
             email?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Contact locale (ISO 3166-1 alpha-2)
              * @example es_ES
@@ -11932,15 +11744,6 @@ export interface components {
         };
         /** @deprecated */
         "Contact.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: ipv4
              * @description Contact ip address the contact signup from
@@ -11956,6 +11759,8 @@ export interface components {
              * @description Contact email
              */
             email?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Contact locale (ISO 3166-1 alpha-2)
              * @example es_ES
@@ -11992,11 +11797,15 @@ export interface components {
             value?: string;
         };
         "CustomField-automation_queue.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
              */
             list_field: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12004,7 +11813,11 @@ export interface components {
             value?: string;
         };
         "CustomField-contact.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field: components["schemas"]["ListField-contact.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12048,7 +11861,11 @@ export interface components {
             value?: string;
         };
         "CustomField-member.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field: components["schemas"]["ListField-member.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12068,20 +11885,15 @@ export interface components {
             value?: string;
         };
         "CustomField.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
              */
             list_field: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12089,20 +11901,15 @@ export interface components {
             value?: string;
         };
         "CustomField.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
              */
             list_field: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12110,16 +11917,11 @@ export interface components {
             value?: string;
         };
         "CustomField.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field: components["schemas"]["ListField.jsonld-contact.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12163,16 +11965,11 @@ export interface components {
             value?: string;
         };
         "CustomField.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field: components["schemas"]["ListField.jsonld-member.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description Value
              * @example Peter
@@ -12287,6 +12084,8 @@ export interface components {
              *     }
              */
             font_weight: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Font name
              * @example Brand Font
@@ -12298,6 +12097,8 @@ export interface components {
              * @example https://fonts.googleapis.com/css2?family=BrandFont:wght@400;700&display=swap
              */
             url: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "CustomFontDto-design_setting.write": {
             /**
@@ -12364,15 +12165,6 @@ export interface components {
             url: string;
         };
         "CustomFontDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Whether the font is active
              * @default true
@@ -12392,6 +12184,8 @@ export interface components {
              *     }
              */
             font_weight: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Font name
              * @example Brand Font
@@ -12403,6 +12197,8 @@ export interface components {
              * @example https://fonts.googleapis.com/css2?family=BrandFont:wght@400;700&display=swap
              */
             url: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "CustomFontDto.jsonld-design_setting.write": {
             /**
@@ -12471,6 +12267,8 @@ export interface components {
             email: string;
             /** @description Customer firstname */
             firstname?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Customer lastname */
             lastname?: string;
             /**
@@ -12488,6 +12286,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Customer-customer.update": {
             /** @description Customer company */
@@ -12525,15 +12325,6 @@ export interface components {
             resource_id: string;
         };
         "Customer.jsonld-customer.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Customer company */
             company?: string;
             /**
@@ -12548,6 +12339,8 @@ export interface components {
             email: string;
             /** @description Customer firstname */
             firstname?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Customer lastname */
             lastname?: string;
             /**
@@ -12565,6 +12358,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Customer.jsonld-customer.update": {
             /** @description Customer company */
@@ -12587,8 +12382,12 @@ export interface components {
              * @description Email address
              */
             email: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Firstname and lastname or Company name */
             name: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "DataManager-data_manager.read": {
             /**
@@ -12596,6 +12395,8 @@ export interface components {
              * @description Email address
              */
             email: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Firstname and lastname or Company name */
             name: string;
             /**
@@ -12614,38 +12415,26 @@ export interface components {
             name: string;
         };
         "DataManager.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: email
              * @description Email address
              */
             email: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Firstname and lastname or Company name */
             name: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "DataManager.jsonld-data_manager.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: email
              * @description Email address
              */
             email: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Firstname and lastname or Company name */
             name: string;
             /**
@@ -12683,6 +12472,8 @@ export interface components {
              *     }
              */
             font_weight?: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Font name
              * @example Roboto
@@ -12694,17 +12485,10 @@ export interface components {
              * @example https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "DefaultFontDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Whether the font is active
              * @default true
@@ -12724,6 +12508,8 @@ export interface components {
              *     }
              */
             font_weight?: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Font name
              * @example Roboto
@@ -12735,6 +12521,8 @@ export interface components {
              * @example https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "DelayAction-automation_step.read": {
             /** Format: date-time */
@@ -12756,8 +12544,12 @@ export interface components {
              */
             delay_unit?: "minute" | "hour" | "day" | "week" | "specific_time" | "specific_day_week" | "specific_day_month" | "specific_day_year";
             delay_value?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             time_hour?: number | null;
             time_minute?: number | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "DelayAction-automation_step.write": {
             /** Format: date-time */
@@ -12783,15 +12575,6 @@ export interface components {
             time_minute?: number | null;
         };
         "DelayAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** Format: date-time */
             date_year?: string | null;
             day_month?: number | null;
@@ -12811,8 +12594,12 @@ export interface components {
              */
             delay_unit?: "minute" | "hour" | "day" | "week" | "specific_time" | "specific_day_week" | "specific_day_month" | "specific_day_year";
             delay_value?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             time_hour?: number | null;
             time_minute?: number | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "DelayAction.jsonld-automation_step.write": {
             /** Format: date-time */
@@ -12895,6 +12682,8 @@ export interface components {
              */
             email_width?: number;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description Dark theme logo URL
@@ -13020,15 +12809,6 @@ export interface components {
             titles?: components["schemas"]["TitlesDto.jsonld-design_setting.create"] | null;
         };
         "DesignSetting.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             button?: components["schemas"]["ButtonDto.jsonld-design_setting.read"] | null;
             /** @description Color palette with brand colors */
             color_palette?: {
@@ -13054,6 +12834,8 @@ export interface components {
              */
             email_width?: number;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description Dark theme logo URL
@@ -13167,6 +12949,8 @@ export interface components {
              * @example My company
              */
             from_name?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Preview text
              * @example 25% discount this month!
@@ -13185,6 +12969,8 @@ export interface components {
             subject?: string;
             /** @description Custom field TAG where you store the suscriber name */
             to_name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "EmailConfig-campaign.read_campaign.read.detail": {
             /** @description Set the recipient name? */
@@ -13200,6 +12986,8 @@ export interface components {
              * @example My company
              */
             from_name?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Preview text
              * @example 25% discount this month!
@@ -13218,6 +13006,8 @@ export interface components {
             subject?: string;
             /** @description Custom field TAG where you store the suscriber name */
             to_name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "EmailConfig-campaign.write": {
             /** @description Set the recipient name? */
@@ -13331,15 +13121,6 @@ export interface components {
             to_name?: string;
         };
         "EmailConfig.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Set the recipient name? */
             enable_to_name?: boolean;
             /**
@@ -13353,6 +13134,8 @@ export interface components {
              * @example My company
              */
             from_name?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Preview text
              * @example 25% discount this month!
@@ -13371,17 +13154,10 @@ export interface components {
             subject?: string;
             /** @description Custom field TAG where you store the suscriber name */
             to_name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "EmailConfig.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Set the recipient name? */
             enable_to_name?: boolean;
             /**
@@ -13395,6 +13171,8 @@ export interface components {
              * @example My company
              */
             from_name?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Preview text
              * @example 25% discount this month!
@@ -13413,17 +13191,10 @@ export interface components {
             subject?: string;
             /** @description Custom field TAG where you store the suscriber name */
             to_name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "EmailConfig.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Set the recipient name? */
             enable_to_name?: boolean;
             /**
@@ -13437,6 +13208,8 @@ export interface components {
              * @example My company
              */
             from_name?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Preview text
              * @example 25% discount this month!
@@ -13455,6 +13228,8 @@ export interface components {
             subject?: string;
             /** @description Custom field TAG where you store the suscriber name */
             to_name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "EmailConfig.jsonld-campaign.write": {
             /** @description Set the recipient name? */
@@ -13578,6 +13353,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /** @description Number of subscribers in the group. May be null if not yet calculated. */
@@ -13587,6 +13364,8 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group-automation_queue.read": {
             /**
@@ -13599,6 +13378,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /**
@@ -13606,6 +13387,8 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group-contact.read": {
             /**
@@ -13618,6 +13401,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /** @description Number of subscribers in the group. May be null if not yet calculated. */
@@ -13627,6 +13412,8 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group-contact.write": Record<string, never>;
         "Group-group.read": {
@@ -13652,6 +13439,8 @@ export interface components {
              */
             description?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /** @description Number of subscribers in the group. May be null if not yet calculated. */
@@ -13728,6 +13517,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /**
@@ -13735,6 +13526,8 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group-suscription_form.write": Record<string, never>;
         "Group.AsyncTaskResource": {
@@ -13803,15 +13596,6 @@ export interface components {
             uuid?: string;
         };
         "Group.AsyncTaskResource.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: datetime
              * @description When the task was created
@@ -13826,6 +13610,8 @@ export interface components {
              * @description When the task finished (completed or failed)
              */
             finished_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Number of items processed */
             processed?: number;
             /**
@@ -13877,15 +13663,6 @@ export interface components {
             uuid?: string;
         };
         "Group.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Group color
              * @example #FF0000
@@ -13896,6 +13673,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /** @description Number of subscribers in the group. May be null if not yet calculated. */
@@ -13905,17 +13684,10 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Group color
              * @example #FF0000
@@ -13926,6 +13698,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /**
@@ -13933,17 +13707,10 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Group color
              * @example #FF0000
@@ -13954,6 +13721,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /** @description Number of subscribers in the group. May be null if not yet calculated. */
@@ -13963,18 +13732,11 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group.jsonld-contact.write": Record<string, never>;
         "Group.jsonld-group.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -13997,6 +13759,8 @@ export interface components {
              */
             description?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /** @description Number of subscribers in the group. May be null if not yet calculated. */
@@ -14063,15 +13827,6 @@ export interface components {
             title: string;
         };
         "Group.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Group color
              * @example #FF0000
@@ -14082,6 +13837,8 @@ export interface components {
              * @example My group description
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Group is public? */
             public?: boolean;
             /**
@@ -14089,6 +13846,8 @@ export interface components {
              * @example My group
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Group.jsonld-suscription_form.write": Record<string, never>;
         "HeadingStyleDto-design_setting.create": {
@@ -14139,11 +13898,15 @@ export interface components {
              * @example 700
              */
             font_weight: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Link color (hex)
              * @example #3B82F6
              */
             link_color?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "HeadingStyleDto-design_setting.write": {
             /**
@@ -14200,15 +13963,6 @@ export interface components {
             link_color?: string;
         };
         "HeadingStyleDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Text color (hex)
              * @example #1F2937
@@ -14229,11 +13983,15 @@ export interface components {
              * @example 700
              */
             font_weight: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Link color (hex)
              * @example #3B82F6
              */
             link_color?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "HeadingStyleDto.jsonld-design_setting.write": {
             /**
@@ -14289,6 +14047,8 @@ export interface components {
              * @example https://app.example.com/account/invoice/download/123
              */
             download_url?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Invoice number
              * @example FXE-12345
@@ -14311,15 +14071,6 @@ export interface components {
             uuid?: string;
         };
         "Invoice.jsonld-invoice.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Amount in cents (before taxes)
              * @example 1000
@@ -14346,6 +14097,8 @@ export interface components {
              * @example https://app.example.com/account/invoice/download/123
              */
             download_url?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Invoice number
              * @example FXE-12345
@@ -14373,6 +14126,8 @@ export interface components {
              * @description Date & Time resource created
              */
             created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field_options?: components["schemas"]["ListFieldOption-audience.read"][];
             /** @deprecated */
             options?: {
@@ -14399,8 +14154,12 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListField-contact.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @deprecated */
             options?: {
                 [key: string]: string;
@@ -14420,6 +14179,8 @@ export interface components {
              */
             template_tag?: string;
             type?: components["schemas"]["ListFieldType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListField-list_field.read": {
             /**
@@ -14427,6 +14188,8 @@ export interface components {
              * @description Date & Time resource created
              */
             created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field_options?: components["schemas"]["ListFieldOption-list_field.read"][];
             /** @deprecated */
             options?: {
@@ -14460,6 +14223,8 @@ export interface components {
             uuid?: string;
         };
         "ListField-member.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Public field */
             public?: boolean;
             /** @description Required field */
@@ -14475,6 +14240,8 @@ export interface components {
              */
             template_tag?: string;
             type?: components["schemas"]["ListFieldType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListField.CustomFieldMultiselect-list_field.write": {
             /**
@@ -14617,20 +14384,13 @@ export interface components {
             type: "list.field.type.text" | "list.field.type.textarea" | "list.field.type.url" | "list.field.type.integer" | "list.field.type.decimal" | "list.field.type.money" | "list.field.type.boolean" | "list.field.type.language" | "list.field.type.date" | "list.field.type.datetime" | "list.field.type.birthday";
         };
         "ListField.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field_options?: components["schemas"]["ListFieldOption.jsonld-audience.read"][];
             /** @deprecated */
             options?: {
@@ -14657,17 +14417,12 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListField.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @deprecated */
             options?: {
                 [key: string]: string;
@@ -14687,22 +14442,17 @@ export interface components {
              */
             template_tag?: string;
             type?: components["schemas"]["ListFieldType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListField.jsonld-list_field.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list_field_options?: components["schemas"]["ListFieldOption.jsonld-list_field.read"][];
             /** @deprecated */
             options?: {
@@ -14736,15 +14486,8 @@ export interface components {
             uuid?: string;
         };
         "ListField.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Public field */
             public?: boolean;
             /** @description Required field */
@@ -14760,56 +14503,51 @@ export interface components {
              */
             template_tag?: string;
             type?: components["schemas"]["ListFieldType"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         ListFieldOption: {
             translations?: string[];
             value?: string | null;
         };
         "ListFieldOption-audience.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             translations?: components["schemas"]["ListFieldOptionTranslation-audience.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: string | null;
         };
         "ListFieldOption-list_field.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             translations?: components["schemas"]["ListFieldOptionTranslation-list_field.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: string | null;
         };
         "ListFieldOption.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             translations?: string[];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: string | null;
         };
         "ListFieldOption.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             translations?: components["schemas"]["ListFieldOptionTranslation.jsonld-audience.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: string | null;
         };
         "ListFieldOption.jsonld-list_field.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             translations?: components["schemas"]["ListFieldOptionTranslation.jsonld-list_field.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: string | null;
         };
         ListFieldOptionTranslation: {
@@ -14817,51 +14555,44 @@ export interface components {
             name?: string | null;
         };
         "ListFieldOptionTranslation-audience.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             locale?: string | null;
             name?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldOptionTranslation-list_field.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             locale?: string | null;
             name?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldOptionTranslation.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             locale?: string | null;
             name?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldOptionTranslation.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             locale?: string | null;
             name?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldOptionTranslation.jsonld-list_field.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             locale?: string | null;
             name?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         ListFieldTranslation: {
             default_value?: string | null;
@@ -14872,59 +14603,52 @@ export interface components {
         "ListFieldTranslation-audience.read": {
             default_value?: string | null;
             help_text?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             label?: string | null;
             locale?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldTranslation-list_field.read": {
             default_value?: string | null;
             help_text?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             label?: string | null;
             locale?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldTranslation.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             default_value?: string | null;
             help_text?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             label?: string | null;
             locale?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldTranslation.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             default_value?: string | null;
             help_text?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             label?: string | null;
             locale?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListFieldTranslation.jsonld-list_field.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             default_value?: string | null;
             help_text?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             label?: string | null;
             locale?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /**
          * @description Operator match:
@@ -14973,6 +14697,8 @@ export interface components {
             data_manager?: components["schemas"]["DataManager-audience.read"] | null;
             /** @description Is GDPR enabled for the audience */
             enabled?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Use treatment_purposes instead
@@ -15006,15 +14732,6 @@ export interface components {
             treatment_purposes?: string[];
         };
         "ListGdpr.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -15022,6 +14739,8 @@ export interface components {
             data_manager?: string | null;
             /** @description Is GDPR enabled for the audience */
             enabled?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Use treatment_purposes instead
@@ -15040,18 +14759,11 @@ export interface components {
             uuid?: string;
         };
         "ListGdpr.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             data_manager?: components["schemas"]["DataManager.jsonld-audience.read"] | null;
             /** @description Is GDPR enabled for the audience */
             enabled?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Use treatment_purposes instead
@@ -15100,20 +14812,17 @@ export interface components {
         };
         /** @deprecated */
         "ListGdprTreatmentPurpose-contact.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purpose?: components["schemas"]["TreatmentPurpose-contact.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @deprecated */
         "ListGdprTreatmentPurpose.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -15127,16 +14836,11 @@ export interface components {
         };
         /** @deprecated */
         "ListGdprTreatmentPurpose.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purpose?: components["schemas"]["TreatmentPurpose.jsonld-contact.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListSegment-audience.read": {
             /**
@@ -15149,6 +14853,8 @@ export interface components {
              * @example Subscribers who are confirmed and located in Spain
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Segment name
              * @example Active subscribers from Spain
@@ -15170,6 +14876,8 @@ export interface components {
              * @description Date & time when the segment was last updated
              */
             readonly updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListSegment-list_segment.read": {
             /**
@@ -15195,6 +14903,8 @@ export interface components {
              */
             description?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Segment name
              * @example Active subscribers from Spain
@@ -15312,15 +15022,6 @@ export interface components {
             uuid?: string;
         };
         "ListSegment.AsyncTaskResource.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: datetime
              * @description When the task was created
@@ -15335,6 +15036,8 @@ export interface components {
              * @description When the task finished (completed or failed)
              */
             finished_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Number of items processed */
             processed?: number;
             /**
@@ -15386,15 +15089,6 @@ export interface components {
             uuid?: string;
         };
         "ListSegment.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & time when the segment was created
@@ -15405,6 +15099,8 @@ export interface components {
              * @example Subscribers who are confirmed and located in Spain
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Segment name
              * @example Active subscribers from Spain
@@ -15426,17 +15122,10 @@ export interface components {
              * @description Date & time when the segment was last updated
              */
             readonly updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ListSegment.jsonld-list_segment.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description Parent audience
@@ -15460,6 +15149,8 @@ export interface components {
              */
             description?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Segment name
              * @example Active subscribers from Spain
@@ -15558,6 +15249,8 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/condition_fields/39
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The comparison operator. Available operators depend on the field type.
              * @example equals
@@ -15568,6 +15261,8 @@ export interface components {
              * @example equals
              */
             readonly operator_to_string?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description The value to compare. Type depends on the field type (string, integer, boolean, array, etc.)
              * @example ES
@@ -15610,21 +15305,14 @@ export interface components {
          *     The value type depends on the field type (text, integer, boolean, etc.).
          */
         "ListSegmentCondition.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The condition field to evaluate. Get available fields from GET /audiences/{audienceUuid}/condition_fields
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/condition_fields/39
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The comparison operator. Available operators depend on the field type.
              * @example equals
@@ -15635,6 +15323,8 @@ export interface components {
              * @example equals
              */
             readonly operator_to_string?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description The value to compare. Type depends on the field type (string, integer, boolean, array, etc.)
              * @example ES
@@ -15653,21 +15343,14 @@ export interface components {
          *     The value type depends on the field type (text, integer, boolean, etc.).
          */
         "ListSegmentCondition.jsonld-list_segment.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The condition field to evaluate. Get available fields from GET /audiences/{audienceUuid}/condition_fields
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/condition_fields/39
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The comparison operator. Available operators depend on the field type.
              * @example equals
@@ -15678,6 +15361,8 @@ export interface components {
              * @example equals
              */
             readonly operator_to_string?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * @description The value to compare. Type depends on the field type (string, integer, boolean, array, etc.)
              * @example ES
@@ -15775,6 +15460,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -15797,6 +15484,8 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location-contact.read": {
             /**
@@ -15814,6 +15503,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -15836,6 +15527,8 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location-member.read": {
             /**
@@ -15853,6 +15546,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -15875,6 +15570,8 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location-member.write": {
             /**
@@ -15916,15 +15613,6 @@ export interface components {
             timezone?: string;
         };
         "Location.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description City
              * @example Madrid
@@ -15940,6 +15628,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -15962,17 +15652,10 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description City
              * @example Madrid
@@ -15988,6 +15671,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -16010,17 +15695,10 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description City
              * @example Madrid
@@ -16036,6 +15714,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -16058,17 +15738,10 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description City
              * @example Madrid
@@ -16084,6 +15757,8 @@ export interface components {
              * @example ES
              */
             country_code?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Latitude
@@ -16106,6 +15781,8 @@ export interface components {
              * @example Europe/Madrid
              */
             timezone?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Location.jsonld-member.write": {
             /**
@@ -16158,6 +15835,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Simple JSON structure for BeeEditor templates. */
             simple_json_code?: Record<string, never>;
             /**
@@ -16209,6 +15888,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description template thumbnail
@@ -16238,21 +15919,14 @@ export interface components {
             uuid?: string;
         };
         "MasterTemplate.TemplateResource.jsonld-template.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description template thumbnail
@@ -16282,15 +15956,6 @@ export interface components {
             uuid?: string;
         };
         "MasterTemplate.jsonld-master_template.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Template content (HTML)
              * @example <html><body><p>My template!</p></body></html>
@@ -16302,6 +15967,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Simple JSON structure for BeeEditor templates. */
             simple_json_code?: Record<string, never>;
             /**
@@ -16368,6 +16035,8 @@ export interface components {
              */
             email_opt_out_at?: string;
             groups?: components["schemas"]["Group-automation_queue.read"][];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Contact locale (ISO 3166-1 alpha-2)
              * @example es_ES
@@ -16395,6 +16064,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Member-member.action": {
             /**
@@ -16444,6 +16115,8 @@ export interface components {
             first_name?: string | null;
             groups?: components["schemas"]["Group-member.read"][];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             last_name?: string | null;
             /**
              * @description Contact locale (ISO 3166-1 alpha-2)
@@ -16525,15 +16198,6 @@ export interface components {
             phone?: string;
         };
         "Member.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -16569,6 +16233,8 @@ export interface components {
              */
             email_opt_out_at?: string;
             groups?: components["schemas"]["Group.jsonld-automation_queue.read"][];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Contact locale (ISO 3166-1 alpha-2)
              * @example es_ES
@@ -16596,6 +16262,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Member.jsonld-member.action": {
             /**
@@ -16608,15 +16276,6 @@ export interface components {
             channels?: string[] | null;
         };
         "Member.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -16654,6 +16313,8 @@ export interface components {
             first_name?: string | null;
             groups?: components["schemas"]["Group.jsonld-member.read"][];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             last_name?: string | null;
             /**
              * @description Contact locale (ISO 3166-1 alpha-2)
@@ -16739,16 +16400,22 @@ export interface components {
             created_at?: string | null;
             data?: string[] | null;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             type?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberActivity.jsonld-member_activity.read": {
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** Format: date-time */
             created_at?: string | null;
             data?: string[] | null;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             type?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberCampaignDeliveredEvent: {
             /**
@@ -16771,15 +16438,6 @@ export interface components {
             type?: string;
         };
         "MemberCampaignDeliveredEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -16789,6 +16447,8 @@ export interface components {
             delivered_at?: string | null;
             /** @description Email address that received the campaign */
             email?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -16798,6 +16458,8 @@ export interface components {
             status?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberCleanedEvent: {
             /**
@@ -16810,15 +16472,8 @@ export interface components {
             type?: string;
         };
         "MemberCleanedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description Member cleaned
@@ -16827,6 +16482,8 @@ export interface components {
             member?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberConsent: {
             /**
@@ -16852,7 +16509,11 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purposes?: components["schemas"]["TreatmentPurpose-automation_queue.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberConsent-customer.create": {
             /**
@@ -16891,7 +16552,11 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purposes?: components["schemas"]["TreatmentPurpose-member.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberConsent-member.write": {
             /**
@@ -16907,15 +16572,6 @@ export interface components {
             treatment_purposes?: string[];
         };
         "MemberConsent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -16926,18 +16582,13 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purposes?: string[];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberConsent.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -16948,7 +16599,11 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purposes?: components["schemas"]["TreatmentPurpose.jsonld-automation_queue.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberConsent.jsonld-customer.create": {
             /**
@@ -16977,15 +16632,6 @@ export interface components {
             treatment_purposes?: string[];
         };
         "MemberConsent.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -16996,7 +16642,11 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             treatment_purposes?: components["schemas"]["TreatmentPurpose.jsonld-member.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberConsent.jsonld-member.write": {
             /**
@@ -17030,17 +16680,10 @@ export interface components {
             type?: string;
         };
         "MemberSmsBouncedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             code?: string | null;
             description?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -17055,6 +16698,8 @@ export interface components {
             status?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberSmsClickedEvent: {
             /** Format: date-time */
@@ -17079,19 +16724,12 @@ export interface components {
             url?: string;
         };
         "MemberSmsClickedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** Format: date-time */
             created_at?: string;
             /** @description IP address from which the click was registered */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -17108,6 +16746,8 @@ export interface components {
             type?: string;
             /** @description Destination URL clicked */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberSmsDeliveredEvent: {
             /** Format: date-time */
@@ -17130,17 +16770,10 @@ export interface components {
             type?: string;
         };
         "MemberSmsDeliveredEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** Format: date-time */
             delivered_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -17157,6 +16790,8 @@ export interface components {
             status?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberSmsRepliedEvent: {
             body?: string | null;
@@ -17179,16 +16814,9 @@ export interface components {
             type?: string;
         };
         "MemberSmsRepliedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             body?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             is_stop_request?: boolean;
             /**
              * Format: iri-reference
@@ -17206,6 +16834,8 @@ export interface components {
             readonly stop_request?: boolean;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberSmsSubscribedEvent: {
             /**
@@ -17223,15 +16853,8 @@ export interface components {
             type?: string;
         };
         "MemberSmsSubscribedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -17245,6 +16868,8 @@ export interface components {
             subscription_form?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberSmsUnsubscribedEvent: {
             /**
@@ -17262,15 +16887,8 @@ export interface components {
             type?: string;
         };
         "MemberSmsUnsubscribedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -17284,11 +16902,15 @@ export interface components {
             source?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberStatsResource-automation_queue.read": {
             avg_revenue?: number;
             click_rate?: number;
             delivered_emails?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number;
             order_rate?: number;
             orders?: number;
@@ -17296,11 +16918,15 @@ export interface components {
             sent?: number;
             unique_clicks?: number;
             unique_opens?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberStatsResource-member.read": {
             avg_revenue?: number;
             click_rate?: number;
             delivered_emails?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number;
             order_rate?: number;
             orders?: number;
@@ -17308,20 +16934,15 @@ export interface components {
             sent?: number;
             unique_clicks?: number;
             unique_opens?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberStatsResource.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             avg_revenue?: number;
             click_rate?: number;
             delivered_emails?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number;
             order_rate?: number;
             orders?: number;
@@ -17329,20 +16950,15 @@ export interface components {
             sent?: number;
             unique_clicks?: number;
             unique_opens?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MemberStatsResource.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             avg_revenue?: number;
             click_rate?: number;
             delivered_emails?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             open_rate?: number;
             order_rate?: number;
             orders?: number;
@@ -17350,6 +16966,8 @@ export interface components {
             sent?: number;
             unique_clicks?: number;
             unique_opens?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberSubscribedEvent: {
             /**
@@ -17362,15 +16980,8 @@ export interface components {
             type?: string;
         };
         "MemberSubscribedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description Member subscribed
@@ -17379,6 +16990,8 @@ export interface components {
             member?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         MemberUnsubscribedEvent: {
             /**
@@ -17391,15 +17004,8 @@ export interface components {
             type?: string;
         };
         "MemberUnsubscribedEvent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description Member unsubscribed
@@ -17408,8 +17014,12 @@ export interface components {
             member?: string | null;
             /** @description Event name */
             type?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MergeTag-merge_tag.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether this tag is required in email templates
              * @example true
@@ -17436,10 +17046,12 @@ export interface components {
              * @enum {string}
              */
             type?: "special_link" | "merge_tag" | "merge_content";
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MergeTag.jsonld-merge_tag.read": {
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether this tag is required in email templates
              * @example true
@@ -17466,14 +17078,20 @@ export interface components {
              * @enum {string}
              */
             type?: "special_link" | "merge_tag" | "merge_content";
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MoveToStepAction-automation_step.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description The target step to jump to
              * @example /automations/uuid/automation_steps/uuid
              */
             target_step?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MoveToStepAction-automation_step.write": {
             /**
@@ -17484,21 +17102,16 @@ export interface components {
             target_step?: string;
         };
         "MoveToStepAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description The target step to jump to
              * @example /automations/uuid/automation_steps/uuid
              */
             target_step?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "MoveToStepAction.jsonld-automation_step.write": {
             /**
@@ -17536,6 +17149,8 @@ export interface components {
              * @description Expiration date for the account
              */
             expiration_date?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Your locale */
             locale?: string;
             /** @description Max subscribers for the account. -1 for unlimited */
@@ -17553,19 +17168,12 @@ export interface components {
             /** @description Subscription tier */
             tier?: string;
             user?: components["schemas"]["AuthenticatedUser-my_suscription.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Max websites. -1 for unlimited */
             websites?: number;
         };
         "MySuscription.jsonld-my_suscription.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description AI cost limit in cents. -1 for unlimited */
             ai_cost_limit_cents?: number;
             /** @description AI cost used in cents */
@@ -17593,6 +17201,8 @@ export interface components {
              * @description Expiration date for the account
              */
             expiration_date?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Your locale */
             locale?: string;
             /** @description Max subscribers for the account. -1 for unlimited */
@@ -17610,6 +17220,8 @@ export interface components {
             /** @description Subscription tier */
             tier?: string;
             user?: components["schemas"]["AuthenticatedUser.jsonld-my_suscription.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Max websites. -1 for unlimited */
             websites?: number;
         };
@@ -17662,15 +17274,6 @@ export interface components {
             path: string;
         };
         "Operation.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: json
              * @description json body
@@ -17678,6 +17281,8 @@ export interface components {
             body?: string;
             /** @description Optional client identifier for the operation */
             external_identifier?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Method (POST, PUT, GET, DELETE)
              * @example POST
@@ -17693,6 +17298,8 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/members
              */
             path: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Operation.jsonld-batch_operation.write": {
             /**
@@ -17919,6 +17526,8 @@ export interface components {
              * @example 900
              */
             discount_total?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             order_items?: components["schemas"]["OrderItem-order.read"][];
             /** @description Order number */
             order_number?: string;
@@ -17967,6 +17576,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Order-order.update": {
             /**
@@ -18193,15 +17804,6 @@ export interface components {
             updated_at?: string;
         };
         "Order.jsonld-order.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time cart was abandoned
@@ -18249,6 +17851,8 @@ export interface components {
              * @example 900
              */
             discount_total?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             order_items?: components["schemas"]["OrderItem.jsonld-order.read"][];
             /** @description Order number */
             order_number?: string;
@@ -18297,6 +17901,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Order.jsonld-order.update": {
             /**
@@ -18449,6 +18055,8 @@ export interface components {
              * @example 50
              */
             discount?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Price in cents
              * @example 1500
@@ -18459,6 +18067,8 @@ export interface components {
              * @example 1
              */
             quantity: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * Format: iri-reference
              * @description Variant
@@ -18490,20 +18100,13 @@ export interface components {
             variant: string | null;
         };
         "OrderItem.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Discount in cents
              * @example 50
              */
             discount?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @example https://example.com/
@@ -18519,6 +18122,8 @@ export interface components {
              * @example 1
              */
             quantity: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * Format: iri-reference
              * @description Variant
@@ -18573,20 +18178,13 @@ export interface components {
             variant: string | null;
         };
         "OrderItem.jsonld-order.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Discount in cents
              * @example 50
              */
             discount?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Price in cents
              * @example 1500
@@ -18597,6 +18195,8 @@ export interface components {
              * @example 1
              */
             quantity: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /**
              * Format: iri-reference
              * @description Variant
@@ -18708,6 +18308,8 @@ export interface components {
              * @example 900
              */
             discount_total?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             order_items?: components["schemas"]["OrderItem-order.read"][];
             /** @description Order number */
             order_number: string;
@@ -18756,6 +18358,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "OrderResource-order.refund_order": Record<string, never>;
         "OrderResource-order.ship_order": {
@@ -18803,15 +18407,6 @@ export interface components {
             processed_at?: string;
         };
         "OrderResource.jsonld-order.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time cart was abandoned
@@ -18859,6 +18454,8 @@ export interface components {
              * @example 900
              */
             discount_total?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             order_items?: components["schemas"]["OrderItem.jsonld-order.read"][];
             /** @description Order number */
             order_number: string;
@@ -18907,6 +18504,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "OrderResource.jsonld-order.refund_order": Record<string, never>;
         "OrderResource.jsonld-order.ship_order": {
@@ -18934,10 +18533,14 @@ export interface components {
         "PopupBehaviorDto-suscription_form.read": {
             /** @description Frequency settings - defines how often the popup appears to the same visitor */
             frequency?: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Schedule settings - defines when the popup should be active */
             schedule?: Record<string, never>;
             /** @description Trigger settings - defines when the popup should appear */
             triggers?: Record<string, never>;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Visibility settings - defines where and on which devices the popup appears */
             visibility?: Record<string, never>;
         };
@@ -18952,21 +18555,16 @@ export interface components {
             visibility?: Record<string, never>;
         };
         "PopupBehaviorDto.jsonld-suscription_form.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Frequency settings - defines how often the popup appears to the same visitor */
             frequency?: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Schedule settings - defines when the popup should be active */
             schedule?: Record<string, never>;
             /** @description Trigger settings - defines when the popup should appear */
             triggers?: Record<string, never>;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description Visibility settings - defines where and on which devices the popup appears */
             visibility?: Record<string, never>;
         };
@@ -19031,6 +18629,8 @@ export interface components {
              * @description The product image url
              */
             image_url?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description A unique identifier for the product
              * @example id
@@ -19051,6 +18651,8 @@ export interface components {
              * @description The product url
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             variants?: components["schemas"]["Variant-product.read"][];
             /**
              * @description Product vendor
@@ -19121,15 +18723,6 @@ export interface components {
             vendor?: string;
         };
         "Product.jsonld-product.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             categories?: string[];
             /**
              * Format: date-time
@@ -19146,6 +18739,8 @@ export interface components {
              * @description The product image url
              */
             image_url?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description A unique identifier for the product
              * @example id
@@ -19166,6 +18761,8 @@ export interface components {
              * @description The product url
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             variants?: components["schemas"]["Variant.jsonld-product.read"][];
             /**
              * @description Product vendor
@@ -19208,6 +18805,10 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             group?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "RemoveFromGroupAction-automation_step.write": {
             /**
@@ -19218,21 +18819,16 @@ export interface components {
             group?: string;
         };
         "RemoveFromGroupAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The group to remove the contact from
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             group?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "RemoveFromGroupAction.jsonld-automation_step.write": {
             /**
@@ -19251,6 +18847,8 @@ export interface components {
             from_email?: string;
             /** @description Sender name (From name). */
             from_name?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Preview text (preheader). */
             preview_text?: string | null;
             /**
@@ -19285,6 +18883,8 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations (replies go to a shared inbox). */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendCampaignAction-automation_step.write": {
             /**
@@ -19331,15 +18931,6 @@ export interface components {
             use_conversations?: boolean;
         };
         "SendCampaignAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description From email. IRI reference to a verified sender. Optional if audience has default.
@@ -19348,6 +18939,8 @@ export interface components {
             from_email?: string;
             /** @description Sender name (From name). */
             from_name?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Preview text (preheader). */
             preview_text?: string | null;
             /**
@@ -19382,6 +18975,8 @@ export interface components {
             track_opens: boolean;
             /** @description Use conversations (replies go to a shared inbox). */
             use_conversations?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendCampaignAction.jsonld-automation_step.write": {
             /**
@@ -19430,7 +19025,11 @@ export interface components {
         "SendNotificationAction-automation_step.read": {
             body?: string | null;
             emails?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             subject?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendNotificationAction-automation_step.write": {
             body?: string | null;
@@ -19438,18 +19037,13 @@ export interface components {
             subject?: string | null;
         };
         "SendNotificationAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             body?: string | null;
             emails?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             subject?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendNotificationAction.jsonld-automation_step.write": {
             body?: string | null;
@@ -19458,6 +19052,8 @@ export interface components {
         };
         "SendSmsAction-automation_step.read": {
             google_analytics_tag?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             message?: string | null;
             /**
              * Format: iri-reference
@@ -19473,18 +19069,13 @@ export interface components {
             track_clicks: boolean;
             track_ecommerce?: boolean;
             track_google_analytics?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendSmsAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             google_analytics_tag?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             message?: string | null;
             /**
              * Format: iri-reference
@@ -19500,8 +19091,12 @@ export interface components {
             track_clicks: boolean;
             track_ecommerce?: boolean;
             track_google_analytics?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendWebhookAction-automation_step.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Custom key-value pairs to include in the webhook payload (max 20)
              * @example [
@@ -19538,6 +19133,8 @@ export interface components {
              * @example https://example.com/webhook
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendWebhookAction-automation_step.write": {
             /**
@@ -19578,15 +19175,8 @@ export interface components {
             url?: string;
         };
         "SendWebhookAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Custom key-value pairs to include in the webhook payload (max 20)
              * @example [
@@ -19623,6 +19213,8 @@ export interface components {
              * @example https://example.com/webhook
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SendWebhookAction.jsonld-automation_step.write": {
             /**
@@ -19670,6 +19262,8 @@ export interface components {
              * @description Contact email
              */
             email: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uuid
              * @description Resource UUID
@@ -19690,6 +19284,8 @@ export interface components {
              */
             email: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -19709,15 +19305,6 @@ export interface components {
             email: string;
         };
         "Sender.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Confirmed */
             confirmed?: boolean;
             /**
@@ -19725,6 +19312,8 @@ export interface components {
              * @description Contact email
              */
             email: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uuid
              * @description Resource UUID
@@ -19732,15 +19321,6 @@ export interface components {
             uuid?: string;
         };
         "Sender.jsonld-sender.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Confirmed */
             confirmed?: boolean;
             /**
@@ -19754,6 +19334,8 @@ export interface components {
              */
             email: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -19830,6 +19412,8 @@ export interface components {
              */
             email?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Whether tracking links are aligned to this domain. */
             links_aligned?: boolean;
             /**
@@ -19874,35 +19458,25 @@ export interface components {
             authenticated?: boolean;
             /** @description Individual DNS check results. */
             checks?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Actual DNS values found during verification. */
             results?: string[];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SenderDomain.SenderDomainAuthenticateOutput.jsonld-sender_domain.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             authenticated?: boolean;
             /** @description Individual DNS check results. */
             checks?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Actual DNS values found during verification. */
             results?: string[];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SenderDomain.jsonld-sender_domain.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Domain alignment status */
             aligned?: boolean;
             /** @description DNS authentication status */
@@ -19960,6 +19534,8 @@ export interface components {
              */
             email?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Whether tracking links are aligned to this domain. */
             links_aligned?: boolean;
             /**
@@ -20054,6 +19630,8 @@ export interface components {
             /** @description Unique campaign tracking hash */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -20115,6 +19693,8 @@ export interface components {
             /** @description Unique campaign tracking hash */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -20276,15 +19856,6 @@ export interface components {
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaign.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -20311,6 +19882,8 @@ export interface components {
             /** @description Unique campaign tracking hash */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -20346,15 +19919,6 @@ export interface components {
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaign.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -20381,6 +19945,8 @@ export interface components {
             /** @description Unique campaign tracking hash */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: iri-reference
              * @description List segment
@@ -20425,6 +19991,8 @@ export interface components {
              * @example sms_promo_2026
              */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Track clicks on URLs in SMS messages
              * @default true
@@ -20435,6 +20003,8 @@ export interface components {
             track_ecommerce?: boolean;
             /** @description Enable Google Analytics tracking on SMS links */
             track_google_analytics?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaignConfigResource-campaign.read_campaign.read.detail": {
@@ -20443,6 +20013,8 @@ export interface components {
              * @example sms_promo_2026
              */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Track clicks on URLs in SMS messages
              * @default true
@@ -20453,6 +20025,8 @@ export interface components {
             track_ecommerce?: boolean;
             /** @description Enable Google Analytics tracking on SMS links */
             track_google_analytics?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsCampaignConfigResource-campaign.write.sms": {
             /**
@@ -20473,20 +20047,13 @@ export interface components {
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaignConfigResource.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Google Analytics campaign tag
              * @example sms_promo_2026
              */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Track clicks on URLs in SMS messages
              * @default true
@@ -20497,23 +20064,18 @@ export interface components {
             track_ecommerce?: boolean;
             /** @description Enable Google Analytics tracking on SMS links */
             track_google_analytics?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaignConfigResource.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Google Analytics campaign tag
              * @example sms_promo_2026
              */
             google_analytics_tag?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Track clicks on URLs in SMS messages
              * @default true
@@ -20524,6 +20086,8 @@ export interface components {
             track_ecommerce?: boolean;
             /** @description Enable Google Analytics tracking on SMS links */
             track_google_analytics?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsCampaignConfigResource.jsonld-campaign.write.sms": {
             /**
@@ -20569,6 +20133,8 @@ export interface components {
              * @description Failure rate (0-100)
              */
             failed_rate?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description SMS replies received */
             replies?: number;
             /** @description Total SMS sent */
@@ -20577,6 +20143,8 @@ export interface components {
             to_send?: number;
             /** @description SMS unsubscriptions */
             unsubscribed?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaignStatsResource-campaign.read_campaign.read.detail": {
@@ -20605,6 +20173,8 @@ export interface components {
              * @description Failure rate (0-100)
              */
             failed_rate?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description SMS replies received */
             replies?: number;
             /** @description Total SMS sent */
@@ -20613,18 +20183,11 @@ export interface components {
             to_send?: number;
             /** @description SMS unsubscriptions */
             unsubscribed?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaignStatsResource.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: float
              * @description Click rate (0-100)
@@ -20650,6 +20213,8 @@ export interface components {
              * @description Failure rate (0-100)
              */
             failed_rate?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description SMS replies received */
             replies?: number;
             /** @description Total SMS sent */
@@ -20658,18 +20223,11 @@ export interface components {
             to_send?: number;
             /** @description SMS unsubscriptions */
             unsubscribed?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /** @description SMS campaign response. SMS campaigns are exposed under /sms_campaigns. */
         "SmsCampaignStatsResource.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: float
              * @description Click rate (0-100)
@@ -20695,6 +20253,8 @@ export interface components {
              * @description Failure rate (0-100)
              */
             failed_rate?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description SMS replies received */
             replies?: number;
             /** @description Total SMS sent */
@@ -20703,8 +20263,12 @@ export interface components {
             to_send?: number;
             /** @description SMS unsubscriptions */
             unsubscribed?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsConfigResource-campaign.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description SMS message text. Supports merge fields like {{ text.list.suscriber.email }}, {{ text.list.suscriber.firstname }}.
              * @example Hi {{ text.list.suscriber.firstname }}, check out our latest offers!
@@ -20716,8 +20280,12 @@ export interface components {
              * @example /sms_senders/095be615-a8ad-4c33-8e9c-c7612fbf6c9f
              */
             sms_sender: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsConfigResource-campaign.read_campaign.read.detail": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description SMS message text. Supports merge fields like {{ text.list.suscriber.email }}, {{ text.list.suscriber.firstname }}.
              * @example Hi {{ text.list.suscriber.firstname }}, check out our latest offers!
@@ -20729,6 +20297,8 @@ export interface components {
              * @example /sms_senders/095be615-a8ad-4c33-8e9c-c7612fbf6c9f
              */
             sms_sender: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsConfigResource-campaign.write.sms": {
             /**
@@ -20744,15 +20314,8 @@ export interface components {
             sms_sender: string;
         };
         "SmsConfigResource.jsonld-campaign.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description SMS message text. Supports merge fields like {{ text.list.suscriber.email }}, {{ text.list.suscriber.firstname }}.
              * @example Hi {{ text.list.suscriber.firstname }}, check out our latest offers!
@@ -20764,17 +20327,12 @@ export interface components {
              * @example /sms_senders/095be615-a8ad-4c33-8e9c-c7612fbf6c9f
              */
             sms_sender: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsConfigResource.jsonld-campaign.read_campaign.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description SMS message text. Supports merge fields like {{ text.list.suscriber.email }}, {{ text.list.suscriber.firstname }}.
              * @example Hi {{ text.list.suscriber.firstname }}, check out our latest offers!
@@ -20786,6 +20344,8 @@ export interface components {
              * @example /sms_senders/095be615-a8ad-4c33-8e9c-c7612fbf6c9f
              */
             sms_sender: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsConfigResource.jsonld-campaign.write.sms": {
             /**
@@ -20813,6 +20373,8 @@ export interface components {
             created_at?: string;
             /** @description Resource identifier */
             id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Internal sender name
              * @example Transactional messages
@@ -20828,6 +20390,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsSender-sms_sender.write": {
             /**
@@ -20842,15 +20406,6 @@ export interface components {
             name: string;
         };
         "SmsSender.jsonld-sms_sender.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Alphanumeric sender ID shown as the sender of SMS messages. Must be 3-11 alphanumeric characters and cannot be only numbers.
              * @example COMPANY
@@ -20863,6 +20418,8 @@ export interface components {
             created_at?: string;
             /** @description Resource identifier */
             id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Internal sender name
              * @example Transactional messages
@@ -20878,6 +20435,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SmsSender.jsonld-sms_sender.write": {
             /**
@@ -20945,6 +20504,8 @@ export interface components {
              * @example https://app.easymailing.com/build/default/files/img/social-icons/instagram_white.png
              */
             icon_url_white?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Social network key
              * @example instagram
@@ -20962,6 +20523,8 @@ export interface components {
              * @example https://instagram.com/mycompany
              */
             url: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SocialLinkDto-design_setting.write": {
             /**
@@ -21002,15 +20565,6 @@ export interface components {
             url: string;
         };
         "SocialLinkDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: uri
              * @description Dark icon URL
@@ -21023,6 +20577,8 @@ export interface components {
              * @example https://app.easymailing.com/build/default/files/img/social-icons/instagram_white.png
              */
             icon_url_white?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Social network key
              * @example instagram
@@ -21040,6 +20596,8 @@ export interface components {
              * @example https://instagram.com/mycompany
              */
             url: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SocialLinkDto.jsonld-design_setting.write": {
             /**
@@ -21147,6 +20705,8 @@ export interface components {
              * @example https://example.com/
              */
             group?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The locale of the store
              * @example es
@@ -21177,6 +20737,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Store-store.update": {
             /**
@@ -21258,15 +20820,6 @@ export interface components {
             timezone: string;
         };
         "Store.jsonld-store.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience associated to the store
@@ -21290,6 +20843,8 @@ export interface components {
              * @example https://example.com/
              */
             group?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description The locale of the store
              * @example es
@@ -21320,6 +20875,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Store.jsonld-store.update": {
             /**
@@ -21387,6 +20944,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Ticket priority
              * @example normal
@@ -21415,6 +20974,8 @@ export interface components {
              * @description Ticket last update date
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SupportTicket.SupportTicketInput": {
             /**
@@ -21441,15 +21002,6 @@ export interface components {
             subject: string;
         };
         "SupportTicket.jsonld-support_ticket.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             comments?: components["schemas"]["SupportTicketCommentResource.jsonld-support_ticket.read"][];
             /**
              * Format: date-time
@@ -21457,6 +21009,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Ticket priority
              * @example normal
@@ -21485,6 +21039,8 @@ export interface components {
              * @description Ticket last update date
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SupportTicketCommentResource-support_ticket.read": {
             /** @description Zendesk author ID */
@@ -21497,23 +21053,18 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether the comment is public or internal note
              * @default true
              * @example true
              */
             public: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SupportTicketCommentResource.jsonld-support_ticket.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Zendesk author ID */
             author_id?: number;
             /** @description Comment body text */
@@ -21524,12 +21075,16 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether the comment is public or internal note
              * @default true
              * @example true
              */
             public: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         SuscriberConsent: {
             /**
@@ -21559,11 +21114,15 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Use treatment_purposes instead
              */
             list_gdpr_treatment_purposes?: components["schemas"]["ListGdprTreatmentPurpose-contact.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriberConsent-contact.write": {
             /**
@@ -21583,15 +21142,6 @@ export interface components {
             list_gdpr_treatment_purposes?: string[];
         };
         "SuscriberConsent.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -21602,22 +21152,17 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Use treatment_purposes instead
              */
             list_gdpr_treatment_purposes?: string[];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriberConsent.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -21628,11 +21173,15 @@ export interface components {
              * @description Contact ip
              */
             ip?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Use treatment_purposes instead
              */
             list_gdpr_treatment_purposes?: components["schemas"]["ListGdprTreatmentPurpose.jsonld-contact.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriberConsent.jsonld-contact.write": {
             /**
@@ -21718,6 +21267,8 @@ export interface components {
             created_at?: string;
             custom_fields?: components["schemas"]["CustomField-contact.read"][];
             groups?: components["schemas"]["Group-contact.read"][];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Engage rating (0 to 20)
@@ -21734,17 +21285,10 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Suscription.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -21758,6 +21302,8 @@ export interface components {
             created_at?: string;
             custom_fields?: string[];
             groups?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Engage rating (0 to 20)
@@ -21778,17 +21324,10 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Suscription.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-template
              * @description Audience
@@ -21802,6 +21341,8 @@ export interface components {
             created_at?: string;
             custom_fields?: components["schemas"]["CustomField.jsonld-contact.read"][];
             groups?: components["schemas"]["Group.jsonld-contact.read"][];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: float
              * @description Engage rating (0 to 20)
@@ -21818,6 +21359,8 @@ export interface components {
              * @description Date & Time resource updated
              */
             updated_at?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriptionForm-member.read": {
             /** @description Is active? */
@@ -21826,6 +21369,8 @@ export interface components {
             domain?: string;
             /** @description Is double opt-in? */
             double_opt_in?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Is paused? */
             paused?: boolean;
             /**
@@ -21839,6 +21384,8 @@ export interface components {
              * @description Suscription form URL
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriptionForm-suscription_form.read": {
             /** @description Is active? */
@@ -21877,6 +21424,8 @@ export interface components {
              */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Is paused? */
             paused?: boolean;
             sms_double_opt_in?: boolean | null;
@@ -21976,6 +21525,8 @@ export interface components {
                     pluginUrl?: string;
                 };
             };
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether the form is paused
              * @example false
@@ -21999,17 +21550,10 @@ export interface components {
              * @example form.status.published
              */
             status?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriptionForm.PublishingInfoDto.jsonld-suscription_form.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description HTML link to trigger popup on click (only for popup forms)
              * @example <a href="#" class="easym-open-popup">Subscribe</a>
@@ -22042,6 +21586,8 @@ export interface components {
                     pluginUrl?: string;
                 };
             };
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether the form is paused
              * @example false
@@ -22065,6 +21611,8 @@ export interface components {
              * @example form.status.published
              */
             status?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriptionForm.UpdateEmbeddedFormDto-suscription_form.write": {
             channels?: string[];
@@ -22105,21 +21653,14 @@ export interface components {
             title: string | null;
         };
         "SuscriptionForm.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Is active? */
             active?: boolean;
             /** @description Account identifier domain */
             domain?: string;
             /** @description Is double opt-in? */
             double_opt_in?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Is paused? */
             paused?: boolean;
             /**
@@ -22133,17 +21674,10 @@ export interface components {
              * @description Suscription form URL
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriptionForm.jsonld-suscription_form.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Is active? */
             active?: boolean;
             /**
@@ -22180,6 +21714,8 @@ export interface components {
              */
             hash?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Is paused? */
             paused?: boolean;
             sms_double_opt_in?: boolean | null;
@@ -22225,22 +21761,17 @@ export interface components {
              * @example 1250
              */
             impressions?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: date-time
              * @description Date and time of the last subscription
              */
             last_subscription_at?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "SuscriptionFormStatsDto.jsonld-suscription_form.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: float
              * @description Conversion rate percentage (conversions / impressions * 100)
@@ -22257,11 +21788,15 @@ export interface components {
              * @example 1250
              */
             impressions?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: date-time
              * @description Date and time of the last subscription
              */
             last_subscription_at?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         /**
          * @description Subscription form status:
@@ -22286,6 +21821,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description template thumbnail
@@ -22326,6 +21863,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Simple JSON structure for BeeEditor templates. Use GET /templates/schema for the JSON schema. When provided, the system automatically generates the full JSON and HTML. Only applicable for be_editor templates. If provided, 'content' field is ignored. */
             simple_json_code?: Record<string, never>;
             /**
@@ -22399,21 +21938,14 @@ export interface components {
             subject?: string;
         };
         "Template.jsonld-template.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description template thumbnail
@@ -22443,15 +21975,6 @@ export interface components {
             uuid?: string;
         };
         "Template.jsonld-template.read_template.read.detail": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Template content (HTML). Required if simpleJsonCode is not provided.
              * @example <html><body><p>My awesome template!</p></body</html>
@@ -22463,6 +21986,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Simple JSON structure for BeeEditor templates. Use GET /templates/schema for the JSON schema. When provided, the system automatically generates the full JSON and HTML. Only applicable for be_editor templates. If provided, 'content' field is ignored. */
             simple_json_code?: Record<string, never>;
             /**
@@ -22523,15 +22048,6 @@ export interface components {
             schema?: Record<string, never>;
         };
         "TemplateSchema.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Map of common property errors and their correct alternatives */
             common_errors?: Record<string, never>;
             /** @description Additional documentation and rules */
@@ -22541,10 +22057,14 @@ export interface components {
              * @example schema
              */
             id: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Official example template from Beefree */
             official_example?: Record<string, never>;
             /** @description JSON Schema for BeeEditor templates */
             schema?: Record<string, never>;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TemplateVariantInput-campaign.write.test_ab_template": {
             /**
@@ -22574,7 +22094,11 @@ export interface components {
             styles: components["schemas"]["TextStyleDto-design_setting.create"] | null;
         };
         "TextElementDto-design_setting.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             styles: components["schemas"]["TextStyleDto-design_setting.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TextElementDto-design_setting.write": {
             styles: components["schemas"]["TextStyleDto-design_setting.write"] | null;
@@ -22583,16 +22107,11 @@ export interface components {
             styles: components["schemas"]["TextStyleDto.jsonld-design_setting.create"] | null;
         };
         "TextElementDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             styles: components["schemas"]["TextStyleDto.jsonld-design_setting.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TextElementDto.jsonld-design_setting.write": {
             styles: components["schemas"]["TextStyleDto.jsonld-design_setting.write"] | null;
@@ -22650,6 +22169,8 @@ export interface components {
              * @example 400
              */
             font_weight: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Line height
              * @example 1.5
@@ -22660,6 +22181,8 @@ export interface components {
              * @example #3B82F6
              */
             link_color: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TextStyleDto-design_setting.write": {
             /**
@@ -22726,15 +22249,6 @@ export interface components {
             link_color: string;
         };
         "TextStyleDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Text color (hex)
              * @example #374151
@@ -22755,6 +22269,8 @@ export interface components {
              * @example 400
              */
             font_weight: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Line height
              * @example 1.5
@@ -22765,6 +22281,8 @@ export interface components {
              * @example #3B82F6
              */
             link_color: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TextStyleDto.jsonld-design_setting.write": {
             /**
@@ -22803,8 +22321,12 @@ export interface components {
             paragraph: components["schemas"]["TextElementDto-design_setting.create"] | null;
         };
         "TextsDto-design_setting.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list?: components["schemas"]["TextElementDto-design_setting.read"] | null;
             paragraph: components["schemas"]["TextElementDto-design_setting.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TextsDto-design_setting.write": {
             list?: components["schemas"]["TextElementDto-design_setting.write"] | null;
@@ -22815,17 +22337,12 @@ export interface components {
             paragraph: components["schemas"]["TextElementDto.jsonld-design_setting.create"] | null;
         };
         "TextsDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             list?: components["schemas"]["TextElementDto.jsonld-design_setting.read"] | null;
             paragraph: components["schemas"]["TextElementDto.jsonld-design_setting.read"] | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TextsDto.jsonld-design_setting.write": {
             list?: components["schemas"]["TextElementDto.jsonld-design_setting.write"] | null;
@@ -22860,6 +22377,8 @@ export interface components {
                 id?: number;
                 name?: string;
             }[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether this is a new theme (created in last 15 days)
              * @example true
@@ -22922,6 +22441,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description template thumbnail
@@ -22951,21 +22472,14 @@ export interface components {
             uuid?: string;
         };
         "Theme.TemplateResource.jsonld-template.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: uri
              * @description template thumbnail
@@ -22995,15 +22509,6 @@ export interface components {
             uuid?: string;
         };
         "Theme.jsonld-theme.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Theme HTML content (only available on item endpoint, not in collection)
              * @example <html>...</html>
@@ -23032,6 +22537,8 @@ export interface components {
                 id?: number;
                 name?: string;
             }[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Whether this is a new theme (created in last 15 days)
              * @example true
@@ -23079,25 +22586,31 @@ export interface components {
              * @example 1
              */
             id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Industry name
              * @example E-commerce
              */
             name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ThemeIndustry.jsonld-theme_industry.read": {
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Industry ID
              * @example 1
              */
             id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Industry name
              * @example E-commerce
              */
             name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ThemeType-theme_type.read": {
             /**
@@ -23105,25 +22618,31 @@ export interface components {
              * @example 1
              */
             id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Theme type name
              * @example Newsletter
              */
             name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "ThemeType.jsonld-theme_type.read": {
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Theme type ID
              * @example 1
              */
             id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Theme type name
              * @example Newsletter
              */
             name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TitlesDto-design_setting.create": {
             h1: components["schemas"]["HeadingStyleDto-design_setting.create"] | null;
@@ -23134,6 +22653,10 @@ export interface components {
             h1: components["schemas"]["HeadingStyleDto-design_setting.read"] | null;
             h2: components["schemas"]["HeadingStyleDto-design_setting.read"] | null;
             h3: components["schemas"]["HeadingStyleDto-design_setting.read"] | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TitlesDto-design_setting.write": {
             h1: components["schemas"]["HeadingStyleDto-design_setting.write"] | null;
@@ -23146,18 +22669,13 @@ export interface components {
             h3: components["schemas"]["HeadingStyleDto.jsonld-design_setting.create"] | null;
         };
         "TitlesDto.jsonld-design_setting.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             h1: components["schemas"]["HeadingStyleDto.jsonld-design_setting.read"] | null;
             h2: components["schemas"]["HeadingStyleDto.jsonld-design_setting.read"] | null;
             h3: components["schemas"]["HeadingStyleDto.jsonld-design_setting.read"] | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TitlesDto.jsonld-design_setting.write": {
             h1: components["schemas"]["HeadingStyleDto.jsonld-design_setting.write"] | null;
@@ -23172,6 +22690,8 @@ export interface components {
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Treatment purpose name
@@ -23180,6 +22700,8 @@ export interface components {
             name?: string;
             /** @description Translations */
             translations?: components["schemas"]["TreatmentPurposeTranslation-audience.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose-automation_queue.read": {
             /**
@@ -23187,8 +22709,12 @@ export interface components {
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Translations */
             translations?: components["schemas"]["TreatmentPurposeTranslation-automation_queue.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose-contact.read": {
             /**
@@ -23196,12 +22722,16 @@ export interface components {
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Treatment purpose name
              * @example Commercial newsletters
              */
             name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose-member.read": {
             /**
@@ -23209,8 +22739,12 @@ export interface components {
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Translations */
             translations?: components["schemas"]["TreatmentPurposeTranslation-member.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose-treatment_purpose.read": {
             /**
@@ -23230,6 +22764,8 @@ export interface components {
              */
             description?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Treatment purpose name
@@ -23271,15 +22807,6 @@ export interface components {
             translations?: components["schemas"]["TreatmentPurposeTranslation-treatment_purpose.write"][];
         };
         "TreatmentPurpose.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Is custom treatment purpose */
             custom?: boolean;
             /**
@@ -23287,6 +22814,8 @@ export interface components {
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Treatment purpose name
@@ -23295,75 +22824,53 @@ export interface components {
             name?: string;
             /** @description Translations */
             translations?: components["schemas"]["TreatmentPurposeTranslation.jsonld-audience.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Treatment purpose description
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Translations */
             translations?: components["schemas"]["TreatmentPurposeTranslation.jsonld-automation_queue.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose.jsonld-contact.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Treatment purpose description
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Treatment purpose name
              * @example Commercial newsletters
              */
             name?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @description Treatment purpose description
              * @example Commercial newsletters
              */
             description?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Translations */
             translations?: components["schemas"]["TreatmentPurposeTranslation.jsonld-member.read"][];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurpose.jsonld-treatment_purpose.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * @default [
              *       "email"
@@ -23381,6 +22888,8 @@ export interface components {
              */
             description?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @deprecated
              * @description Treatment purpose name
@@ -23434,6 +22943,8 @@ export interface components {
             title: string;
         };
         "TreatmentPurposeTranslation-audience.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23444,8 +22955,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation-automation_queue.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23456,8 +22971,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation-member.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23468,8 +22987,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation-treatment_purpose.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23480,6 +23003,8 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation-treatment_purpose.write": {
             /**
@@ -23494,15 +23019,8 @@ export interface components {
             title: string;
         };
         "TreatmentPurposeTranslation.jsonld": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23513,17 +23031,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation.jsonld-audience.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23534,17 +23047,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation.jsonld-automation_queue.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23555,17 +23063,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation.jsonld-member.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23576,17 +23079,12 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation.jsonld-treatment_purpose.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Locale code ISO 3166-1
              * @example es_ES
@@ -23597,6 +23095,8 @@ export interface components {
              * @example I accept the sending of commercial communications and / or Newsletters
              */
             title: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TreatmentPurposeTranslation.jsonld-treatment_purpose.write": {
             /**
@@ -23617,6 +23117,10 @@ export interface components {
              * @example /automations/0df14405-90ff-4287-b3e4-ef088901ee6f
              */
             automation?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TriggerAutomationAction-automation_step.write": {
             /**
@@ -23627,21 +23131,16 @@ export interface components {
             automation?: string;
         };
         "TriggerAutomationAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The automation to trigger
              * @example /automations/0df14405-90ff-4287-b3e4-ef088901ee6f
              */
             automation?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "TriggerAutomationAction.jsonld-automation_step.write": {
             /**
@@ -23683,15 +23182,10 @@ export interface components {
         "UnsubscribeAction-automation_step.read": Record<string, never>;
         "UnsubscribeAction-automation_step.write": Record<string, never>;
         "UnsubscribeAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "UnsubscribeAction.jsonld-automation_step.write": Record<string, never>;
         "UpdateCustomFieldAction-automation_step.read": {
@@ -23701,6 +23195,10 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/list_fields/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description The value to set. Type is determined by the field type. */
             value?: unknown;
         };
@@ -23715,21 +23213,16 @@ export interface components {
             value?: unknown;
         };
         "UpdateCustomFieldAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: iri-reference
              * @description The custom field to update
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/list_fields/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             field?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             /** @description The value to set. Type is determined by the field type. */
             value?: unknown;
         };
@@ -23744,21 +23237,20 @@ export interface components {
             value?: unknown;
         };
         "UpdateScoreAction-automation_step.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: number | null;
         };
         "UpdateScoreAction-automation_step.write": {
             value?: number | null;
         };
         "UpdateScoreAction.jsonld-automation_step.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
             value?: number | null;
         };
         "UpdateScoreAction.jsonld-automation_step.write": {
@@ -23780,6 +23272,8 @@ export interface components {
              * @example 10
              */
             inventory_quantity?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Variant price in cents
              * @example 1850
@@ -23807,6 +23301,8 @@ export interface components {
              * @description The variant url
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Variant-variant.create": {
             /**
@@ -23858,6 +23354,8 @@ export interface components {
              * @example 10
              */
             inventory_quantity?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Variant price in cents
              * @example 1850
@@ -23891,6 +23389,8 @@ export interface components {
              * @description The variant url
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Variant-variant.update": {
             /**
@@ -23922,15 +23422,6 @@ export interface components {
             url?: string;
         };
         "Variant.jsonld-product.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
@@ -23946,6 +23437,8 @@ export interface components {
              * @example 10
              */
             inventory_quantity?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Variant price in cents
              * @example 1850
@@ -23973,6 +23466,8 @@ export interface components {
              * @description The variant url
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Variant.jsonld-variant.create": {
             /**
@@ -24009,15 +23504,6 @@ export interface components {
             url?: string;
         };
         "Variant.jsonld-variant.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
@@ -24033,6 +23519,8 @@ export interface components {
              * @example 10
              */
             inventory_quantity?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * @description Variant price in cents
              * @example 1850
@@ -24066,6 +23554,8 @@ export interface components {
              * @description The variant url
              */
             url?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "Variant.jsonld-variant.update": {
             /**
@@ -24112,6 +23602,8 @@ export interface components {
             /** @description Events to subscribe */
             event_types: components["schemas"]["WebhookEventType"][];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Auth key */
             secret: string;
             /** @description Webhook title */
@@ -24153,15 +23645,6 @@ export interface components {
             url: string;
         };
         "Webhook.jsonld-webhook.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /** @description Confirmed */
             active?: boolean;
             /**
@@ -24177,6 +23660,8 @@ export interface components {
             /** @description Events to subscribe */
             event_types: components["schemas"]["WebhookEventType"][];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Auth key */
             secret: string;
             /** @description Webhook title */
@@ -24228,6 +23713,8 @@ export interface components {
             /** @description Event type */
             event_type?: components["schemas"]["WebhookEventType"];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -24250,15 +23737,6 @@ export interface components {
             webhook_request?: string | null;
         };
         "WebhookEvent.jsonld-webhook_event.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
@@ -24269,6 +23747,8 @@ export interface components {
             /** @description Event type */
             event_type?: components["schemas"]["WebhookEventType"];
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /**
              * Format: date-time
              * @description Date & Time resource updated
@@ -24321,6 +23801,8 @@ export interface components {
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Payload */
             payload?: string;
             /** @description Response body */
@@ -24344,21 +23826,14 @@ export interface components {
             webhook_events?: string[];
         };
         "WebhookRequest.jsonld-webhook_request.read": {
-            readonly "@context"?: string | ({
-                "@vocab": string;
-                /** @enum {string} */
-                hydra: "http://www.w3.org/ns/hydra/core#";
-            } & {
-                [key: string]: unknown;
-            });
-            readonly "@id"?: string;
-            readonly "@type"?: string;
             /**
              * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
             id?: number | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
             /** @description Payload */
             payload?: string;
             /** @description Response body */

@@ -14,11 +14,9 @@ final class HeadingStyleDto_jsonld_design_setting_read
         public readonly string $font_family,
         public readonly string $font_size,
         public readonly string $font_weight,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
+        public readonly ?string $iri = null,
         public readonly ?string $link_color = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -30,10 +28,9 @@ final class HeadingStyleDto_jsonld_design_setting_read
             font_family: $data['font_family'],
             font_size: $data['font_size'],
             font_weight: $data['font_weight'],
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
+            iri: $data['iri'] ?? null,
             link_color: $data['link_color'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -45,10 +42,9 @@ final class HeadingStyleDto_jsonld_design_setting_read
             'font_family' => $this->font_family,
             'font_size' => $this->font_size,
             'font_weight' => $this->font_weight,
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
+            'iri' => $this->iri,
             'link_color' => $this->link_color,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -59,10 +55,9 @@ final class HeadingStyleDto_jsonld_design_setting_read
             font_family: array_key_exists('font_family', $fields) ? $fields['font_family'] : $this->font_family,
             font_size: array_key_exists('font_size', $fields) ? $fields['font_size'] : $this->font_size,
             font_weight: array_key_exists('font_weight', $fields) ? $fields['font_weight'] : $this->font_weight,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             link_color: array_key_exists('link_color', $fields) ? $fields['link_color'] : $this->link_color,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

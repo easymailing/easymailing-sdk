@@ -10,14 +10,11 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListSegment_AsyncTaskResource_jsonld
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $error_message = null,
         public readonly ?int $errored = null,
         public readonly ?\DateTimeImmutable $finished_at = null,
+        public readonly ?string $iri = null,
         public readonly ?int $processed = null,
         public readonly ?float $progress = null,
         public readonly ?string $result_file = null,
@@ -36,13 +33,11 @@ final class ListSegment_AsyncTaskResource_jsonld
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             error_message: $data['error_message'] ?? null,
             errored: $data['errored'] ?? null,
             finished_at: isset($data['finished_at']) ? new \DateTimeImmutable($data['finished_at']) : null,
+            iri: $data['iri'] ?? null,
             processed: $data['processed'] ?? null,
             progress: $data['progress'] ?? null,
             result_file: $data['result_file'] ?? null,
@@ -60,13 +55,11 @@ final class ListSegment_AsyncTaskResource_jsonld
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'error_message' => $this->error_message,
             'errored' => $this->errored,
             'finished_at' => $this->finished_at?->format(\DateTimeInterface::ATOM),
+            'iri' => $this->iri,
             'processed' => $this->processed,
             'progress' => $this->progress,
             'result_file' => $this->result_file,
@@ -83,13 +76,11 @@ final class ListSegment_AsyncTaskResource_jsonld
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             error_message: array_key_exists('error_message', $fields) ? $fields['error_message'] : $this->error_message,
             errored: array_key_exists('errored', $fields) ? $fields['errored'] : $this->errored,
             finished_at: array_key_exists('finished_at', $fields) ? $fields['finished_at'] : $this->finished_at,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             processed: array_key_exists('processed', $fields) ? $fields['processed'] : $this->processed,
             progress: array_key_exists('progress', $fields) ? $fields['progress'] : $this->progress,
             result_file: array_key_exists('result_file', $fields) ? $fields['result_file'] : $this->result_file,

@@ -14,8 +14,10 @@ final class DefaultFontDto_design_setting_read
         public readonly ?string $font_family = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $font_weight = null,
+        public readonly ?string $iri = null,
         public readonly ?string $name = null,
         public readonly ?string $url = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -26,8 +28,10 @@ final class DefaultFontDto_design_setting_read
             active: $data['active'] ?? null,
             font_family: $data['font_family'] ?? null,
             font_weight: $data['font_weight'] ?? null,
+            iri: $data['iri'] ?? null,
             name: $data['name'] ?? null,
             url: $data['url'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -38,8 +42,10 @@ final class DefaultFontDto_design_setting_read
             'active' => $this->active,
             'font_family' => $this->font_family,
             'font_weight' => $this->font_weight,
+            'iri' => $this->iri,
             'name' => $this->name,
             'url' => $this->url,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -49,8 +55,10 @@ final class DefaultFontDto_design_setting_read
             active: array_key_exists('active', $fields) ? $fields['active'] : $this->active,
             font_family: array_key_exists('font_family', $fields) ? $fields['font_family'] : $this->font_family,
             font_weight: array_key_exists('font_weight', $fields) ? $fields['font_weight'] : $this->font_weight,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             name: array_key_exists('name', $fields) ? $fields['name'] : $this->name,
             url: array_key_exists('url', $fields) ? $fields['url'] : $this->url,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

@@ -10,11 +10,8 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListField_jsonld_list_field_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $created_at = null,
+        public readonly ?string $iri = null,
         /** @var list<ListFieldOption_jsonld_list_field_read>|null */
         public readonly ?array $list_field_options = null,
         /** @var array<string,mixed>|null */
@@ -35,10 +32,8 @@ final class ListField_jsonld_list_field_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
+            iri: $data['iri'] ?? null,
             list_field_options: isset($data['list_field_options']) ? array_map(fn($x) => ListFieldOption_jsonld_list_field_read::fromArray($x), $data['list_field_options']) : null,
             options: $data['options'] ?? null,
             public: $data['public'] ?? null,
@@ -56,10 +51,8 @@ final class ListField_jsonld_list_field_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
+            'iri' => $this->iri,
             'list_field_options' => $this->list_field_options !== null ? array_map(fn($x) => $x->toArray(), $this->list_field_options) : null,
             'options' => $this->options,
             'public' => $this->public,
@@ -76,10 +69,8 @@ final class ListField_jsonld_list_field_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             list_field_options: array_key_exists('list_field_options', $fields) ? $fields['list_field_options'] : $this->list_field_options,
             options: array_key_exists('options', $fields) ? $fields['options'] : $this->options,
             public: array_key_exists('public', $fields) ? $fields['public'] : $this->public,

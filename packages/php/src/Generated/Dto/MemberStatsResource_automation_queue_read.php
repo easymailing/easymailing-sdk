@@ -13,6 +13,7 @@ final class MemberStatsResource_automation_queue_read
         public readonly ?int $avg_revenue = null,
         public readonly ?float $click_rate = null,
         public readonly ?int $delivered_emails = null,
+        public readonly ?string $iri = null,
         public readonly ?float $open_rate = null,
         public readonly ?float $order_rate = null,
         public readonly ?int $orders = null,
@@ -20,6 +21,7 @@ final class MemberStatsResource_automation_queue_read
         public readonly ?int $sent = null,
         public readonly ?int $unique_clicks = null,
         public readonly ?int $unique_opens = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -30,6 +32,7 @@ final class MemberStatsResource_automation_queue_read
             avg_revenue: $data['avg_revenue'] ?? null,
             click_rate: $data['click_rate'] ?? null,
             delivered_emails: $data['delivered_emails'] ?? null,
+            iri: $data['iri'] ?? null,
             open_rate: $data['open_rate'] ?? null,
             order_rate: $data['order_rate'] ?? null,
             orders: $data['orders'] ?? null,
@@ -37,6 +40,7 @@ final class MemberStatsResource_automation_queue_read
             sent: $data['sent'] ?? null,
             unique_clicks: $data['unique_clicks'] ?? null,
             unique_opens: $data['unique_opens'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -47,6 +51,7 @@ final class MemberStatsResource_automation_queue_read
             'avg_revenue' => $this->avg_revenue,
             'click_rate' => $this->click_rate,
             'delivered_emails' => $this->delivered_emails,
+            'iri' => $this->iri,
             'open_rate' => $this->open_rate,
             'order_rate' => $this->order_rate,
             'orders' => $this->orders,
@@ -54,6 +59,7 @@ final class MemberStatsResource_automation_queue_read
             'sent' => $this->sent,
             'unique_clicks' => $this->unique_clicks,
             'unique_opens' => $this->unique_opens,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -63,6 +69,7 @@ final class MemberStatsResource_automation_queue_read
             avg_revenue: array_key_exists('avg_revenue', $fields) ? $fields['avg_revenue'] : $this->avg_revenue,
             click_rate: array_key_exists('click_rate', $fields) ? $fields['click_rate'] : $this->click_rate,
             delivered_emails: array_key_exists('delivered_emails', $fields) ? $fields['delivered_emails'] : $this->delivered_emails,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             open_rate: array_key_exists('open_rate', $fields) ? $fields['open_rate'] : $this->open_rate,
             order_rate: array_key_exists('order_rate', $fields) ? $fields['order_rate'] : $this->order_rate,
             orders: array_key_exists('orders', $fields) ? $fields['orders'] : $this->orders,
@@ -70,6 +77,7 @@ final class MemberStatsResource_automation_queue_read
             sent: array_key_exists('sent', $fields) ? $fields['sent'] : $this->sent,
             unique_clicks: array_key_exists('unique_clicks', $fields) ? $fields['unique_clicks'] : $this->unique_clicks,
             unique_opens: array_key_exists('unique_opens', $fields) ? $fields['unique_opens'] : $this->unique_opens,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

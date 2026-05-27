@@ -1,0 +1,39 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hydra fixture",
+    "version": "1.0"
+  },
+  "components": {
+    "schemas": {
+      "AudienceCompanyDto-audience.read": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" }
+        }
+      },
+      "Audience.jsonld-audience.read": {
+        "type": "object",
+        "properties": {
+          "@context": { "type": "string" },
+          "@id": { "type": "string" },
+          "@type": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      },
+      "Audience-audience.read": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" }
+        }
+      },
+      "Webhook-webhook.read": {
+        "type": "object",
+        "properties": {
+          "@id": { "type": "string" },
+          "uuid": { "type": "string", "description": "domain-owned uuid - do not overwrite" }
+        }
+      }
+    }
+  }
+}

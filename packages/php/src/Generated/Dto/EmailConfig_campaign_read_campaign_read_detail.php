@@ -13,10 +13,12 @@ final class EmailConfig_campaign_read_campaign_read_detail
         public readonly ?bool $enable_to_name = null,
         public readonly ?string $from_email = null,
         public readonly ?string $from_name = null,
+        public readonly ?string $iri = null,
         public readonly ?string $preview_text = null,
         public readonly ?string $reply_to = null,
         public readonly ?string $subject = null,
         public readonly ?string $to_name = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -27,10 +29,12 @@ final class EmailConfig_campaign_read_campaign_read_detail
             enable_to_name: $data['enable_to_name'] ?? null,
             from_email: $data['from_email'] ?? null,
             from_name: $data['from_name'] ?? null,
+            iri: $data['iri'] ?? null,
             preview_text: $data['preview_text'] ?? null,
             reply_to: $data['reply_to'] ?? null,
             subject: $data['subject'] ?? null,
             to_name: $data['to_name'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -41,10 +45,12 @@ final class EmailConfig_campaign_read_campaign_read_detail
             'enable_to_name' => $this->enable_to_name,
             'from_email' => $this->from_email,
             'from_name' => $this->from_name,
+            'iri' => $this->iri,
             'preview_text' => $this->preview_text,
             'reply_to' => $this->reply_to,
             'subject' => $this->subject,
             'to_name' => $this->to_name,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -54,10 +60,12 @@ final class EmailConfig_campaign_read_campaign_read_detail
             enable_to_name: array_key_exists('enable_to_name', $fields) ? $fields['enable_to_name'] : $this->enable_to_name,
             from_email: array_key_exists('from_email', $fields) ? $fields['from_email'] : $this->from_email,
             from_name: array_key_exists('from_name', $fields) ? $fields['from_name'] : $this->from_name,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             preview_text: array_key_exists('preview_text', $fields) ? $fields['preview_text'] : $this->preview_text,
             reply_to: array_key_exists('reply_to', $fields) ? $fields['reply_to'] : $this->reply_to,
             subject: array_key_exists('subject', $fields) ? $fields['subject'] : $this->subject,
             to_name: array_key_exists('to_name', $fields) ? $fields['to_name'] : $this->to_name,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

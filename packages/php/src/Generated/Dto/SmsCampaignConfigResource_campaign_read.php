@@ -11,9 +11,11 @@ final class SmsCampaignConfigResource_campaign_read
 {
     public function __construct(
         public readonly ?string $google_analytics_tag = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $track_clicks = null,
         public readonly ?bool $track_ecommerce = null,
         public readonly ?bool $track_google_analytics = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -22,9 +24,11 @@ final class SmsCampaignConfigResource_campaign_read
     {
         return new self(
             google_analytics_tag: $data['google_analytics_tag'] ?? null,
+            iri: $data['iri'] ?? null,
             track_clicks: $data['track_clicks'] ?? null,
             track_ecommerce: $data['track_ecommerce'] ?? null,
             track_google_analytics: $data['track_google_analytics'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -33,9 +37,11 @@ final class SmsCampaignConfigResource_campaign_read
     {
         return [
             'google_analytics_tag' => $this->google_analytics_tag,
+            'iri' => $this->iri,
             'track_clicks' => $this->track_clicks,
             'track_ecommerce' => $this->track_ecommerce,
             'track_google_analytics' => $this->track_google_analytics,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -43,9 +49,11 @@ final class SmsCampaignConfigResource_campaign_read
     {
         return new self(
             google_analytics_tag: array_key_exists('google_analytics_tag', $fields) ? $fields['google_analytics_tag'] : $this->google_analytics_tag,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             track_clicks: array_key_exists('track_clicks', $fields) ? $fields['track_clicks'] : $this->track_clicks,
             track_ecommerce: array_key_exists('track_ecommerce', $fields) ? $fields['track_ecommerce'] : $this->track_ecommerce,
             track_google_analytics: array_key_exists('track_google_analytics', $fields) ? $fields['track_google_analytics'] : $this->track_google_analytics,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

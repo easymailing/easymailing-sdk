@@ -16,8 +16,10 @@ final class DelayAction_automation_step_read
         public readonly ?array $day_week = null,
         public readonly ?string $delay_unit = null,
         public readonly ?int $delay_value = null,
+        public readonly ?string $iri = null,
         public readonly ?int $time_hour = null,
         public readonly ?int $time_minute = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -30,8 +32,10 @@ final class DelayAction_automation_step_read
             day_week: $data['day_week'] ?? null,
             delay_unit: $data['delay_unit'] ?? null,
             delay_value: $data['delay_value'] ?? null,
+            iri: $data['iri'] ?? null,
             time_hour: $data['time_hour'] ?? null,
             time_minute: $data['time_minute'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -44,8 +48,10 @@ final class DelayAction_automation_step_read
             'day_week' => $this->day_week,
             'delay_unit' => $this->delay_unit,
             'delay_value' => $this->delay_value,
+            'iri' => $this->iri,
             'time_hour' => $this->time_hour,
             'time_minute' => $this->time_minute,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -57,8 +63,10 @@ final class DelayAction_automation_step_read
             day_week: array_key_exists('day_week', $fields) ? $fields['day_week'] : $this->day_week,
             delay_unit: array_key_exists('delay_unit', $fields) ? $fields['delay_unit'] : $this->delay_unit,
             delay_value: array_key_exists('delay_value', $fields) ? $fields['delay_value'] : $this->delay_value,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             time_hour: array_key_exists('time_hour', $fields) ? $fields['time_hour'] : $this->time_hour,
             time_minute: array_key_exists('time_minute', $fields) ? $fields['time_minute'] : $this->time_minute,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

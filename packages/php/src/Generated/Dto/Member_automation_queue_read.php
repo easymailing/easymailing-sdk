@@ -21,6 +21,7 @@ final class Member_automation_queue_read
         public readonly ?\DateTimeImmutable $email_opt_out_at = null,
         /** @var list<Group_automation_queue_read>|null */
         public readonly ?array $groups = null,
+        public readonly ?string $iri = null,
         public readonly ?string $locale = null,
         public readonly ?Location_automation_queue_read $location = null,
         public readonly ?MemberConsent_automation_queue_read $member_consent = null,
@@ -30,6 +31,7 @@ final class Member_automation_queue_read
         public readonly ?\Easymailing\Sdk\Generated\Enum\SuscriberStatus $status = null,
         public readonly ?string $suscription_form = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -46,6 +48,7 @@ final class Member_automation_queue_read
             email_opt_in_source: isset($data['email_opt_in_source']) ? \Easymailing\Sdk\Generated\Enum\SuscriberSource::from($data['email_opt_in_source']) : null,
             email_opt_out_at: isset($data['email_opt_out_at']) ? new \DateTimeImmutable($data['email_opt_out_at']) : null,
             groups: isset($data['groups']) ? array_map(fn($x) => Group_automation_queue_read::fromArray($x), $data['groups']) : null,
+            iri: $data['iri'] ?? null,
             locale: $data['locale'] ?? null,
             location: isset($data['location']) ? Location_automation_queue_read::fromArray($data['location']) : null,
             member_consent: isset($data['member_consent']) ? MemberConsent_automation_queue_read::fromArray($data['member_consent']) : null,
@@ -55,6 +58,7 @@ final class Member_automation_queue_read
             status: isset($data['status']) ? \Easymailing\Sdk\Generated\Enum\SuscriberStatus::from($data['status']) : null,
             suscription_form: $data['suscription_form'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -71,6 +75,7 @@ final class Member_automation_queue_read
             'email_opt_in_source' => $this->email_opt_in_source?->value,
             'email_opt_out_at' => $this->email_opt_out_at?->format(\DateTimeInterface::ATOM),
             'groups' => $this->groups !== null ? array_map(fn($x) => $x->toArray(), $this->groups) : null,
+            'iri' => $this->iri,
             'locale' => $this->locale,
             'location' => $this->location?->toArray(),
             'member_consent' => $this->member_consent?->toArray(),
@@ -80,6 +85,7 @@ final class Member_automation_queue_read
             'status' => $this->status?->value,
             'suscription_form' => $this->suscription_form,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -95,6 +101,7 @@ final class Member_automation_queue_read
             email_opt_in_source: array_key_exists('email_opt_in_source', $fields) ? $fields['email_opt_in_source'] : $this->email_opt_in_source,
             email_opt_out_at: array_key_exists('email_opt_out_at', $fields) ? $fields['email_opt_out_at'] : $this->email_opt_out_at,
             groups: array_key_exists('groups', $fields) ? $fields['groups'] : $this->groups,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             locale: array_key_exists('locale', $fields) ? $fields['locale'] : $this->locale,
             location: array_key_exists('location', $fields) ? $fields['location'] : $this->location,
             member_consent: array_key_exists('member_consent', $fields) ? $fields['member_consent'] : $this->member_consent,
@@ -104,6 +111,7 @@ final class Member_automation_queue_read
             status: array_key_exists('status', $fields) ? $fields['status'] : $this->status,
             suscription_form: array_key_exists('suscription_form', $fields) ? $fields['suscription_form'] : $this->suscription_form,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

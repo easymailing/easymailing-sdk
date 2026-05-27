@@ -11,6 +11,8 @@ final class UpdateCustomFieldAction_automation_step_read
 {
     public function __construct(
         public readonly ?string $field = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
         public readonly mixed $value = null,
     ) {
     }
@@ -20,6 +22,8 @@ final class UpdateCustomFieldAction_automation_step_read
     {
         return new self(
             field: $data['field'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
             value: $data['value'] ?? null,
         );
     }
@@ -29,6 +33,8 @@ final class UpdateCustomFieldAction_automation_step_read
     {
         return [
             'field' => $this->field,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
             'value' => $this->value,
         ];
     }
@@ -37,6 +43,8 @@ final class UpdateCustomFieldAction_automation_step_read
     {
         return new self(
             field: array_key_exists('field', $fields) ? $fields['field'] : $this->field,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
         );
     }

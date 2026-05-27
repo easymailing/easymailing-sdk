@@ -10,7 +10,9 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class AutomationStepChildrenNormal_automation_step_read
 {
     public function __construct(
+        public readonly ?string $iri = null,
         public readonly ?AutomationStep_automation_step_read $next = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -18,7 +20,9 @@ final class AutomationStepChildrenNormal_automation_step_read
     public static function fromArray(array $data): self
     {
         return new self(
+            iri: $data['iri'] ?? null,
             next: isset($data['next']) ? AutomationStep_automation_step_read::fromArray($data['next']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -26,14 +30,18 @@ final class AutomationStepChildrenNormal_automation_step_read
     public function toArray(): array
     {
         return [
+            'iri' => $this->iri,
             'next' => $this->next?->toArray(),
+            'uuid' => $this->uuid,
         ];
     }
 
     public function with(mixed ...$fields): self
     {
         return new self(
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             next: array_key_exists('next', $fields) ? $fields['next'] : $this->next,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

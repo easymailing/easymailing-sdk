@@ -21,6 +21,7 @@ final class Order_order_read
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?float $currency_exchange_rate = null,
         public readonly ?int $discount_total = null,
+        public readonly ?string $iri = null,
         /** @var list<OrderItem_order_read>|null */
         public readonly ?array $order_items = null,
         public readonly ?string $order_number = null,
@@ -33,6 +34,7 @@ final class Order_order_read
         public readonly ?string $tracking_number = null,
         public readonly ?string $tracking_url = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -51,6 +53,7 @@ final class Order_order_read
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             currency_exchange_rate: $data['currency_exchange_rate'] ?? null,
             discount_total: $data['discount_total'] ?? null,
+            iri: $data['iri'] ?? null,
             order_items: isset($data['order_items']) ? array_map(fn($x) => OrderItem_order_read::fromArray($x), $data['order_items']) : null,
             order_number: $data['order_number'] ?? null,
             paid_at: isset($data['paid_at']) ? new \DateTimeImmutable($data['paid_at']) : null,
@@ -62,6 +65,7 @@ final class Order_order_read
             tracking_number: $data['tracking_number'] ?? null,
             tracking_url: $data['tracking_url'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -80,6 +84,7 @@ final class Order_order_read
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'currency_exchange_rate' => $this->currency_exchange_rate,
             'discount_total' => $this->discount_total,
+            'iri' => $this->iri,
             'order_items' => $this->order_items !== null ? array_map(fn($x) => $x->toArray(), $this->order_items) : null,
             'order_number' => $this->order_number,
             'paid_at' => $this->paid_at?->format(\DateTimeInterface::ATOM),
@@ -91,6 +96,7 @@ final class Order_order_read
             'tracking_number' => $this->tracking_number,
             'tracking_url' => $this->tracking_url,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -108,6 +114,7 @@ final class Order_order_read
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             currency_exchange_rate: array_key_exists('currency_exchange_rate', $fields) ? $fields['currency_exchange_rate'] : $this->currency_exchange_rate,
             discount_total: array_key_exists('discount_total', $fields) ? $fields['discount_total'] : $this->discount_total,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             order_items: array_key_exists('order_items', $fields) ? $fields['order_items'] : $this->order_items,
             order_number: array_key_exists('order_number', $fields) ? $fields['order_number'] : $this->order_number,
             paid_at: array_key_exists('paid_at', $fields) ? $fields['paid_at'] : $this->paid_at,
@@ -119,6 +126,7 @@ final class Order_order_read
             tracking_number: array_key_exists('tracking_number', $fields) ? $fields['tracking_number'] : $this->tracking_number,
             tracking_url: array_key_exists('tracking_url', $fields) ? $fields['tracking_url'] : $this->tracking_url,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

@@ -16,7 +16,9 @@ final class ButtonStylesDto_design_setting_read
         public readonly string $font_size,
         public readonly string $font_weight,
         public readonly ?string $border_radius = null,
+        public readonly ?string $iri = null,
         public readonly ?string $padding = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -30,7 +32,9 @@ final class ButtonStylesDto_design_setting_read
             font_size: $data['font_size'],
             font_weight: $data['font_weight'],
             border_radius: $data['border_radius'] ?? null,
+            iri: $data['iri'] ?? null,
             padding: $data['padding'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -44,7 +48,9 @@ final class ButtonStylesDto_design_setting_read
             'font_size' => $this->font_size,
             'font_weight' => $this->font_weight,
             'border_radius' => $this->border_radius,
+            'iri' => $this->iri,
             'padding' => $this->padding,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -57,7 +63,9 @@ final class ButtonStylesDto_design_setting_read
             font_size: array_key_exists('font_size', $fields) ? $fields['font_size'] : $this->font_size,
             font_weight: array_key_exists('font_weight', $fields) ? $fields['font_weight'] : $this->font_weight,
             border_radius: array_key_exists('border_radius', $fields) ? $fields['border_radius'] : $this->border_radius,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             padding: array_key_exists('padding', $fields) ? $fields['padding'] : $this->padding,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

@@ -15,6 +15,8 @@ final class SocialLinkDto_design_setting_read
         public readonly string $url,
         public readonly ?string $icon_url = null,
         public readonly ?string $icon_url_white = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -27,6 +29,8 @@ final class SocialLinkDto_design_setting_read
             url: $data['url'],
             icon_url: $data['icon_url'] ?? null,
             icon_url_white: $data['icon_url_white'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -39,6 +43,8 @@ final class SocialLinkDto_design_setting_read
             'url' => $this->url,
             'icon_url' => $this->icon_url,
             'icon_url_white' => $this->icon_url_white,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -50,6 +56,8 @@ final class SocialLinkDto_design_setting_read
             url: array_key_exists('url', $fields) ? $fields['url'] : $this->url,
             icon_url: array_key_exists('icon_url', $fields) ? $fields['icon_url'] : $this->icon_url,
             icon_url_white: array_key_exists('icon_url_white', $fields) ? $fields['icon_url_white'] : $this->icon_url_white,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

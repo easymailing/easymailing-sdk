@@ -18,8 +18,10 @@ final class Store_store_read
         public readonly string $timezone,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $group = null,
+        public readonly ?string $iri = null,
         public readonly ?string $platform = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -35,8 +37,10 @@ final class Store_store_read
             timezone: $data['timezone'],
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             group: $data['group'] ?? null,
+            iri: $data['iri'] ?? null,
             platform: $data['platform'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -52,8 +56,10 @@ final class Store_store_read
             'timezone' => $this->timezone,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'group' => $this->group,
+            'iri' => $this->iri,
             'platform' => $this->platform,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -68,8 +74,10 @@ final class Store_store_read
             timezone: array_key_exists('timezone', $fields) ? $fields['timezone'] : $this->timezone,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             group: array_key_exists('group', $fields) ? $fields['group'] : $this->group,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             platform: array_key_exists('platform', $fields) ? $fields['platform'] : $this->platform,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

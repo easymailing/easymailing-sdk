@@ -12,8 +12,10 @@ final class AudienceResourcesDto_audience_read
     public function __construct(
         public readonly ?int $automations = null,
         public readonly ?int $campaigns = null,
+        public readonly ?string $iri = null,
         public readonly ?int $landing_pages = null,
         public readonly ?int $subscription_forms = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -23,8 +25,10 @@ final class AudienceResourcesDto_audience_read
         return new self(
             automations: $data['automations'] ?? null,
             campaigns: $data['campaigns'] ?? null,
+            iri: $data['iri'] ?? null,
             landing_pages: $data['landing_pages'] ?? null,
             subscription_forms: $data['subscription_forms'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -34,8 +38,10 @@ final class AudienceResourcesDto_audience_read
         return [
             'automations' => $this->automations,
             'campaigns' => $this->campaigns,
+            'iri' => $this->iri,
             'landing_pages' => $this->landing_pages,
             'subscription_forms' => $this->subscription_forms,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -44,8 +50,10 @@ final class AudienceResourcesDto_audience_read
         return new self(
             automations: array_key_exists('automations', $fields) ? $fields['automations'] : $this->automations,
             campaigns: array_key_exists('campaigns', $fields) ? $fields['campaigns'] : $this->campaigns,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             landing_pages: array_key_exists('landing_pages', $fields) ? $fields['landing_pages'] : $this->landing_pages,
             subscription_forms: array_key_exists('subscription_forms', $fields) ? $fields['subscription_forms'] : $this->subscription_forms,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

@@ -86,7 +86,8 @@ function normalize(value) {
 }
 
 const normalized = normalize(data);
-const json = JSON.stringify(normalized, null, 2) + "\n";
+projectHydraIdentity(normalized);
+const json = JSON.stringify(normalize(normalized), null, 2) + "\n";
 writeFileSync(target, json);
 
 // Fail-loud assertion: if any internal hostname slipped past, the script
@@ -94,4 +95,72 @@ writeFileSync(target, json);
 if (json.includes("easymailing.test")) {
   console.error("ERROR: easymailing.test still present in normalized output");
   exit(2);
+}
+
+/**
+ * Project every Hydra entity schema to expose `iri` (the @id IRI verbatim)
+ * and `uuid` (the trailing UUID of the IRI) as first-class typed fields,
+ * stripping the JSON-LD/Hydra transport metadata properties (`@id`, `@type`,
+ * `@context`) from the schema in the process.
+ *
+ * The detection rule is: a schema is a Hydra entity if its `properties` map
+ * declares `@id`. That covers the `.jsonld-*.read` variants the upstream
+ * spec exposes. Their non-jsonld twins (same name without the `.jsonld-`
+ * infix) are entities too at runtime — the API returns `@id` for them
+ * regardless of which `Accept` header is used — so we mark those as
+ * entities too via the `name.replace('.jsonld-', '-')` mapping.
+ *
+ * Conflict policy: if a schema already declares `iri` or `uuid` as a
+ * property (e.g. a future API change names a real domain field that way),
+ * we DO NOT overwrite it — we log a warning and leave the existing one.
+ *
+ * Operates on the normalized object in place. Idempotent: running it twice
+ * produces the same output because the second pass finds no `@id` to drive
+ * the projection.
+ *
+ * @param {unknown} spec - the parsed OpenAPI document, post-sort.
+ */
+function projectHydraIdentity(spec) {
+  if (!spec || typeof spec !== "object") return;
+  const schemas = spec?.components?.schemas;
+  if (!schemas || typeof schemas !== "object") return;
+
+  const entityNames = new Set();
+  for (const [name, schema] of Object.entries(schemas)) {
+    if (schema && typeof schema === "object" && schema.properties && Object.prototype.hasOwnProperty.call(schema.properties, "@id")) {
+      entityNames.add(name);
+      // Non-jsonld twin: the runtime returns `@id` for it too.
+      const twin = name.includes(".jsonld-") ? name.replace(".jsonld-", "-") : null;
+      if (twin && schemas[twin]) entityNames.add(twin);
+    }
+  }
+
+  for (const name of entityNames) {
+    const schema = schemas[name];
+    if (!schema || typeof schema !== "object" || !schema.properties) continue;
+    const props = schema.properties;
+
+    // Strip transport metadata properties.
+    delete props["@id"];
+    delete props["@type"];
+    delete props["@context"];
+
+    // Inject identity fields, no-overwrite policy.
+    if (!Object.prototype.hasOwnProperty.call(props, "iri")) {
+      props.iri = {
+        type: "string",
+        description: "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+      };
+    } else {
+      console.error(`WARN: schema "${name}" already declares property "iri"; leaving original definition in place.`);
+    }
+    if (!Object.prototype.hasOwnProperty.call(props, "uuid")) {
+      props.uuid = {
+        type: "string",
+        description: "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+      };
+    } else {
+      console.error(`WARN: schema "${name}" already declares property "uuid"; leaving original definition in place.`);
+    }
+  }
 }

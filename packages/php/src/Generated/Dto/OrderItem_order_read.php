@@ -14,6 +14,8 @@ final class OrderItem_order_read
         public readonly int $quantity,
         public readonly ?string $variant,
         public readonly ?int $discount = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -25,6 +27,8 @@ final class OrderItem_order_read
             quantity: $data['quantity'],
             variant: $data['variant'],
             discount: $data['discount'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -36,6 +40,8 @@ final class OrderItem_order_read
             'quantity' => $this->quantity,
             'variant' => $this->variant,
             'discount' => $this->discount,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -46,6 +52,8 @@ final class OrderItem_order_read
             quantity: array_key_exists('quantity', $fields) ? $fields['quantity'] : $this->quantity,
             variant: array_key_exists('variant', $fields) ? $fields['variant'] : $this->variant,
             discount: array_key_exists('discount', $fields) ? $fields['discount'] : $this->discount,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

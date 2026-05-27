@@ -20,6 +20,7 @@ final class CampaignStat_campaign_read
         public readonly ?int $delivered = null,
         public readonly ?int $delivered_rate = null,
         public readonly ?int $hard_bounces = null,
+        public readonly ?string $iri = null,
         public readonly ?int $open_rate = null,
         public readonly ?int $opens = null,
         public readonly ?float $order_rate = null,
@@ -33,6 +34,7 @@ final class CampaignStat_campaign_read
         public readonly ?int $unique_opens = null,
         public readonly ?int $unsubscriptions = null,
         public readonly ?float $unsuscribe_rate = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -50,6 +52,7 @@ final class CampaignStat_campaign_read
             delivered: $data['delivered'] ?? null,
             delivered_rate: $data['delivered_rate'] ?? null,
             hard_bounces: $data['hard_bounces'] ?? null,
+            iri: $data['iri'] ?? null,
             open_rate: $data['open_rate'] ?? null,
             opens: $data['opens'] ?? null,
             order_rate: $data['order_rate'] ?? null,
@@ -63,6 +66,7 @@ final class CampaignStat_campaign_read
             unique_opens: $data['unique_opens'] ?? null,
             unsubscriptions: $data['unsubscriptions'] ?? null,
             unsuscribe_rate: $data['unsuscribe_rate'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -80,6 +84,7 @@ final class CampaignStat_campaign_read
             'delivered' => $this->delivered,
             'delivered_rate' => $this->delivered_rate,
             'hard_bounces' => $this->hard_bounces,
+            'iri' => $this->iri,
             'open_rate' => $this->open_rate,
             'opens' => $this->opens,
             'order_rate' => $this->order_rate,
@@ -93,6 +98,7 @@ final class CampaignStat_campaign_read
             'unique_opens' => $this->unique_opens,
             'unsubscriptions' => $this->unsubscriptions,
             'unsuscribe_rate' => $this->unsuscribe_rate,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -109,6 +115,7 @@ final class CampaignStat_campaign_read
             delivered: array_key_exists('delivered', $fields) ? $fields['delivered'] : $this->delivered,
             delivered_rate: array_key_exists('delivered_rate', $fields) ? $fields['delivered_rate'] : $this->delivered_rate,
             hard_bounces: array_key_exists('hard_bounces', $fields) ? $fields['hard_bounces'] : $this->hard_bounces,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             open_rate: array_key_exists('open_rate', $fields) ? $fields['open_rate'] : $this->open_rate,
             opens: array_key_exists('opens', $fields) ? $fields['opens'] : $this->opens,
             order_rate: array_key_exists('order_rate', $fields) ? $fields['order_rate'] : $this->order_rate,
@@ -122,6 +129,7 @@ final class CampaignStat_campaign_read
             unique_opens: array_key_exists('unique_opens', $fields) ? $fields['unique_opens'] : $this->unique_opens,
             unsubscriptions: array_key_exists('unsubscriptions', $fields) ? $fields['unsubscriptions'] : $this->unsubscriptions,
             unsuscribe_rate: array_key_exists('unsuscribe_rate', $fields) ? $fields['unsuscribe_rate'] : $this->unsuscribe_rate,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

@@ -10,6 +10,8 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class UpdateScoreAction_automation_step_read
 {
     public function __construct(
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
         public readonly ?int $value = null,
     ) {
     }
@@ -18,6 +20,8 @@ final class UpdateScoreAction_automation_step_read
     public static function fromArray(array $data): self
     {
         return new self(
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
             value: $data['value'] ?? null,
         );
     }
@@ -26,6 +30,8 @@ final class UpdateScoreAction_automation_step_read
     public function toArray(): array
     {
         return [
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
             'value' => $this->value,
         ];
     }
@@ -33,6 +39,8 @@ final class UpdateScoreAction_automation_step_read
     public function with(mixed ...$fields): self
     {
         return new self(
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
         );
     }

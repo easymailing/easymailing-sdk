@@ -11,6 +11,8 @@ final class ButtonDto_design_setting_read
 {
     public function __construct(
         public readonly ?ButtonStylesDto_design_setting_read $styles,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -19,6 +21,8 @@ final class ButtonDto_design_setting_read
     {
         return new self(
             styles: isset($data['styles']) ? ButtonStylesDto_design_setting_read::fromArray($data['styles']) : null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -27,6 +31,8 @@ final class ButtonDto_design_setting_read
     {
         return [
             'styles' => $this->styles?->toArray(),
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -34,6 +40,8 @@ final class ButtonDto_design_setting_read
     {
         return new self(
             styles: array_key_exists('styles', $fields) ? $fields['styles'] : $this->styles,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

@@ -37,6 +37,8 @@ test("parseEntity: derives uuid from @id when uuid missing", () => {
   const input = { "@id": "/audiences/xyz-456", "@type": "Audience", name: "x" };
   const parsed = parseEntity(input);
   assert.equal(parsed.uuid, "xyz-456");
+  // As of the IRI projection feature, parseEntity also sets iri.
+  assert.equal(parsed.iri, "/audiences/xyz-456");
 });
 
 test("parseEntity: recursive in nested objects", () => {

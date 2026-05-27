@@ -18,10 +18,12 @@ final class SmsCampaignStatsResource_campaign_read
         public readonly ?float $delivery_rate = null,
         public readonly ?int $failed = null,
         public readonly ?float $failed_rate = null,
+        public readonly ?string $iri = null,
         public readonly ?int $replies = null,
         public readonly ?int $sent = null,
         public readonly ?int $to_send = null,
         public readonly ?int $unsubscribed = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -37,10 +39,12 @@ final class SmsCampaignStatsResource_campaign_read
             delivery_rate: $data['delivery_rate'] ?? null,
             failed: $data['failed'] ?? null,
             failed_rate: $data['failed_rate'] ?? null,
+            iri: $data['iri'] ?? null,
             replies: $data['replies'] ?? null,
             sent: $data['sent'] ?? null,
             to_send: $data['to_send'] ?? null,
             unsubscribed: $data['unsubscribed'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -56,10 +60,12 @@ final class SmsCampaignStatsResource_campaign_read
             'delivery_rate' => $this->delivery_rate,
             'failed' => $this->failed,
             'failed_rate' => $this->failed_rate,
+            'iri' => $this->iri,
             'replies' => $this->replies,
             'sent' => $this->sent,
             'to_send' => $this->to_send,
             'unsubscribed' => $this->unsubscribed,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -74,10 +80,12 @@ final class SmsCampaignStatsResource_campaign_read
             delivery_rate: array_key_exists('delivery_rate', $fields) ? $fields['delivery_rate'] : $this->delivery_rate,
             failed: array_key_exists('failed', $fields) ? $fields['failed'] : $this->failed,
             failed_rate: array_key_exists('failed_rate', $fields) ? $fields['failed_rate'] : $this->failed_rate,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             replies: array_key_exists('replies', $fields) ? $fields['replies'] : $this->replies,
             sent: array_key_exists('sent', $fields) ? $fields['sent'] : $this->sent,
             to_send: array_key_exists('to_send', $fields) ? $fields['to_send'] : $this->to_send,
             unsubscribed: array_key_exists('unsubscribed', $fields) ? $fields['unsubscribed'] : $this->unsubscribed,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

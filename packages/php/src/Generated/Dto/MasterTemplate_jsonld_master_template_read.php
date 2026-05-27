@@ -10,13 +10,10 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class MasterTemplate_jsonld_master_template_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?string $content = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $simple_json_code = null,
         public readonly ?string $thumbnail = null,
@@ -31,12 +28,10 @@ final class MasterTemplate_jsonld_master_template_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             content: $data['content'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             simple_json_code: $data['simple_json_code'] ?? null,
             thumbnail: $data['thumbnail'] ?? null,
             title: $data['title'] ?? null,
@@ -50,12 +45,10 @@ final class MasterTemplate_jsonld_master_template_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'content' => $this->content,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'id' => $this->id,
+            'iri' => $this->iri,
             'simple_json_code' => $this->simple_json_code,
             'thumbnail' => $this->thumbnail,
             'title' => $this->title,
@@ -68,12 +61,10 @@ final class MasterTemplate_jsonld_master_template_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             content: array_key_exists('content', $fields) ? $fields['content'] : $this->content,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             simple_json_code: array_key_exists('simple_json_code', $fields) ? $fields['simple_json_code'] : $this->simple_json_code,
             thumbnail: array_key_exists('thumbnail', $fields) ? $fields['thumbnail'] : $this->thumbnail,
             title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,

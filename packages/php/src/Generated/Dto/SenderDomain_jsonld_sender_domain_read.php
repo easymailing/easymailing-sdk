@@ -10,10 +10,6 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class SenderDomain_jsonld_sender_domain_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?bool $aligned = null,
         public readonly ?bool $authenticated = null,
         public readonly ?string $authentication_info_url = null,
@@ -23,6 +19,7 @@ final class SenderDomain_jsonld_sender_domain_read
         public readonly ?string $domain = null,
         public readonly ?string $email = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $links_aligned = null,
         public readonly ?string $subdomain = null,
         public readonly ?string $tracking_subdomain = null,
@@ -36,9 +33,6 @@ final class SenderDomain_jsonld_sender_domain_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             aligned: $data['aligned'] ?? null,
             authenticated: $data['authenticated'] ?? null,
             authentication_info_url: $data['authentication_info_url'] ?? null,
@@ -47,6 +41,7 @@ final class SenderDomain_jsonld_sender_domain_read
             domain: $data['domain'] ?? null,
             email: $data['email'] ?? null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             links_aligned: $data['links_aligned'] ?? null,
             subdomain: $data['subdomain'] ?? null,
             tracking_subdomain: $data['tracking_subdomain'] ?? null,
@@ -60,9 +55,6 @@ final class SenderDomain_jsonld_sender_domain_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'aligned' => $this->aligned,
             'authenticated' => $this->authenticated,
             'authentication_info_url' => $this->authentication_info_url,
@@ -71,6 +63,7 @@ final class SenderDomain_jsonld_sender_domain_read
             'domain' => $this->domain,
             'email' => $this->email,
             'id' => $this->id,
+            'iri' => $this->iri,
             'links_aligned' => $this->links_aligned,
             'subdomain' => $this->subdomain,
             'tracking_subdomain' => $this->tracking_subdomain,
@@ -83,9 +76,6 @@ final class SenderDomain_jsonld_sender_domain_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             aligned: array_key_exists('aligned', $fields) ? $fields['aligned'] : $this->aligned,
             authenticated: array_key_exists('authenticated', $fields) ? $fields['authenticated'] : $this->authenticated,
             authentication_info_url: array_key_exists('authentication_info_url', $fields) ? $fields['authentication_info_url'] : $this->authentication_info_url,
@@ -94,6 +84,7 @@ final class SenderDomain_jsonld_sender_domain_read
             domain: array_key_exists('domain', $fields) ? $fields['domain'] : $this->domain,
             email: array_key_exists('email', $fields) ? $fields['email'] : $this->email,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             links_aligned: array_key_exists('links_aligned', $fields) ? $fields['links_aligned'] : $this->links_aligned,
             subdomain: array_key_exists('subdomain', $fields) ? $fields['subdomain'] : $this->subdomain,
             tracking_subdomain: array_key_exists('tracking_subdomain', $fields) ? $fields['tracking_subdomain'] : $this->tracking_subdomain,

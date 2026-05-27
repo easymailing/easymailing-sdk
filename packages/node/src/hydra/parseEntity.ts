@@ -5,7 +5,12 @@ const DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 
 /**
  * Strip JSON-LD/Hydra metadata keys from an entity recursively.
- * If `uuid` is absent and `@id` is present, derive uuid from the IRI.
+ *
+ * - `@id`, `@type`, `@context` are removed from the output.
+ * - If `@id` is a non-empty string, expose it as `iri` (unless the input
+ *   already has its own `iri` key, which is preserved).
+ * - If `@id` is a non-empty string and `uuid` is not already present,
+ *   derive `uuid` from the trailing UUID segment of the IRI.
  *
  * Defensive: never copies `__proto__`, `constructor` or `prototype` even if
  * present as own properties (prototype-pollution guard for parsed JSON).
@@ -22,9 +27,13 @@ export function parseEntity<T extends Record<string, unknown>>(input: T): T {
     result[key] = stripValue(value);
   }
 
-  if (!("uuid" in result) && typeof id === "string") {
-    const uuid = extractUuid(id);
-    if (uuid !== null) result.uuid = uuid;
+  // Identity projection: only when `@id` is a non-empty string.
+  if (typeof id === "string" && id !== "") {
+    if (!("iri" in result)) result.iri = id;
+    if (!("uuid" in result)) {
+      const uuid = extractUuid(id);
+      if (uuid !== null) result.uuid = uuid;
+    }
   }
 
   return result as T;

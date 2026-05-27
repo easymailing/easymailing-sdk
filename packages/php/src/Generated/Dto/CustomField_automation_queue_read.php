@@ -11,6 +11,8 @@ final class CustomField_automation_queue_read
 {
     public function __construct(
         public readonly ?string $list_field,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
         public readonly ?string $value = null,
     ) {
     }
@@ -20,6 +22,8 @@ final class CustomField_automation_queue_read
     {
         return new self(
             list_field: $data['list_field'],
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
             value: $data['value'] ?? null,
         );
     }
@@ -29,6 +33,8 @@ final class CustomField_automation_queue_read
     {
         return [
             'list_field' => $this->list_field,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
             'value' => $this->value,
         ];
     }
@@ -37,6 +43,8 @@ final class CustomField_automation_queue_read
     {
         return new self(
             list_field: array_key_exists('list_field', $fields) ? $fields['list_field'] : $this->list_field,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
         );
     }

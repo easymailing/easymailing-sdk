@@ -10,12 +10,10 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListFieldOption_jsonld_list_field_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
+        public readonly ?string $iri = null,
         /** @var list<ListFieldOptionTranslation_jsonld_list_field_read>|null */
         public readonly ?array $translations = null,
+        public readonly ?string $uuid = null,
         public readonly ?string $value = null,
     ) {
     }
@@ -24,10 +22,9 @@ final class ListFieldOption_jsonld_list_field_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
+            iri: $data['iri'] ?? null,
             translations: isset($data['translations']) ? array_map(fn($x) => ListFieldOptionTranslation_jsonld_list_field_read::fromArray($x), $data['translations']) : null,
+            uuid: $data['uuid'] ?? null,
             value: $data['value'] ?? null,
         );
     }
@@ -36,10 +33,9 @@ final class ListFieldOption_jsonld_list_field_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
+            'iri' => $this->iri,
             'translations' => $this->translations !== null ? array_map(fn($x) => $x->toArray(), $this->translations) : null,
+            'uuid' => $this->uuid,
             'value' => $this->value,
         ];
     }
@@ -47,10 +43,9 @@ final class ListFieldOption_jsonld_list_field_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             translations: array_key_exists('translations', $fields) ? $fields['translations'] : $this->translations,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
             value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
         );
     }

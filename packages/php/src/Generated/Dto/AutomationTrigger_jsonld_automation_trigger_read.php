@@ -10,16 +10,13 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class AutomationTrigger_jsonld_automation_trigger_read
 {
     public function __construct(
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?bool $active = null,
         public readonly ?string $automation = null,
         public readonly ?int $count_automation_queues = null,
         public readonly ?int $count_canceled_automation_queues = null,
         public readonly ?int $count_completed_automation_queues = null,
         public readonly ?int $count_queued_automation_queues = null,
+        public readonly ?string $iri = null,
         public readonly mixed $trigger = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\TriggerType $trigger_type = null,
         public readonly ?string $uuid = null,
@@ -31,15 +28,13 @@ final class AutomationTrigger_jsonld_automation_trigger_read
     public static function fromArray(array $data): self
     {
         return new self(
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             active: $data['active'] ?? null,
             automation: $data['automation'] ?? null,
             count_automation_queues: $data['count_automation_queues'] ?? null,
             count_canceled_automation_queues: $data['count_canceled_automation_queues'] ?? null,
             count_completed_automation_queues: $data['count_completed_automation_queues'] ?? null,
             count_queued_automation_queues: $data['count_queued_automation_queues'] ?? null,
+            iri: $data['iri'] ?? null,
             trigger: $data['trigger'] ?? null,
             trigger_type: isset($data['trigger_type']) ? \Easymailing\Sdk\Generated\Enum\TriggerType::from($data['trigger_type']) : null,
             uuid: $data['uuid'] ?? null,
@@ -51,15 +46,13 @@ final class AutomationTrigger_jsonld_automation_trigger_read
     public function toArray(): array
     {
         return [
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'active' => $this->active,
             'automation' => $this->automation,
             'count_automation_queues' => $this->count_automation_queues,
             'count_canceled_automation_queues' => $this->count_canceled_automation_queues,
             'count_completed_automation_queues' => $this->count_completed_automation_queues,
             'count_queued_automation_queues' => $this->count_queued_automation_queues,
+            'iri' => $this->iri,
             'trigger' => $this->trigger,
             'trigger_type' => $this->trigger_type?->value,
             'uuid' => $this->uuid,
@@ -70,15 +63,13 @@ final class AutomationTrigger_jsonld_automation_trigger_read
     public function with(mixed ...$fields): self
     {
         return new self(
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             active: array_key_exists('active', $fields) ? $fields['active'] : $this->active,
             automation: array_key_exists('automation', $fields) ? $fields['automation'] : $this->automation,
             count_automation_queues: array_key_exists('count_automation_queues', $fields) ? $fields['count_automation_queues'] : $this->count_automation_queues,
             count_canceled_automation_queues: array_key_exists('count_canceled_automation_queues', $fields) ? $fields['count_canceled_automation_queues'] : $this->count_canceled_automation_queues,
             count_completed_automation_queues: array_key_exists('count_completed_automation_queues', $fields) ? $fields['count_completed_automation_queues'] : $this->count_completed_automation_queues,
             count_queued_automation_queues: array_key_exists('count_queued_automation_queues', $fields) ? $fields['count_queued_automation_queues'] : $this->count_queued_automation_queues,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             trigger: array_key_exists('trigger', $fields) ? $fields['trigger'] : $this->trigger,
             trigger_type: array_key_exists('trigger_type', $fields) ? $fields['trigger_type'] : $this->trigger_type,
             uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,

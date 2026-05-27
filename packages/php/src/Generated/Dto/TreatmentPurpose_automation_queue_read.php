@@ -11,8 +11,10 @@ final class TreatmentPurpose_automation_queue_read
 {
     public function __construct(
         public readonly ?string $description = null,
+        public readonly ?string $iri = null,
         /** @var list<TreatmentPurposeTranslation_automation_queue_read>|null */
         public readonly ?array $translations = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -21,7 +23,9 @@ final class TreatmentPurpose_automation_queue_read
     {
         return new self(
             description: $data['description'] ?? null,
+            iri: $data['iri'] ?? null,
             translations: isset($data['translations']) ? array_map(fn($x) => TreatmentPurposeTranslation_automation_queue_read::fromArray($x), $data['translations']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -30,7 +34,9 @@ final class TreatmentPurpose_automation_queue_read
     {
         return [
             'description' => $this->description,
+            'iri' => $this->iri,
             'translations' => $this->translations !== null ? array_map(fn($x) => $x->toArray(), $this->translations) : null,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -38,7 +44,9 @@ final class TreatmentPurpose_automation_queue_read
     {
         return new self(
             description: array_key_exists('description', $fields) ? $fields['description'] : $this->description,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             translations: array_key_exists('translations', $fields) ? $fields['translations'] : $this->translations,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

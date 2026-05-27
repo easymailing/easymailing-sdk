@@ -12,12 +12,10 @@ final class Group_jsonld_automation_queue_read
     public function __construct(
         public readonly string $color,
         public readonly string $title,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
         public readonly ?string $description = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $public = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -27,11 +25,10 @@ final class Group_jsonld_automation_queue_read
         return new self(
             color: $data['color'],
             title: $data['title'],
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
             description: $data['description'] ?? null,
+            iri: $data['iri'] ?? null,
             public: $data['public'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -41,11 +38,10 @@ final class Group_jsonld_automation_queue_read
         return [
             'color' => $this->color,
             'title' => $this->title,
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
             'description' => $this->description,
+            'iri' => $this->iri,
             'public' => $this->public,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -54,11 +50,10 @@ final class Group_jsonld_automation_queue_read
         return new self(
             color: array_key_exists('color', $fields) ? $fields['color'] : $this->color,
             title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
             description: array_key_exists('description', $fields) ? $fields['description'] : $this->description,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             public: array_key_exists('public', $fields) ? $fields['public'] : $this->public,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

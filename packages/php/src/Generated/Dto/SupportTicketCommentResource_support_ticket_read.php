@@ -14,7 +14,9 @@ final class SupportTicketCommentResource_support_ticket_read
         public readonly ?string $body = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
+        public readonly ?string $iri = null,
         public readonly ?bool $public = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -26,7 +28,9 @@ final class SupportTicketCommentResource_support_ticket_read
             body: $data['body'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             id: $data['id'] ?? null,
+            iri: $data['iri'] ?? null,
             public: $data['public'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -38,7 +42,9 @@ final class SupportTicketCommentResource_support_ticket_read
             'body' => $this->body,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'id' => $this->id,
+            'iri' => $this->iri,
             'public' => $this->public,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -49,7 +55,9 @@ final class SupportTicketCommentResource_support_ticket_read
             body: array_key_exists('body', $fields) ? $fields['body'] : $this->body,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             public: array_key_exists('public', $fields) ? $fields['public'] : $this->public,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

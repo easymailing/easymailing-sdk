@@ -11,7 +11,9 @@ final class TextsDto_design_setting_read
 {
     public function __construct(
         public readonly ?TextElementDto_design_setting_read $paragraph,
+        public readonly ?string $iri = null,
         public readonly ?TextElementDto_design_setting_read $list = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -20,7 +22,9 @@ final class TextsDto_design_setting_read
     {
         return new self(
             paragraph: isset($data['paragraph']) ? TextElementDto_design_setting_read::fromArray($data['paragraph']) : null,
+            iri: $data['iri'] ?? null,
             list: isset($data['list']) ? TextElementDto_design_setting_read::fromArray($data['list']) : null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -29,7 +33,9 @@ final class TextsDto_design_setting_read
     {
         return [
             'paragraph' => $this->paragraph?->toArray(),
+            'iri' => $this->iri,
             'list' => $this->list?->toArray(),
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -37,7 +43,9 @@ final class TextsDto_design_setting_read
     {
         return new self(
             paragraph: array_key_exists('paragraph', $fields) ? $fields['paragraph'] : $this->paragraph,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             list: array_key_exists('list', $fields) ? $fields['list'] : $this->list,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }

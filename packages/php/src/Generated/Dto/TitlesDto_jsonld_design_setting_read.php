@@ -13,10 +13,8 @@ final class TitlesDto_jsonld_design_setting_read
         public readonly ?HeadingStyleDto_jsonld_design_setting_read $h1,
         public readonly ?HeadingStyleDto_jsonld_design_setting_read $h2,
         public readonly ?HeadingStyleDto_jsonld_design_setting_read $h3,
-        /** @var mixed|null actual: string|array (hydrated as raw value — no discriminator) */
-        public readonly mixed $_context = null,
-        public readonly ?string $_id = null,
-        public readonly ?string $_type = null,
+        public readonly ?string $iri = null,
+        public readonly ?string $uuid = null,
     ) {
     }
 
@@ -27,9 +25,8 @@ final class TitlesDto_jsonld_design_setting_read
             h1: isset($data['h1']) ? HeadingStyleDto_jsonld_design_setting_read::fromArray($data['h1']) : null,
             h2: isset($data['h2']) ? HeadingStyleDto_jsonld_design_setting_read::fromArray($data['h2']) : null,
             h3: isset($data['h3']) ? HeadingStyleDto_jsonld_design_setting_read::fromArray($data['h3']) : null,
-            _context: $data['@context'] ?? null,
-            _id: $data['@id'] ?? null,
-            _type: $data['@type'] ?? null,
+            iri: $data['iri'] ?? null,
+            uuid: $data['uuid'] ?? null,
         );
     }
 
@@ -40,9 +37,8 @@ final class TitlesDto_jsonld_design_setting_read
             'h1' => $this->h1?->toArray(),
             'h2' => $this->h2?->toArray(),
             'h3' => $this->h3?->toArray(),
-            '@context' => $this->_context,
-            '@id' => $this->_id,
-            '@type' => $this->_type,
+            'iri' => $this->iri,
+            'uuid' => $this->uuid,
         ];
     }
 
@@ -52,9 +48,8 @@ final class TitlesDto_jsonld_design_setting_read
             h1: array_key_exists('h1', $fields) ? $fields['h1'] : $this->h1,
             h2: array_key_exists('h2', $fields) ? $fields['h2'] : $this->h2,
             h3: array_key_exists('h3', $fields) ? $fields['h3'] : $this->h3,
-            _context: array_key_exists('_context', $fields) ? $fields['_context'] : $this->_context,
-            _id: array_key_exists('_id', $fields) ? $fields['_id'] : $this->_id,
-            _type: array_key_exists('_type', $fields) ? $fields['_type'] : $this->_type,
+            iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
+            uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );
     }
 }
