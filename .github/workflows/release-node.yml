@@ -40,6 +40,11 @@ jobs:
       - name: Create release PR or publish
         uses: changesets/action@v1
         with:
+          # Auth is via npm Trusted Publishing (OIDC) — no NPM_TOKEN needed.
+          # The `id-token: write` permission lets the workflow mint an OIDC
+          # token that npm verifies against the Trusted Publisher configured
+          # at https://www.npmjs.com/package/@easymailing/sdk/access.
+          #
           # Provenance signing is enabled via:
           #   - NPM_CONFIG_PROVENANCE env var below
           #   - publishConfig.provenance in packages/node/package.json
@@ -49,5 +54,4 @@ jobs:
           version: pnpm changeset version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "true"
