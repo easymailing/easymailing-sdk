@@ -112,11 +112,21 @@ final class Easymailing
         ?array $headers = null,
     ): array {
         $url = $this->buildUrl($path, $query);
+        $mergedHeaders = [...$this->commonHeaders(), ...($headers ?? [])];
+        $bodyJson = $body === null ? null : json_encode($body, JSON_THROW_ON_ERROR);
+        // RFC 7231 §3.1.1.5: clients SHOULD send Content-Type when the
+        // request has a payload body. The SDK always serialises bodies as
+        // JSON, so default to `application/json` unless the caller already
+        // provided their own Content-Type (case-insensitive — HTTP headers
+        // are case-insensitive).
+        if ($bodyJson !== null && !self::hasHeaderCi($mergedHeaders, 'content-type')) {
+            $mergedHeaders['Content-Type'] = 'application/json';
+        }
         $req = new TransportRequest(
             method: $method,
             url: $url,
-            headers: [...$this->commonHeaders(), ...($headers ?? [])],
-            body: $body === null ? null : json_encode($body, JSON_THROW_ON_ERROR),
+            headers: $mergedHeaders,
+            body: $bodyJson,
         );
 
         $attempt = 0;
@@ -173,6 +183,24 @@ final class Easymailing
             'Accept' => 'application/ld+json',
             'User-Agent' => $this->userAgent,
         ];
+    }
+
+    /**
+     * Case-insensitive header presence check. HTTP header names are
+     * case-insensitive (RFC 7230 §3.2), so a caller passing `content-type`
+     * should be treated as already providing the header.
+     *
+     * @param array<string, string> $headers
+     */
+    private static function hasHeaderCi(array $headers, string $name): bool
+    {
+        $lower = strtolower($name);
+        foreach (array_keys($headers) as $key) {
+            if (strtolower((string) $key) === $lower) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** @param array<string, scalar>|null $query */

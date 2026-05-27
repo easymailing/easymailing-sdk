@@ -106,11 +106,20 @@ export class Easymailing {
 
   async request<T = unknown>(args: RequestArgs): Promise<RequestResult<T>> {
     const url = this.buildUrl(args.path, args.query);
+    const headers: Record<string, string> = { ...this.commonHeaders(), ...(args.headers ?? {}) };
+    const body = args.body === undefined ? undefined : JSON.stringify(args.body);
+    // RFC 7231 §3.1.1.5: clients SHOULD send Content-Type when the request has
+    // a payload body. The SDK always serialises bodies as JSON, so default to
+    // `application/json` unless the caller has explicitly set their own
+    // Content-Type (case-insensitive — HTTP headers are case-insensitive).
+    if (body !== undefined && !hasHeaderCi(headers, "content-type")) {
+      headers["Content-Type"] = "application/json";
+    }
     const request: TransportRequest = {
       method: args.method,
       url,
-      headers: { ...this.commonHeaders(), ...(args.headers ?? {}) },
-      body: args.body === undefined ? undefined : JSON.stringify(args.body),
+      headers,
+      body,
     };
 
     let attempt = 0;
@@ -208,4 +217,17 @@ function parseAsHydraIfPossible<T>(raw: unknown): T {
     return parseCollection(obj) as unknown as T;
   }
   return parseEntity(obj) as unknown as T;
+}
+
+/**
+ * Case-insensitive header presence check. HTTP header names are
+ * case-insensitive (RFC 7230 §3.2), so a caller passing `content-type`
+ * should be treated as already providing the header.
+ */
+function hasHeaderCi(headers: Record<string, string>, name: string): boolean {
+  const lower = name.toLowerCase();
+  for (const key of Object.keys(headers)) {
+    if (key.toLowerCase() === lower) return true;
+  }
+  return false;
 }

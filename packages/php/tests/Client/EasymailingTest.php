@@ -167,4 +167,67 @@ final class EasymailingTest extends TestCase
         $result = $em->request('GET', '/x');
         self::assertSame(42, $result['rateLimit']->remaining);
     }
+
+    // Content-Type auto-injection ------------------------------------------
+
+    public function testPostWithBodySetsContentTypeJson(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(201, []);
+        $em = new Easymailing(apiKey: 'k', baseUrl: 'https://api.test', transport: $transport);
+        $em->request('POST', '/x', ['foo' => 1]);
+        self::assertSame('application/json', $transport->received[0]->headers['Content-Type']);
+    }
+
+    public function testPutWithBodySetsContentTypeJson(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(200, []);
+        $em = new Easymailing(apiKey: 'k', baseUrl: 'https://api.test', transport: $transport);
+        $em->request('PUT', '/x', ['foo' => 1]);
+        self::assertSame('application/json', $transport->received[0]->headers['Content-Type']);
+    }
+
+    public function testPatchWithBodySetsContentTypeJson(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(200, []);
+        $em = new Easymailing(apiKey: 'k', baseUrl: 'https://api.test', transport: $transport);
+        $em->request('PATCH', '/x', ['foo' => 1]);
+        self::assertSame('application/json', $transport->received[0]->headers['Content-Type']);
+    }
+
+    public function testGetWithoutBodyDoesNotSetContentType(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(200, []);
+        $em = new Easymailing(apiKey: 'k', baseUrl: 'https://api.test', transport: $transport);
+        $em->request('GET', '/x');
+        self::assertArrayNotHasKey('Content-Type', $transport->received[0]->headers);
+    }
+
+    public function testDeleteWithoutBodyDoesNotSetContentType(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(204, []);
+        $em = new Easymailing(apiKey: 'k', baseUrl: 'https://api.test', transport: $transport);
+        $em->request('DELETE', '/x');
+        self::assertArrayNotHasKey('Content-Type', $transport->received[0]->headers);
+    }
+
+    public function testCallerOverrideContentTypeWinsCaseInsensitive(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(201, []);
+        $em = new Easymailing(apiKey: 'k', baseUrl: 'https://api.test', transport: $transport);
+        $em->request(
+            'POST',
+            '/x',
+            ['foo' => 1],
+            headers: ['content-type' => 'application/merge-patch+json'],
+        );
+        $headers = $transport->received[0]->headers;
+        self::assertSame('application/merge-patch+json', $headers['content-type']);
+        self::assertArrayNotHasKey('Content-Type', $headers);
+    }
 }
