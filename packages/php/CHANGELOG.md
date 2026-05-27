@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.2.0-alpha.0...v0.3.0-alpha.0) (2026-05-27)
+
+
+### Features
+
+* **release:** subtree split PHP to easymailing/sdk-php mirror ([cb75357](https://github.com/easymailing/easymailing-sdk/commit/cb75357a79cc344d8398b9cd16fe96e8c1b8bc3a))
+* **webhooks:** PHP webhook event catalogue constants ([461a66a](https://github.com/easymailing/easymailing-sdk/commit/461a66a00c99fe98daa3c36fae80673378230e67))
+
+
+### Bug Fixes
+
+* **php-dto-generator:** emit typed array shapes for PHPStan level 8 ([ebf63cd](https://github.com/easymailing/easymailing-sdk/commit/ebf63cd581b5ddc7debaf0568ac694dba5d01227))
+* **php:** exhaustive PHPStan level 8 cleanup ([b821b65](https://github.com/easymailing/easymailing-sdk/commit/b821b658824ece990eec8842df4b6df53eaf13af))
+
 ## [0.2.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.1.0-alpha.0...v0.2.0-alpha.0) (2026-05-27)
 
 
