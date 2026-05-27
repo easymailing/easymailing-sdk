@@ -10,6 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class AutomationStepChildrenNormal
 {
     public function __construct(
+        /** @var array<string,mixed>|null */
         public readonly ?array $next = null,
     ) {
     }

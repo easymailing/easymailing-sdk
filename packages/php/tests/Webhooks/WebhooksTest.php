@@ -56,7 +56,11 @@ final class WebhooksTest extends TestCase
     {
         $event = EventParser::parse('{"event_type":"member.subscribed","webhook_id":"wh-1","data":{"email":"a@x"}}');
         self::assertSame('member.subscribed', $event['event_type']);
+        // webhook_id is `?:string` in the return shape — after array_key_exists()
+        // narrows it to required, drop the ??null fallback (it'd be dead code).
+        self::assertTrue(array_key_exists('webhook_id', $event));
         self::assertSame('wh-1', $event['webhook_id']);
+        self::assertIsArray($event['data']);
         self::assertSame('a@x', $event['data']['email']);
     }
 

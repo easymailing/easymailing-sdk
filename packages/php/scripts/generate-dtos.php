@@ -227,10 +227,20 @@ function analyzeProperty(array $schema, array $ctx): array
             $innerHint = $inner['typeHint'];
             $innerFrom = $inner['from'];
             $innerTo = $inner['to'];
+
+            // Propagate inner docHint so PHPStan sees array<string,mixed>|null etc.
+            // The wrapper makes the value nullable, so append `|null` if not already there.
+            $propagatedDocHint = null;
+            if ($inner['docHint'] !== null) {
+                $propagatedDocHint = str_contains($inner['docHint'], '|null')
+                    ? $inner['docHint']
+                    : preg_replace('/(@var \S+)/', '$1|null', $inner['docHint'], 1);
+            }
+
             return [
                 'typeHint' => '?' . $innerHint,
                 'nullable' => true,
-                'docHint' => null,
+                'docHint' => $propagatedDocHint,
                 // The schema says null is allowed: always guard from with null check.
                 'from' => function (string $key, bool $keyMayBeMissing) use ($innerFrom) {
                     // If key may be missing OR value may be null, both need handling.
@@ -276,10 +286,11 @@ function analyzeProperty(array $schema, array $ctx): array
             ];
         }
 
+        $maybeNull = $nullable ? '|null' : '';
         return [
             'typeHint' => $nullable ? '?array' : 'array',
             'nullable' => $nullable,
-            'docHint' => "/** @var array<string,mixed>|null actual: {$unionDoc} (hydrated as raw array — no discriminator) */",
+            'docHint' => "/** @var array<string,mixed>{$maybeNull} actual: {$unionDoc} (hydrated as raw array — no discriminator) */",
             'from' => fn(string $key, bool $keyMayBeMissing) => $keyMayBeMissing ? "\$data['{$key}'] ?? null" : "\$data['{$key}']",
             'to' => fn(string $phpProp, bool $valueMayBeNull) => "\$this->{$phpProp}",
         ];
@@ -290,9 +301,24 @@ function analyzeProperty(array $schema, array $ctx): array
         $items = $schema['items'] ?? [];
         $itemAnalysis = analyzeProperty($items, $ctx);
         $itemType = $itemAnalysis['typeHint'];
+
+        // When items is `type:object` (inline object schema), the inner typeHint is
+        // bare `array`. Drop it through to the parameterized PHPStan form so we don't
+        // emit `list<array>` (which PHPStan rejects as untyped iterable).
+        $itemDocType = ltrim($itemType, '?');
+        if ($itemDocType === 'array') {
+            $itemsType = $items['type'] ?? null;
+            if (is_array($itemsType)) {
+                $nonNull = array_values(array_filter($itemsType, fn($t) => $t !== 'null'));
+                $itemsType = count($nonNull) === 1 ? $nonNull[0] : null;
+            }
+            $itemDocType = $itemsType === 'object'
+                ? 'array<string,mixed>'
+                : 'list<mixed>';
+        }
         // PHPStan rejects `array<int|string, mixed>` ambiguity that comes from bare
         // `array` types. Emit a list<T> annotation so the iterable shape is explicit.
-        $docHint = "/** @var list<{$itemType}> */";
+        $docHint = "/** @var list<{$itemDocType}> */";
 
         if (isset($items['$ref']) && isset($ctx['enums'][basename($items['$ref'])])) {
             $fqn = $itemAnalysis['typeHint'];

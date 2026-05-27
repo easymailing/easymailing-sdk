@@ -18,7 +18,7 @@ final class SenderDomain_jsonld_sender_domain_read
         public readonly ?bool $authenticated = null,
         public readonly ?string $authentication_info_url = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $dns_records = null,
         public readonly ?string $domain = null,
         public readonly ?string $email = null,

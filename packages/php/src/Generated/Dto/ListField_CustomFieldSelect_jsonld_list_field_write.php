@@ -10,7 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListField_CustomFieldSelect_jsonld_list_field_write
 {
     public function __construct(
-        /** @var list<array> */
+        /** @var list<array<string,mixed>> */
         public readonly array $options,
         public readonly ?string $tag,
         /** @var list<CustomFieldTranslationInput_jsonld_list_field_write> */

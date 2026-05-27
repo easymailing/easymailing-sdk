@@ -37,7 +37,7 @@ final class Campaign_campaign_read_campaign_read_detail
         public readonly ?string $uuid = null,
         /** @var list<CampaignTestVariantResource_campaign_read_campaign_read_detail>|null */
         public readonly ?array $variants = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $warnings = null,
     ) {
     }

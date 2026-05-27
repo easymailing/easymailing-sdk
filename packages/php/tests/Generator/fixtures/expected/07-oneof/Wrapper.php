@@ -10,7 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class Wrapper
 {
     public function __construct(
-        /** @var array<string,mixed>|null actual: A|B (hydrated as raw array — no discriminator) */
+        /** @var array<string,mixed> actual: A|B (hydrated as raw array — no discriminator) */
         public readonly array $value,
         public readonly ?A $maybe,
     ) {

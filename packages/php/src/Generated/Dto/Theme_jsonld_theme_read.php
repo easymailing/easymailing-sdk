@@ -17,13 +17,13 @@ final class Theme_jsonld_theme_read
         public readonly ?string $content = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $description = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $industries = null,
         public readonly ?bool $is_new = null,
         public readonly ?bool $requires_pro = null,
         public readonly ?string $thumbnail = null,
         public readonly ?string $title = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $types = null,
         public readonly ?string $uuid = null,
     ) {

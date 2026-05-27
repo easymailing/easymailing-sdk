@@ -300,6 +300,7 @@ final class BatchClientTest extends TestCase
         $batch = $this->makeBatch($transport);
         $result = $batch->run([new BatchOperation('POST', '/x')]);
 
+        self::assertNotNull($result->responses);
         self::assertCount(1, $result->responses);
         self::assertCount(4, $transport->received); // create + wait + regenerate + download
         self::assertSame('PUT', $transport->received[2]->method);
@@ -324,6 +325,7 @@ final class BatchClientTest extends TestCase
 
         $batch = $this->makeBatch($transport);
         $items = $batch->fetchResponsesGuaranteed('B-G');
+        self::assertNotNull($items);
         self::assertCount(1, $items);
     }
 

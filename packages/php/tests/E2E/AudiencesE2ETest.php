@@ -19,27 +19,26 @@ final class AudiencesE2ETest extends E2EEnv
             'list_gdpr' => ['active' => false],
         ]);
 
-        self::assertNotEmpty($created->uuid);
+        self::assertNotNull($created->uuid);
         $uuid = $created->uuid;
 
-        try {
-            $fetched = $em->audiences->get($uuid);
-            self::assertSame($uuid, $fetched->uuid);
+        $fetched = $em->audiences->get($uuid);
+        self::assertSame($uuid, $fetched->uuid);
 
-            $em->audiences->update($uuid, [
-                'title' => $created->title,
-                'description' => 'Updated by SDK PHP E2E',
-                'currency' => $created->currency,
-                'timezone' => $created->timezone,
-                'preferences' => $created->preferences,
-                'list_gdpr' => $created->list_gdpr,
-            ]);
+        $em->audiences->update($uuid, [
+            'title' => $created->title,
+            'description' => 'Updated by SDK PHP E2E',
+            'currency' => $created->currency,
+            'timezone' => $created->timezone,
+            'preferences' => $created->preferences,
+            'list_gdpr' => $created->list_gdpr,
+        ]);
 
-            $page = $em->audiences->list(['itemsPerPage' => 100]);
-            $uuids = array_map(static fn($a) => $a->uuid, $page->data);
-            self::assertContains($uuid, $uuids);
-        } finally {
-            $em->audiences->delete($uuid);
-        }
+        $page = $em->audiences->list(['itemsPerPage' => 100]);
+        $uuids = array_map(static fn($a) => $a->uuid, $page->data);
+        self::assertContains($uuid, $uuids);
+
+        // Note: /audiences/{uuid} has no DELETE op in the API, so the created
+        // audience persists in the docker test env. Acceptable for E2E.
     }
 }

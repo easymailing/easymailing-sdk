@@ -12,7 +12,7 @@ final class DesignSetting_jsonld_design_setting_write
     public function __construct(
         public readonly string $title,
         public readonly ?ButtonDto_jsonld_design_setting_write $button = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $color_palette = null,
         /** @var list<CustomFontDto_jsonld_design_setting_write>|null */
         public readonly ?array $custom_fonts = null,

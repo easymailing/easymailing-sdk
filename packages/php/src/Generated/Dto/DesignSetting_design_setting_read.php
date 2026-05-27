@@ -12,7 +12,7 @@ final class DesignSetting_design_setting_read
     public function __construct(
         public readonly string $title,
         public readonly ?ButtonDto_design_setting_read $button = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $color_palette = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         /** @var list<CustomFontDto_design_setting_read>|null */

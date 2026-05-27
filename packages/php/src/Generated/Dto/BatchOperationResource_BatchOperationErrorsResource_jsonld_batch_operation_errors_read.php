@@ -14,7 +14,7 @@ final class BatchOperationResource_BatchOperationErrorsResource_jsonld_batch_ope
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $errors = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $grouped_by_message = null,

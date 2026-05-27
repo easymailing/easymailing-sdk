@@ -10,7 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class SendWebhookAction_automation_step_read
 {
     public function __construct(
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $payload_items = null,
         public readonly ?string $secret = null,
         public readonly ?string $url = null,

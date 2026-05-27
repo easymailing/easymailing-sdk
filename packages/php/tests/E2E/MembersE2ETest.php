@@ -17,23 +17,24 @@ final class MembersE2ETest extends E2EEnv
             'preferences' => ['sender_name' => 'QA', 'sender_email' => 'qa@example.com'],
             'list_gdpr' => ['active' => false],
         ]);
+        self::assertNotNull($audience->uuid);
         $audienceUuid = $audience->uuid;
         $email = 'qa-'.time().'@example.com';
 
-        try {
-            $member = $em->audiences($audienceUuid)->members->create(['email' => $email]);
-            self::assertSame($email, $member->email);
+        $member = $em->audiences($audienceUuid)->members->create(['email' => $email]);
+        self::assertSame($email, $member->email);
+        self::assertNotNull($member->uuid);
+        $memberUuid = $member->uuid;
 
-            $subscribed = $em->audiences($audienceUuid)->members->subscribe($member->uuid, []);
-            self::assertSame('active', $subscribed->email_status);
+        $subscribed = $em->audiences($audienceUuid)->members->subscribe($memberUuid, []);
+        self::assertSame('active', $subscribed->status?->value);
 
-            $unsubscribed = $em->audiences($audienceUuid)->members->unsubscribe($member->uuid, []);
-            self::assertSame('unsubscribed', $unsubscribed->email_status);
+        $unsubscribed = $em->audiences($audienceUuid)->members->unsubscribe($memberUuid, []);
+        self::assertSame('unsubscribed', $unsubscribed->status?->value);
 
-            $found = $em->members->search(email: $email);
-            self::assertGreaterThanOrEqual(1, count($found->data));
-        } finally {
-            $em->audiences->delete($audienceUuid);
-        }
+        $found = $em->members->search(email: $email);
+        self::assertGreaterThanOrEqual(1, count($found->data));
+
+        // Note: /audiences/{uuid} has no DELETE op, the audience persists.
     }
 }

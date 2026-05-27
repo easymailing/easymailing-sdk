@@ -10,7 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class BatchOperationResource_BatchOperationErrorsResource_batch_operation_errors_read
 {
     public function __construct(
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $errors = null,
         /** @var array<string,mixed>|null */
         public readonly ?array $grouped_by_message = null,

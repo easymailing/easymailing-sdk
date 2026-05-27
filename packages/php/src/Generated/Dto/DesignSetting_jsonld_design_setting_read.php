@@ -16,7 +16,7 @@ final class DesignSetting_jsonld_design_setting_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?ButtonDto_jsonld_design_setting_read $button = null,
-        /** @var list<array>|null */
+        /** @var list<array<string,mixed>>|null */
         public readonly ?array $color_palette = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         /** @var list<CustomFontDto_jsonld_design_setting_read>|null */

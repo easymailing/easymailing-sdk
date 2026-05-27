@@ -10,7 +10,9 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class AutomationStepChildrenCondition
 {
     public function __construct(
+        /** @var array<string,mixed>|null */
         public readonly ?array $no = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $yes = null,
     ) {
     }

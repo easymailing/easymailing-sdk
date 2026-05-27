@@ -111,7 +111,9 @@ final class BatchClient
 
         // Multi-chunk: merge into a single BatchResult, keeping the LAST
         // snapshot as canonical. Caller correlates via external_identifier.
-        $lastSnapshot = null;
+        // The loop runs at least once (count > CHUNK_SIZE), so $lastSnapshot is
+        // guaranteed set by the time we return.
+        $lastSnapshot = new BatchSnapshot(uuid: '', status: 'finished');
         $mergedResponses = [];
         $mergedErrors = null;
 
@@ -129,7 +131,7 @@ final class BatchClient
         }
 
         return new BatchResult(
-            snapshot: $lastSnapshot ?? new BatchSnapshot(uuid: '', status: 'finished'),
+            snapshot: $lastSnapshot,
             responses: $mergedResponses,
             errors: $mergedErrors,
         );

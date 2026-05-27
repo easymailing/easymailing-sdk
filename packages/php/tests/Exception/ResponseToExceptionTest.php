@@ -19,7 +19,7 @@ final class ResponseToExceptionTest extends TestCase
 {
     public function test401IsAuthException(): void
     {
-        $res = new TransportResponse(401, [], json_encode([
+        $res = new TransportResponse(401, [], (string) json_encode([
             'type' => 'https://tools.ietf.org/html/rfc7235#section-3.1',
             'title' => 'Unauthorized',
             'detail' => 'Invalid token',
@@ -47,7 +47,7 @@ final class ResponseToExceptionTest extends TestCase
 
     public function test422IsValidationExceptionWithViolations(): void
     {
-        $res = new TransportResponse(422, [], json_encode([
+        $res = new TransportResponse(422, [], (string) json_encode([
             'status' => 422,
             'title' => 'Validation failed',
             'violations' => [

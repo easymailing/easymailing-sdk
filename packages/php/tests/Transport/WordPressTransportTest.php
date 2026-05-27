@@ -20,6 +20,9 @@ namespace {
 namespace Easymailing\Sdk\Transport {
 
     if (!function_exists(__NAMESPACE__ . '\\wp_remote_request')) {
+        /**
+         * @param array<string, mixed> $args
+         */
         function wp_remote_request(string $url, array $args): mixed
         {
             return ($GLOBALS['__wp_remote_request'] ?? static fn() => null)($url, $args);
@@ -131,6 +134,7 @@ namespace Easymailing\Sdk\Transport {
             $transport = new WordPressTransport(skipSslVerify: true);
             $transport->send(new TransportRequest(method: 'GET', url: 'https://x', headers: []));
 
+            self::assertIsArray($captured);
             self::assertFalse($captured['sslverify']);
         }
 
@@ -145,6 +149,7 @@ namespace Easymailing\Sdk\Transport {
             $transport = new WordPressTransport();
             $transport->send(new TransportRequest(method: 'GET', url: 'https://x', headers: []));
 
+            self::assertIsArray($captured);
             self::assertArrayNotHasKey('body', $captured);
         }
     }
