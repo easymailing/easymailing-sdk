@@ -1,0 +1,53 @@
+name: Split PHP to easymailing/sdk-php
+
+# Subtree-splits packages/php/ into the read-only mirror easymailing/sdk-php.
+# Packagist watches the mirror because it can't read composer.json from
+# subdirectories. The split mirrors:
+#   - the main branch on every push to main (the split action no-ops when
+#     packages/php/ history hasn't moved, so unrelated pushes are cheap)
+#   - every tag matching v* (created by release-please on main)
+#
+# Paths filters are intentionally absent: applying them across both branch
+# and tag triggers in a single `push:` block has surprising interactions
+# (tag pushes evaluate paths against the tagged commit's diff, not the tag
+# operation itself). Letting the split action act as the gatekeeper is
+# simpler and safer.
+#
+# Manual trigger via `gh workflow run split-php.yml --ref <ref>` covers the
+# bootstrap case (first run after creating the mirror) and any backfill of
+# pre-existing tags.
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  split:
+    name: Split packages/php to mirror
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # splitsh-lite walks history; need the full clone, not a shallow one.
+          fetch-depth: 0
+          # Use the bot token for read so the subsequent push reuses the same
+          # auth context (we replace the remote anyway).
+          token: ${{ secrets.SDK_BOT_TOKEN }}
+
+      - name: Split packages/php and push to mirror
+        uses: danharrin/monorepo-split-github-action@v2.4.5
+        with:
+          package_directory: packages/php
+          repository_organization: easymailing
+          repository_name: sdk-php
+          user_name: easymailing-bot
+          user_email: bot@easymailing.com
+          # On a tag push the action propagates the tag to the mirror.
+          tag: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SDK_BOT_TOKEN }}
