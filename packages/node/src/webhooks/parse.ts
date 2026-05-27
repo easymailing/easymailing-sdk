@@ -1,16 +1,12 @@
 import { MalformedWebhookError } from "./MalformedWebhookError.js";
+import type { TypedWebhookEvent } from "../generated/webhook-events.js";
 
 /**
  * Generic webhook envelope. The `event_type` discriminator lets callers
- * narrow `data` to a concrete shape. Common event types (non-exhaustive):
- *
- * - `audience.subscriber.created` / `.updated` / `.unsubscribed`
- * - `campaign.sent` / `.bounced` / `.complained`
- * - `store.order.created` / `.updated`
- *
- * The full catalogue lives in the API docs — keep this list as guidance, not
- * a hard contract. The discriminated union below covers a few shapes for
- * common cases; users with custom event types can pass their own `T`.
+ * narrow `data` to a concrete shape. The catalogue of known event types is
+ * generated from upstream as `KnownEventType` — see
+ * `src/generated/webhook-events.ts`. Users with custom or future event types
+ * can pass their own `T`.
  */
 export interface WebhookEventBase<T = unknown> {
   /** Discriminator. Format is "domain.entity.action" (dot-separated). */
@@ -38,6 +34,10 @@ export type KnownWebhookEvent =
 /**
  * Parse a webhook payload string into a typed envelope.
  *
+ * The default no-generic call narrows to `TypedWebhookEvent`, a discriminated
+ * union over `KnownEventType`. Users with custom or yet-uncatalogued event
+ * types should pass an explicit `T` to fall back to `WebhookEventBase<T>`.
+ *
  * Throws `MalformedWebhookError` on:
  * - Invalid JSON
  * - Non-object root
@@ -47,6 +47,8 @@ export type KnownWebhookEvent =
  * Callers should ALWAYS verify the signature first (`em.webhooks.verify()`)
  * before parsing — this function trusts the input.
  */
+export function parseWebhookEvent(payload: string): TypedWebhookEvent;
+export function parseWebhookEvent<T>(payload: string): WebhookEventBase<T>;
 export function parseWebhookEvent<T = unknown>(payload: string): WebhookEventBase<T> {
   let parsed: unknown;
   try {

@@ -51,6 +51,11 @@ export {
   type KnownWebhookEvent,
 } from "./webhooks/parse.js";
 export { MalformedWebhookError } from "./webhooks/MalformedWebhookError.js";
+export type {
+  KnownEventType,
+  KnownEventTypeMap,
+  TypedWebhookEvent,
+} from "./generated/webhook-events.js";
 
 // Telemetry
 export { buildUserAgent } from "./telemetry/userAgent.js";

@@ -36,6 +36,7 @@
     "typecheck:samples": "tsc --noEmit -p test-tsconfig.json",
     "lint": "echo '(node) lint deferred to a later plan'",
     "generate": "node scripts/generate.mjs",
+    "generate:webhooks": "node scripts/generate-webhook-events.mjs",
     "check": "pnpm generate && pnpm build && pnpm test"
   },
   "devDependencies": {
