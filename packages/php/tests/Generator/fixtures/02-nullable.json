@@ -1,0 +1,18 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "NullableFields": {
+        "type": "object",
+        "required": ["name", "age", "score"],
+        "properties": {
+          "name": { "type": ["string", "null"] },
+          "age": { "type": ["integer", "null"] },
+          "score": { "type": "number" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@easymailing/sdk",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "description": "Official Easymailing SDK for Node and TypeScript backends.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/easymailing/easymailing-sdk.git",
+    "directory": "packages/node"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "tsc -p tsconfig.build.json && node --test 'test/!(e2e)/**/*.test.mjs' 'test/*.test.mjs'",
+    "test:e2e": "tsc -p tsconfig.build.json && node --test 'test/e2e/**/*.e2e.test.mjs'",
+    "typecheck:samples": "tsc --noEmit -p test-tsconfig.json",
+    "lint": "echo '(node) lint deferred to a later plan'",
+    "generate": "node scripts/generate.mjs",
+    "check": "pnpm generate && pnpm build && pnpm test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "openapi-typescript": "^7.4.0",
+    "typescript": "^5.5.0"
+  }
+}

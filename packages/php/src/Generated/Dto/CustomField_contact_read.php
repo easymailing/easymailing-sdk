@@ -1,0 +1,41 @@
+<?php
+
+// AUTO-GENERATED FROM EASYMAILING OPENAPI. DO NOT EDIT BY HAND.
+// Run `composer generate` to refresh.
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Generated\Dto;
+
+final class CustomField_contact_read
+{
+    public function __construct(
+        public readonly ?ListField_contact_read $list_field,
+        public readonly ?string $value = null,
+    ) {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            list_field: isset($data['list_field']) ? ListField_contact_read::fromArray($data['list_field']) : null,
+            value: $data['value'] ?? null,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'list_field' => $this->list_field?->toArray(),
+            'value' => $this->value,
+        ];
+    }
+
+    public function with(mixed ...$fields): self
+    {
+        return new self(
+            list_field: array_key_exists('list_field', $fields) ? $fields['list_field'] : $this->list_field,
+            value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
+        );
+    }
+}

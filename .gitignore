@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build artefacts
+dist/
+build/
+*.tsbuildinfo
+
+# PHP
+/packages/php/.phpunit.cache/
+/packages/php/.phpunit.result.cache
+
+# Logs and temp
+*.log
+.DS_Store
+*.tmp
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Local env
+.env
+.env.local
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Internal planning / design notes — NOT for the public repo.
+# Plans and specs reference private infrastructure, internal repo names
+# and local paths. They live locally only.
+/docs/

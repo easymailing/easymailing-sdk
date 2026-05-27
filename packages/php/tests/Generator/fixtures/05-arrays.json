@@ -1,0 +1,25 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Member": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": { "type": "string" }
+        }
+      },
+      "Audience": {
+        "type": "object",
+        "required": ["name", "tags", "members"],
+        "properties": {
+          "name": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "members": { "type": "array", "items": { "$ref": "#/components/schemas/Member" } }
+        }
+      }
+    }
+  }
+}

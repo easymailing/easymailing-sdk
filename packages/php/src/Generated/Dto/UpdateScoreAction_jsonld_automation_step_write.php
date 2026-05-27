@@ -1,0 +1,37 @@
+<?php
+
+// AUTO-GENERATED FROM EASYMAILING OPENAPI. DO NOT EDIT BY HAND.
+// Run `composer generate` to refresh.
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Generated\Dto;
+
+final class UpdateScoreAction_jsonld_automation_step_write
+{
+    public function __construct(
+        public readonly ?int $value = null,
+    ) {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            value: $data['value'] ?? null,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'value' => $this->value,
+        ];
+    }
+
+    public function with(mixed ...$fields): self
+    {
+        return new self(
+            value: array_key_exists('value', $fields) ? $fields['value'] : $this->value,
+        );
+    }
+}

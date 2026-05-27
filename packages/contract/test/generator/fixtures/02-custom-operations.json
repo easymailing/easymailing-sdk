@@ -1,0 +1,29 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Test", "version": "1.0" },
+  "paths": {
+    "/campaigns/revalidation": {
+      "post": {
+        "operationId": "create_campaign_revalidation",
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Campaign-campaign.write" } } } },
+        "responses": { "201": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Campaign-campaign.read" } } } } }
+      }
+    },
+    "/members/search": {
+      "get": {
+        "operationId": "search_member_by_email",
+        "parameters": [{ "name": "email", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member-member.read" } } } } }
+      }
+    },
+    "/stores/{storeResourceId}/orders/import": {
+      "post": {
+        "operationId": "import_order",
+        "parameters": [{ "name": "storeResourceId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Order-order.write" } } } },
+        "responses": { "201": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Order-order.read" } } } } }
+      }
+    }
+  },
+  "components": { "schemas": {} }
+}

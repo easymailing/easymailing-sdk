@@ -1,0 +1,94 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Test", "version": "1.0" },
+  "paths": {
+    "/things": {
+      "get": {
+        "operationId": "list_things",
+        "parameters": [{ "name": "page", "in": "query", "schema": { "type": "integer" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/ld+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "hydra:member": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Thing-thing.read" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "create_thing",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Thing-thing.write" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Thing-thing.read" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/things/{uuid}": {
+      "get": {
+        "operationId": "get_thing",
+        "parameters": [{ "name": "uuid", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Thing-thing.read" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update_thing",
+        "parameters": [{ "name": "uuid", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Thing-thing.write" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Thing-thing.read" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "delete_thing",
+        "parameters": [{ "name": "uuid", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "204": { "description": "Deleted" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Thing-thing.read": { "type": "object" },
+      "Thing-thing.write": { "type": "object" }
+    }
+  }
+}

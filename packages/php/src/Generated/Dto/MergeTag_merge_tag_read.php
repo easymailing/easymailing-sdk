@@ -1,0 +1,53 @@
+<?php
+
+// AUTO-GENERATED FROM EASYMAILING OPENAPI. DO NOT EDIT BY HAND.
+// Run `composer generate` to refresh.
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Generated\Dto;
+
+final class MergeTag_merge_tag_read
+{
+    public function __construct(
+        public readonly ?bool $required = null,
+        public readonly ?string $tag = null,
+        public readonly ?string $template_tag = null,
+        public readonly ?string $title = null,
+        public readonly ?string $type = null,
+    ) {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            required: $data['required'] ?? null,
+            tag: $data['tag'] ?? null,
+            template_tag: $data['template_tag'] ?? null,
+            title: $data['title'] ?? null,
+            type: $data['type'] ?? null,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'required' => $this->required,
+            'tag' => $this->tag,
+            'template_tag' => $this->template_tag,
+            'title' => $this->title,
+            'type' => $this->type,
+        ];
+    }
+
+    public function with(mixed ...$fields): self
+    {
+        return new self(
+            required: array_key_exists('required', $fields) ? $fields['required'] : $this->required,
+            tag: array_key_exists('tag', $fields) ? $fields['tag'] : $this->tag,
+            template_tag: array_key_exists('template_tag', $fields) ? $fields['template_tag'] : $this->template_tag,
+            title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,
+            type: array_key_exists('type', $fields) ? $fields['type'] : $this->type,
+        );
+    }
+}

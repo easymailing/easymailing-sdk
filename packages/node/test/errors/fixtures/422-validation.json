@@ -1,0 +1,9 @@
+{
+  "type": "https://symfony.com/errors/validation",
+  "title": "Validation failed",
+  "status": 422,
+  "violations": [
+    { "propertyPath": "email", "message": "This is not a valid email." },
+    { "propertyPath": "name", "message": "This value should not be blank." }
+  ]
+}

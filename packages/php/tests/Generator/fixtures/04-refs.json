@@ -1,0 +1,24 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Inner": {
+        "type": "object",
+        "required": ["label"],
+        "properties": {
+          "label": { "type": "string" }
+        }
+      },
+      "Container": {
+        "type": "object",
+        "required": ["name", "inner"],
+        "properties": {
+          "name": { "type": "string" },
+          "inner": { "$ref": "#/components/schemas/Inner" }
+        }
+      }
+    }
+  }
+}

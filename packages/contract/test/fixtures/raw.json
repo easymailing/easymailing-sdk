@@ -1,0 +1,22 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Easymailing API",
+    "version": "1.1"
+  },
+  "servers": [
+    { "url": "https://api.easymailing.com" }
+  ],
+  "paths": {
+    "/zzz_last": { "get": { "summary": "z" } },
+    "/audiences": { "get": { "summary": "a" } },
+    "/audiences/{uuid}": { "get": { "summary": "a-by-uuid" } }
+  },
+  "components": {
+    "schemas": {
+      "Zebra": { "type": "object" },
+      "Audience": { "type": "object", "properties": { "uuid": { "type": "string" }, "name": { "type": "string" } } }
+    }
+  },
+  "x-custom": { "kept": true }
+}

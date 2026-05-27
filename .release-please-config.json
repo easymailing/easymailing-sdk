@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    "packages/php": {
+      "release-type": "php",
+      "package-name": "easymailing/sdk-php",
+      "include-component-in-tag": false,
+      "tag-separator": "-",
+      "prerelease-type": "alpha",
+      "changelog-sections": [
+        { "type": "feat", "section": "Features" },
+        { "type": "fix", "section": "Bug Fixes" },
+        { "type": "perf", "section": "Performance" },
+        { "type": "deps", "section": "Dependencies" }
+      ]
+    }
+  }
+}

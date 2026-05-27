@@ -1,0 +1,41 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "A": {
+        "type": "object",
+        "required": ["label"],
+        "properties": {
+          "label": { "type": "string" }
+        }
+      },
+      "B": {
+        "type": "object",
+        "required": ["count"],
+        "properties": {
+          "count": { "type": "integer" }
+        }
+      },
+      "Wrapper": {
+        "type": "object",
+        "required": ["value", "maybe"],
+        "properties": {
+          "value": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/A" },
+              { "$ref": "#/components/schemas/B" }
+            ]
+          },
+          "maybe": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/A" },
+              { "type": "null" }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

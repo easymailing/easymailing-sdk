@@ -1,0 +1,60 @@
+name: E2E
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL of the target API"
+        required: true
+        default: "https://staging-api.easymailing.com"
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Node + PHP E2E against ${{ github.event.inputs.base_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+
+      - name: Install Node deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Install PHP deps
+        working-directory: packages/php
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: Build Node
+        run: pnpm --filter @easymailing/sdk build
+
+      - name: Run Node E2E
+        run: pnpm --filter @easymailing/sdk test:e2e
+        env:
+          INTEGRATION_BASE_URL: ${{ github.event.inputs.base_url }}
+          INTEGRATION_API_KEY: ${{ secrets.E2E_API_KEY }}
+
+      - name: Run PHP E2E
+        working-directory: packages/php
+        run: composer test:e2e
+        env:
+          INTEGRATION_BASE_URL: ${{ github.event.inputs.base_url }}
+          INTEGRATION_API_KEY: ${{ secrets.E2E_API_KEY }}

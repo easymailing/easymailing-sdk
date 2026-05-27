@@ -1,0 +1,18 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Test", "version": "1.0" },
+  "paths": {
+    "/audiences/{audienceUuid}/members/{uuid}/actions/add_to_group/{groupUuid}": {
+      "put": {
+        "operationId": "member_add_from_group",
+        "parameters": [
+          { "name": "audienceUuid", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "uuid", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "groupUuid", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Member-member.read" } } } } }
+      }
+    }
+  },
+  "components": { "schemas": {} }
+}

@@ -1,0 +1,27 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Status": {
+        "type": "string",
+        "enum": ["active", "paused"]
+      },
+      "Priority": {
+        "type": "integer",
+        "enum": [1, 2, 3]
+      },
+      "Task": {
+        "type": "object",
+        "required": ["uuid", "status"],
+        "properties": {
+          "uuid": { "type": "string" },
+          "status": { "$ref": "#/components/schemas/Status" },
+          "priority": { "$ref": "#/components/schemas/Priority" },
+          "history": { "type": "array", "items": { "$ref": "#/components/schemas/Status" } }
+        }
+      }
+    }
+  }
+}

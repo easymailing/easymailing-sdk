@@ -1,0 +1,22 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Test", "version": "1.0" },
+  "paths": {
+    "/audiences/{audienceUuid}/suscription_forms": {
+      "get": {
+        "operationId": "list_audience_forms",
+        "parameters": [{ "name": "audienceUuid", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Form-form.read" } }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": { "schemas": { "Form-form.read": { "type": "object" } } }
+}

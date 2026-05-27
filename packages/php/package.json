@@ -1,0 +1,13 @@
+{
+  "name": "@easymailing/sdk-php-bridge",
+  "version": "0.0.0",
+  "private": true,
+  "description": "pnpm bridge for the PHP SDK package. Delegates to Composer.",
+  "scripts": {
+    "build": "echo '(php) build noop until Plan 4'",
+    "test": "composer test",
+    "lint": "echo '(php) lint noop until Plan 4'",
+    "generate": "composer generate",
+    "check": "composer generate && composer test && git diff --exit-code src/Generated"
+  }
+}

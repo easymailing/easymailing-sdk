@@ -1,0 +1,48 @@
+version: 1
+
+aliases:
+  my_suscription:
+    canonical: mySubscription
+  suscription_forms:
+    canonical: subscriptionForms
+  automation_triggers:
+    canonical: triggers
+  webhooks:
+    canonical: webhookConfigs
+
+operations:
+  create_campaign_revalidation:
+    resource: campaigns
+    method: createRevalidation
+  create_campaign_test_ab_sender:
+    resource: campaigns
+    method: createTestAbSender
+  create_campaign_test_ab_subject:
+    resource: campaigns
+    method: createTestAbSubject
+  create_campaign_test_ab_template:
+    resource: campaigns
+    method: createTestAbTemplate
+  search_member_by_email:
+    resource: members
+    method: search
+  import_order:
+    resource: stores.orders
+    method: import
+  cancel_order:
+    resource: stores.orders
+    method: cancel
+  pay_order:
+    resource: stores.orders
+    method: pay
+  process_order:
+    resource: stores.orders
+    method: process
+  refund_order:
+    resource: stores.orders
+    method: refund
+  ship_order:
+    resource: stores.orders
+    method: ship
+
+ignoredOperations: {}

@@ -1,0 +1,20 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "DatedEntity": {
+        "type": "object",
+        "required": ["uuid", "homepage", "owner", "createdAt", "deletedAt"],
+        "properties": {
+          "uuid": { "type": "string", "format": "uuid" },
+          "homepage": { "type": "string", "format": "uri" },
+          "owner": { "type": "string", "format": "iri-reference" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "deletedAt": { "type": ["string", "null"], "format": "date-time" }
+        }
+      }
+    }
+  }
+}

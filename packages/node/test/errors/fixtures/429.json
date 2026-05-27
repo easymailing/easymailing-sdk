@@ -1,0 +1,6 @@
+{
+  "type": "https://tools.ietf.org/html/rfc6585#section-4",
+  "title": "Too Many Requests",
+  "detail": "Rate limit exceeded",
+  "status": 429
+}

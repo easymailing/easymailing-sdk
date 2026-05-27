@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Transport;
+
+final class TransportRequest
+{
+    /**
+     * @param array<string, string> $headers
+     */
+    public function __construct(
+        public readonly string $method,
+        public readonly string $url,
+        public readonly array $headers,
+        public readonly ?string $body = null,
+    ) {
+    }
+}

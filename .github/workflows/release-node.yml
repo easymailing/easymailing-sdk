@@ -1,0 +1,54 @@
+name: Release Node
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    name: Release @easymailing/sdk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Node SDK
+        run: pnpm --filter @easymailing/sdk build
+
+      - name: Create release PR or publish
+        uses: changesets/action@v1
+        with:
+          # --provenance: signs the npm publish with the GitHub OIDC token
+          # (matches the id-token: write permission above). Provides
+          # cryptographic linkage from package → workflow → source commit.
+          publish: pnpm changeset publish --provenance
+          version: pnpm changeset version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # publishConfig.provenance also requires this — belt + braces.
+          NPM_CONFIG_PROVENANCE: "true"

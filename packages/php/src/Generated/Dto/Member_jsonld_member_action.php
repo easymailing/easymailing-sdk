@@ -1,0 +1,37 @@
+<?php
+
+// AUTO-GENERATED FROM EASYMAILING OPENAPI. DO NOT EDIT BY HAND.
+// Run `composer generate` to refresh.
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Generated\Dto;
+
+final class Member_jsonld_member_action
+{
+    public function __construct(
+        public readonly ?array $channels = null,
+    ) {
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            channels: $data['channels'] ?? null,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'channels' => $this->channels,
+        ];
+    }
+
+    public function with(mixed ...$fields): self
+    {
+        return new self(
+            channels: array_key_exists('channels', $fields) ? $fields['channels'] : $this->channels,
+        );
+    }
+}

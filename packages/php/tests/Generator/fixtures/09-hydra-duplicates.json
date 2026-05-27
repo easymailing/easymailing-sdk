@@ -1,0 +1,25 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Foo-version": {
+        "type": "object",
+        "required": ["uuid"],
+        "properties": {
+          "uuid": { "type": "string" }
+        }
+      },
+      "Foo.jsonld-version": {
+        "type": "object",
+        "required": ["@id", "@type", "uuid"],
+        "properties": {
+          "@id": { "type": "string", "readOnly": true },
+          "@type": { "type": "string", "readOnly": true },
+          "uuid": { "type": "string" }
+        }
+      }
+    }
+  }
+}

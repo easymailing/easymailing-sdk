@@ -1,0 +1,23 @@
+{
+  "name": "@easymailing/api-contract",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Easymailing API OpenAPI contract — normalized source of truth.",
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "openapi.json"
+  ],
+  "scripts": {
+    "normalize": "node scripts/normalize.mjs openapi.json",
+    "generate:resources": "node scripts/generator/index.mjs --input openapi.json --map sdk-map.yml --ts-out ../node/src/generated/resources --php-out ../php/src/Generated/Resources --node-docs-out ../node/docs/resources.md --php-docs-out ../php/docs/resources.md",
+    "lint": "redocly lint openapi.json",
+    "check:breaking": "node scripts/check-breaking.mjs",
+    "test": "node --test 'test/**/*.test.mjs' && corepack pnpm --filter @easymailing/sdk typecheck:samples",
+    "check": "pnpm normalize && pnpm lint && pnpm test && pnpm check:breaking"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.25.0",
+    "yaml": "^2.4.5"
+  }
+}

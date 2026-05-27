@@ -1,0 +1,17 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "Status": {
+        "type": "string",
+        "enum": ["pending", "done", "failed"]
+      },
+      "Priority": {
+        "type": "integer",
+        "enum": [1, 2, 3]
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "test", "version": "1" },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "SimpleScalars": {
+        "type": "object",
+        "required": ["name", "age", "score", "active"],
+        "properties": {
+          "name": { "type": "string" },
+          "age": { "type": "integer" },
+          "score": { "type": "number" },
+          "active": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+name: Contract Sync Verification
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/contract/openapi.json'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  verify:
+    name: Regenerate generated/ and commit if needed
+    runs-on: ubuntu-latest
+    # Only run on contract-sync PRs (avoid regenerating on every PR that touches openapi.json by hand).
+    if: github.event.pull_request.head.ref == 'chore/sync-openapi' || startsWith(github.event.pull_request.head.ref, 'chore/sync-openapi-')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.SDK_BOT_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+
+      - name: Install Node deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Install PHP deps
+        working-directory: packages/php
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: Regenerate types + DTOs
+        run: pnpm -r run generate
+
+      - name: Commit regenerated files if changed
+        # Loop guard: if the PR's tip commit is already our regenerate commit,
+        # the previous run already pushed — skip to avoid an infinite cycle
+        # (workflow → push → workflow → push → ...). GitHub doesn't trigger
+        # workflows on pushes from GITHUB_TOKEN, but SDK_BOT_TOKEN is a real
+        # user-scoped PAT so it WILL re-trigger.
+        run: |
+          LAST_AUTHOR=$(git log -1 --pretty=%ae)
+          LAST_MSG=$(git log -1 --pretty=%s)
+          if [ "$LAST_AUTHOR" = "bot@easymailing.com" ] && [ "$LAST_MSG" = "chore: regenerate types from contract" ]; then
+            echo "Skip: last commit is already our regenerate — would loop"
+            exit 0
+          fi
+          if ! git diff --quiet packages/node/src/generated packages/php/src/Generated; then
+            git config user.name "easymailing-bot"
+            git config user.email "bot@easymailing.com"
+            git add packages/node/src/generated packages/php/src/Generated
+            git commit -m "chore: regenerate types from contract"
+            git push origin HEAD:${{ github.event.pull_request.head.ref }}
+          fi
+
+      - name: Run tests
+        run: pnpm -r run test

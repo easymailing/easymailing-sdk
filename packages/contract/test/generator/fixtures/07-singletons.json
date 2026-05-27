@@ -1,0 +1,21 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Test", "version": "1.0" },
+  "paths": {
+    "/my_suscription": {
+      "get": {
+        "operationId": "api_my_suscription_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MySuscription-my_suscription.read" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": { "schemas": { "MySuscription-my_suscription.read": { "type": "object" } } }
+}

@@ -1,0 +1,39 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Test", "version": "1.0" },
+  "paths": {
+    "/things": {
+      "get": {
+        "operationId": "list_things",
+        "deprecated": false,
+        "parameters": [
+          { "name": "page", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Thing-thing.read" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/things/old": {
+      "post": {
+        "operationId": "old_create_thing",
+        "deprecated": true,
+        "responses": { "201": { "description": "Deprecated" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Thing-thing.read": { "type": "object" }
+    }
+  }
+}

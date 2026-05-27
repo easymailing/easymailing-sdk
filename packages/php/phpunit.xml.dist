@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         cacheDirectory=".phpunit.cache">
+  <testsuites>
+    <testsuite name="default">
+      <directory>tests</directory>
+      <exclude>tests/E2E</exclude>
+    </testsuite>
+    <testsuite name="generator">
+      <directory>tests/Generator</directory>
+    </testsuite>
+    <testsuite name="runtime">
+      <directory>tests/Runtime</directory>
+    </testsuite>
+    <testsuite name="core">
+      <directory>tests/Transport</directory>
+      <directory>tests/Hydra</directory>
+      <directory>tests/Exception</directory>
+      <directory>tests/Retry</directory>
+      <directory>tests/RateLimit</directory>
+      <directory>tests/Pagination</directory>
+      <directory>tests/Batch</directory>
+      <directory>tests/Webhooks</directory>
+      <directory>tests/Client</directory>
+      <directory>tests/Generated</directory>
+    </testsuite>
+    <testsuite name="e2e">
+      <directory>tests/E2E</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+  </source>
+</phpunit>
