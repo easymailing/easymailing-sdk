@@ -1,5 +1,23 @@
 # @easymailing/sdk
 
+## 0.2.1
+
+### Patch Changes
+
+- [`b88e368`](https://github.com/easymailing/easymailing-sdk/commit/b88e368865f62551366f1aa3578df5c716fa740c) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Send `Content-Type: application/json` automatically on requests with a body.
+
+  The SDK has always serialised request bodies as JSON, but until now it
+  relied on the upstream API silently inferring the content type — which
+  worked for our backend but fails against strict gateways (Cloudflare,
+  AWS API Gateway, some nginx setups) that reject body-bearing requests
+  without an explicit `Content-Type`.
+
+  The header is added only when the request actually has a body. GET and
+  DELETE without body keep the previous behavior (no `Content-Type` sent).
+  If the caller passes their own `Content-Type` header (any casing), that
+  value wins — useful for `application/merge-patch+json` and similar
+  content types we may need in the future.
+
 ## 0.2.0
 
 ### Minor Changes
