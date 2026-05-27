@@ -37,21 +37,35 @@ jobs:
       - name: Build Node SDK
         run: pnpm --filter @easymailing/sdk build
 
-      - name: Create release PR or publish
+      - name: Create release PR (changesets, no publish)
+        id: changesets
         uses: changesets/action@v1
         with:
-          # Auth is via npm Trusted Publishing (OIDC) — no NPM_TOKEN needed.
-          # The `id-token: write` permission lets the workflow mint an OIDC
-          # token that npm verifies against the Trusted Publisher configured
-          # at https://www.npmjs.com/package/@easymailing/sdk/access.
-          #
-          # Provenance signing is enabled via:
-          #   - NPM_CONFIG_PROVENANCE env var below
-          #   - publishConfig.provenance in packages/node/package.json
-          #   - id-token: write permission in this workflow
-          # The CLI itself does NOT accept --provenance (that's an npm flag, not a changesets one).
-          publish: pnpm changeset publish
+          # Only handle the Version Packages PR side; publish is done by the
+          # explicit npm publish step below so npm's OIDC handshake (which
+          # pnpm/changesets doesn't always pass through correctly) is exercised
+          # directly by npm CLI.
           version: pnpm changeset version
+          # No publish field → changesets-action returns `hasChangesets`
+          # without attempting to publish.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish @easymailing/sdk via npm OIDC
+        # Run only when there are no pending changesets, i.e. the just-merged
+        # commit consumed the Version Packages PR and bumped the version on
+        # main. We then publish whatever is in packages/node/package.json
+        # provided that version is not already on the registry.
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        working-directory: packages/node
+        env:
           NPM_CONFIG_PROVENANCE: "true"
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          REMOTE=$(npm view @easymailing/sdk@$PKG_VERSION version 2>/dev/null || echo "")
+          if [ "$REMOTE" = "$PKG_VERSION" ]; then
+            echo "@easymailing/sdk@$PKG_VERSION already on npm — skipping."
+            exit 0
+          fi
+          echo "Publishing @easymailing/sdk@$PKG_VERSION via npm (OIDC Trusted Publishing)..."
+          npm publish --access public
