@@ -18,4 +18,9 @@ jobs:
         with:
           config-file: .release-please-config.json
           manifest-file: .release-please-manifest.json
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Use SDK_BOT_TOKEN (PAT) instead of GITHUB_TOKEN so tag-push
+          # events created by this action trigger downstream workflows
+          # (split-php.yml). GitHub deliberately blocks workflows from
+          # being triggered by events created by GITHUB_TOKEN to avoid
+          # recursive runs, but PAT-created events fire normally.
+          token: ${{ secrets.SDK_BOT_TOKEN }}
