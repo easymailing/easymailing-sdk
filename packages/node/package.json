@@ -32,8 +32,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "test": "tsc -p tsconfig.build.json && node --test 'test/!(e2e)/**/*.test.mjs' 'test/*.test.mjs'",
-    "test:e2e": "tsc -p tsconfig.build.json && node --test 'test/e2e/**/*.e2e.test.mjs'",
+    "test": "tsc -p tsconfig.build.json && find test -name '*.test.mjs' -not -path 'test/e2e/*' -print0 | xargs -0 node --test",
+    "test:e2e": "tsc -p tsconfig.build.json && find test/e2e -name '*.e2e.test.mjs' -print0 | xargs -0 node --test",
     "typecheck:samples": "tsc --noEmit -p test-tsconfig.json",
     "lint": "echo '(node) lint deferred to a later plan'",
     "generate": "node scripts/generate.mjs",
