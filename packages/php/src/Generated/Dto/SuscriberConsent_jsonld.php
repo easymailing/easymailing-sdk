@@ -16,11 +16,12 @@ final class SuscriberConsent_jsonld
         public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $consent_at = null,
         public readonly ?string $ip = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $list_gdpr_treatment_purposes = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -33,6 +34,7 @@ final class SuscriberConsent_jsonld
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

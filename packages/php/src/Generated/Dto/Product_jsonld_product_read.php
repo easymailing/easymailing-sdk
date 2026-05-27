@@ -16,19 +16,20 @@ final class Product_jsonld_product_read
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $categories = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $description = null,
         public readonly ?string $image_url = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $url = null,
-        /** @var Variant_jsonld_product_read[]|null */
+        /** @var list<Variant_jsonld_product_read>|null */
         public readonly ?array $variants = null,
         public readonly ?string $vendor = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -48,6 +49,7 @@ final class Product_jsonld_product_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

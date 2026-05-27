@@ -19,6 +19,7 @@ final class AutomationStepChildrenCondition_jsonld_automation_step_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -30,6 +31,7 @@ final class AutomationStepChildrenCondition_jsonld_automation_step_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

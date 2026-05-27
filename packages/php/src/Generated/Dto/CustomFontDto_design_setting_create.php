@@ -11,6 +11,7 @@ final class CustomFontDto_design_setting_create
 {
     public function __construct(
         public readonly string $font_family,
+        /** @var array<string,mixed> */
         public readonly array $font_weight,
         public readonly string $name,
         public readonly string $url,
@@ -18,6 +19,7 @@ final class CustomFontDto_design_setting_create
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +31,7 @@ final class CustomFontDto_design_setting_create
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -10,12 +10,13 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class Template_TemplateSendTestInput_jsonld_template_write_send_test
 {
     public function __construct(
-        /** @var string[] */
+        /** @var list<string> */
         public readonly array $emails,
         public readonly ?string $subject = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +25,7 @@ final class Template_TemplateSendTestInput_jsonld_template_write_send_test
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

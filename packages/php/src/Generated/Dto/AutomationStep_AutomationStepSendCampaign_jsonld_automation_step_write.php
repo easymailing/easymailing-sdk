@@ -17,6 +17,7 @@ final class AutomationStep_AutomationStepSendCampaign_jsonld_automation_step_wri
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class AutomationStep_AutomationStepSendCampaign_jsonld_automation_step_wri
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

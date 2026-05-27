@@ -18,7 +18,7 @@ final class SmsCampaign_jsonld_campaign_read_campaign_read_detail
         public readonly ?string $channel = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?\DateTimeImmutable $finished_at = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $hash = null,
         public readonly ?int $id = null,
@@ -34,11 +34,12 @@ final class SmsCampaign_jsonld_campaign_read_campaign_read_detail
         public readonly ?\Easymailing\Sdk\Generated\Enum\CampaignType $type = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
-        /** @var mixed[]|null */
+        /** @var list<mixed>|null */
         public readonly ?array $warnings = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -68,6 +69,7 @@ final class SmsCampaign_jsonld_campaign_read_campaign_read_detail
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

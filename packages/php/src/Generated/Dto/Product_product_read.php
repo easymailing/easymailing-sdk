@@ -12,19 +12,20 @@ final class Product_product_read
     public function __construct(
         public readonly string $resource_id,
         public readonly string $title,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $categories = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $description = null,
         public readonly ?string $image_url = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $url = null,
-        /** @var Variant_product_read[]|null */
+        /** @var list<Variant_product_read>|null */
         public readonly ?array $variants = null,
         public readonly ?string $vendor = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -41,6 +42,7 @@ final class Product_product_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

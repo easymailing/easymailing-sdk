@@ -23,6 +23,7 @@ final class Variant_variant_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -39,6 +40,7 @@ final class Variant_variant_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

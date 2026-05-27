@@ -14,7 +14,7 @@ final class SupportTicket_jsonld_support_ticket_read
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var SupportTicketCommentResource_jsonld_support_ticket_read[]|null */
+        /** @var list<SupportTicketCommentResource_jsonld_support_ticket_read>|null */
         public readonly ?array $comments = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
@@ -26,6 +26,7 @@ final class SupportTicket_jsonld_support_ticket_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -43,6 +44,7 @@ final class SupportTicket_jsonld_support_ticket_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

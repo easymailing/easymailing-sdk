@@ -23,11 +23,12 @@ final class WebhookRequest_jsonld_webhook_request_read
         public readonly ?bool $successful = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $webhook_events = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -47,6 +48,7 @@ final class WebhookRequest_jsonld_webhook_request_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

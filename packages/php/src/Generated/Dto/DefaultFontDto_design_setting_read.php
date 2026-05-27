@@ -12,12 +12,14 @@ final class DefaultFontDto_design_setting_read
     public function __construct(
         public readonly ?bool $active = null,
         public readonly ?string $font_family = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $font_weight = null,
         public readonly ?string $name = null,
         public readonly ?string $url = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +31,7 @@ final class DefaultFontDto_design_setting_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

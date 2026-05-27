@@ -14,6 +14,7 @@ final class AutomationTrigger_AutomationTriggerAdminManual_jsonld_automation_tri
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,6 +22,7 @@ final class AutomationTrigger_AutomationTriggerAdminManual_jsonld_automation_tri
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

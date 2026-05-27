@@ -14,8 +14,9 @@ final class BatchOperationResource_BatchOperationErrorsResource_jsonld_batch_ope
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $errors = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $grouped_by_message = null,
         public readonly ?int $success_count = null,
         public readonly ?int $total_errors = null,
@@ -23,6 +24,7 @@ final class BatchOperationResource_BatchOperationErrorsResource_jsonld_batch_ope
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -37,6 +39,7 @@ final class BatchOperationResource_BatchOperationErrorsResource_jsonld_batch_ope
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

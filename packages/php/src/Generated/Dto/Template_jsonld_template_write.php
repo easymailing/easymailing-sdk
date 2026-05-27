@@ -12,10 +12,12 @@ final class Template_jsonld_template_write
     public function __construct(
         public readonly string $title,
         public readonly ?string $content = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $simple_json_code = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +27,7 @@ final class Template_jsonld_template_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

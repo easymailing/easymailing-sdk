@@ -14,7 +14,7 @@ final class SenderDomain_sender_domain_read
         public readonly ?bool $authenticated = null,
         public readonly ?string $authentication_info_url = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $dns_records = null,
         public readonly ?string $domain = null,
         public readonly ?string $email = null,
@@ -28,6 +28,7 @@ final class SenderDomain_sender_domain_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -48,6 +49,7 @@ final class SenderDomain_sender_domain_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

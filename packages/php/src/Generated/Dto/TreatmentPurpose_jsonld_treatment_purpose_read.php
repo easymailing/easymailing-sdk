@@ -14,18 +14,19 @@ final class TreatmentPurpose_jsonld_treatment_purpose_read
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $channels = null,
         public readonly ?bool $custom = null,
         public readonly ?string $description = null,
         public readonly ?int $id = null,
         public readonly ?string $name = null,
-        /** @var TreatmentPurposeTranslation_jsonld_treatment_purpose_read[]|null */
+        /** @var list<TreatmentPurposeTranslation_jsonld_treatment_purpose_read>|null */
         public readonly ?array $translations = null,
         public readonly ?string $uuid = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -42,6 +43,7 @@ final class TreatmentPurpose_jsonld_treatment_purpose_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -14,7 +14,7 @@ final class CampaignConfigSend_jsonld_campaign_read_campaign_read_detail
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $mailing_confirm_emails = null,
         public readonly ?bool $schedule_mailing = null,
         public readonly ?\DateTimeImmutable $schedule_mailing_date = null,
@@ -22,6 +22,7 @@ final class CampaignConfigSend_jsonld_campaign_read_campaign_read_detail
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -35,6 +36,7 @@ final class CampaignConfigSend_jsonld_campaign_read_campaign_read_detail
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

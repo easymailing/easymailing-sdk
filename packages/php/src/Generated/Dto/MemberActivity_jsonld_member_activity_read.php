@@ -13,12 +13,14 @@ final class MemberActivity_jsonld_member_activity_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $created_at = null,
+        /** @var list<mixed>|null */
         public readonly ?array $data = null,
         public readonly ?int $id = null,
         public readonly ?string $type = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +33,7 @@ final class MemberActivity_jsonld_member_activity_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

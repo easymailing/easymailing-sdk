@@ -11,11 +11,12 @@ final class SmsCampaign_CampaignSendInput_jsonld_campaign_write_send
 {
     public function __construct(
         public readonly ?bool $campaign_confirmation_email = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $mailing_confirm_emails = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +25,7 @@ final class SmsCampaign_CampaignSendInput_jsonld_campaign_write_send
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

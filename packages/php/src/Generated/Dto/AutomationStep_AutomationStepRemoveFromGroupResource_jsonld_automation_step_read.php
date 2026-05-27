@@ -24,6 +24,7 @@ final class AutomationStep_AutomationStepRemoveFromGroupResource_jsonld_automati
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -40,6 +41,7 @@ final class AutomationStep_AutomationStepRemoveFromGroupResource_jsonld_automati
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

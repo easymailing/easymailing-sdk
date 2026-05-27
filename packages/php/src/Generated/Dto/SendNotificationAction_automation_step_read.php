@@ -11,12 +11,13 @@ final class SendNotificationAction_automation_step_read
 {
     public function __construct(
         public readonly ?string $body = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $emails = null,
         public readonly ?string $subject = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -26,6 +27,7 @@ final class SendNotificationAction_automation_step_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

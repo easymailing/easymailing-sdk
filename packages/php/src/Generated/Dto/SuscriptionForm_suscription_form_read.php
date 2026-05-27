@@ -13,13 +13,13 @@ final class SuscriptionForm_suscription_form_read
         public readonly ?bool $active = null,
         public readonly ?string $audience = null,
         public readonly ?PopupBehaviorDto_suscription_form_read $behavior = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $channels = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $domain = null,
         public readonly ?bool $double_opt_in = null,
         public readonly ?bool $enable_welcome_email = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $hash = null,
         public readonly ?int $id = null,
@@ -35,6 +35,7 @@ final class SuscriptionForm_suscription_form_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -61,6 +62,7 @@ final class SuscriptionForm_suscription_form_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

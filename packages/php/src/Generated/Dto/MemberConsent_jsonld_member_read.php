@@ -16,11 +16,12 @@ final class MemberConsent_jsonld_member_read
         public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $consent_at = null,
         public readonly ?string $ip = null,
-        /** @var TreatmentPurpose_jsonld_member_read[]|null */
+        /** @var list<TreatmentPurpose_jsonld_member_read>|null */
         public readonly ?array $treatment_purposes = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -33,6 +34,7 @@ final class MemberConsent_jsonld_member_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

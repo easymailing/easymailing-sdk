@@ -11,11 +11,12 @@ final class TreatmentPurpose_member_read
 {
     public function __construct(
         public readonly ?string $description = null,
-        /** @var TreatmentPurposeTranslation_member_read[]|null */
+        /** @var list<TreatmentPurposeTranslation_member_read>|null */
         public readonly ?array $translations = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +25,7 @@ final class TreatmentPurpose_member_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

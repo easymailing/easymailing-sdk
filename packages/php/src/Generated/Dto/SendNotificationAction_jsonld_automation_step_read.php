@@ -15,12 +15,13 @@ final class SendNotificationAction_jsonld_automation_step_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?string $body = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $emails = null,
         public readonly ?string $subject = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -33,6 +34,7 @@ final class SendNotificationAction_jsonld_automation_step_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

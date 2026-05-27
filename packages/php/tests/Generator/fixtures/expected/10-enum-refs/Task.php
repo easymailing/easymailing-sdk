@@ -13,11 +13,12 @@ final class Task
         public readonly string $uuid,
         public readonly \Easymailing\Sdk\Generated\Enum\Status $status,
         public readonly ?\Easymailing\Sdk\Generated\Enum\Priority $priority = null,
-        /** @var \Easymailing\Sdk\Generated\Enum\Status[]|null */
+        /** @var list<\Easymailing\Sdk\Generated\Enum\Status>|null */
         public readonly ?array $history = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -28,6 +29,7 @@ final class Task
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

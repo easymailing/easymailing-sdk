@@ -22,6 +22,7 @@ final class Group_AsyncTaskResource_jsonld
         public readonly ?float $progress = null,
         public readonly ?string $result_file = null,
         public readonly ?string $result_file_url = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $result_meta = null,
         public readonly ?\DateTimeImmutable $started_at = null,
         public readonly ?string $status = null,
@@ -31,6 +32,7 @@ final class Group_AsyncTaskResource_jsonld
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -54,6 +56,7 @@ final class Group_AsyncTaskResource_jsonld
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

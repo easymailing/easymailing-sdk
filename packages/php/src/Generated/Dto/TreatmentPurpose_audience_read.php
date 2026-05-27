@@ -13,11 +13,12 @@ final class TreatmentPurpose_audience_read
         public readonly ?bool $custom = null,
         public readonly ?string $description = null,
         public readonly ?string $name = null,
-        /** @var TreatmentPurposeTranslation_audience_read[]|null */
+        /** @var list<TreatmentPurposeTranslation_audience_read>|null */
         public readonly ?array $translations = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -28,6 +29,7 @@ final class TreatmentPurpose_audience_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

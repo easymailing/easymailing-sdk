@@ -19,13 +19,14 @@ final class Order_jsonld_order_create
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?float $currency_exchange_rate = null,
         public readonly ?int $discount_total = null,
-        /** @var OrderItem_jsonld_order_create[]|null */
+        /** @var list<OrderItem_jsonld_order_create>|null */
         public readonly ?array $order_items = null,
         public readonly ?int $shipping_total = null,
         public readonly ?int $tax_total = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -44,6 +45,7 @@ final class Order_jsonld_order_create
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -17,6 +17,7 @@ final class SuscriptionFormStatsDto_suscription_form_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class SuscriptionFormStatsDto_suscription_form_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -11,14 +11,15 @@ final class ListField_list_field_read
 {
     public function __construct(
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var ListFieldOption_list_field_read[]|null */
+        /** @var list<ListFieldOption_list_field_read>|null */
         public readonly ?array $list_field_options = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $options = null,
         public readonly ?bool $public = null,
         public readonly ?bool $required = null,
         public readonly ?string $tag = null,
         public readonly ?string $template_tag = null,
-        /** @var ListFieldTranslation_list_field_read[]|null */
+        /** @var list<ListFieldTranslation_list_field_read>|null */
         public readonly ?array $translations = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\ListFieldType $type = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
@@ -26,6 +27,7 @@ final class ListField_list_field_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -43,6 +45,7 @@ final class ListField_list_field_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -16,13 +16,14 @@ final class Contact_contact_read
         public readonly ?string $locale = null,
         public readonly ?Location_contact_read $location = null,
         public readonly ?string $phone = null,
-        /** @var Suscription_contact_read[]|null */
+        /** @var list<Suscription_contact_read>|null */
         public readonly ?array $suscriptions = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -38,6 +39,7 @@ final class Contact_contact_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

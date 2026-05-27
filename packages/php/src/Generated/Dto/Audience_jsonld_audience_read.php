@@ -25,12 +25,12 @@ final class Audience_jsonld_audience_read
         public readonly ?AudienceStatsDto_jsonld_audience_read $audience_stats = null,
         public readonly ?AudienceCompanyDto_jsonld_audience_read $company = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var Group_jsonld_audience_read[]|null */
+        /** @var list<Group_jsonld_audience_read>|null */
         public readonly ?array $groups = null,
         public readonly ?int $id = null,
-        /** @var ListField_jsonld_audience_read[]|null */
+        /** @var list<ListField_jsonld_audience_read>|null */
         public readonly ?array $list_fields = null,
-        /** @var ListSegment_jsonld_audience_read[]|null */
+        /** @var list<ListSegment_jsonld_audience_read>|null */
         public readonly ?array $list_segments = null,
         public readonly ?AudienceNotificationsDto_jsonld_audience_read $notifications = null,
         public readonly ?int $total_suscribers = null,
@@ -40,6 +40,7 @@ final class Audience_jsonld_audience_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -69,6 +70,7 @@ final class Audience_jsonld_audience_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

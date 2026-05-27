@@ -25,6 +25,7 @@ final class MemberSmsRepliedEvent_jsonld
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -42,6 +43,7 @@ final class MemberSmsRepliedEvent_jsonld
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -24,6 +24,7 @@ final class AutomationStep_AutomationStepUnsubscribeResource_jsonld_automation_s
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -40,6 +41,7 @@ final class AutomationStep_AutomationStepUnsubscribeResource_jsonld_automation_s
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

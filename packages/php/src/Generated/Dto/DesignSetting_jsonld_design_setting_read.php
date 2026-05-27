@@ -16,20 +16,20 @@ final class DesignSetting_jsonld_design_setting_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?ButtonDto_jsonld_design_setting_read $button = null,
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $color_palette = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var CustomFontDto_jsonld_design_setting_read[]|null */
+        /** @var list<CustomFontDto_jsonld_design_setting_read>|null */
         public readonly ?array $custom_fonts = null,
         public readonly ?bool $default = null,
-        /** @var DefaultFontDto_jsonld_design_setting_read[]|null */
+        /** @var list<DefaultFontDto_jsonld_design_setting_read>|null */
         public readonly ?array $default_fonts = null,
         public readonly ?int $email_width = null,
         public readonly ?int $id = null,
         public readonly ?string $logo_dark_url = null,
         public readonly ?string $logo_light_url = null,
         public readonly ?int $page_width = null,
-        /** @var SocialLinkDto_jsonld_design_setting_read[]|null */
+        /** @var list<SocialLinkDto_jsonld_design_setting_read>|null */
         public readonly ?array $social_links = null,
         public readonly ?TextsDto_jsonld_design_setting_read $texts = null,
         public readonly ?TitlesDto_jsonld_design_setting_read $titles = null,
@@ -38,6 +38,7 @@ final class DesignSetting_jsonld_design_setting_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -64,6 +65,7 @@ final class DesignSetting_jsonld_design_setting_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

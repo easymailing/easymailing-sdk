@@ -10,11 +10,12 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class BatchOperation_jsonld_batch_operation_write
 {
     public function __construct(
-        /** @var Operation_jsonld_batch_operation_write[]|null */
+        /** @var list<Operation_jsonld_batch_operation_write>|null */
         public readonly ?array $operations = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -22,6 +23,7 @@ final class BatchOperation_jsonld_batch_operation_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

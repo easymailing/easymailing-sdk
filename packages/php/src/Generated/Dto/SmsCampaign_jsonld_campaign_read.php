@@ -18,7 +18,7 @@ final class SmsCampaign_jsonld_campaign_read
         public readonly ?string $channel = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?\DateTimeImmutable $finished_at = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $hash = null,
         public readonly ?int $id = null,
@@ -36,6 +36,7 @@ final class SmsCampaign_jsonld_campaign_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -63,6 +64,7 @@ final class SmsCampaign_jsonld_campaign_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

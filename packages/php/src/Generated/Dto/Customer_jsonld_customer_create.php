@@ -13,7 +13,7 @@ final class Customer_jsonld_customer_create
         public readonly string $email,
         public readonly string $resource_id,
         public readonly ?string $company = null,
-        /** @var CustomField_jsonld_customer_create[]|null */
+        /** @var list<CustomField_jsonld_customer_create>|null */
         public readonly ?array $custom_fields = null,
         public readonly ?string $firstname = null,
         public readonly ?string $lastname = null,
@@ -21,6 +21,7 @@ final class Customer_jsonld_customer_create
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -34,6 +35,7 @@ final class Customer_jsonld_customer_create
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

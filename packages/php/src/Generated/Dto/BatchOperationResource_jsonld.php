@@ -18,7 +18,7 @@ final class BatchOperationResource_jsonld
         public readonly ?int $finished = null,
         public readonly ?\DateTimeImmutable $finished_at = null,
         public readonly ?int $id = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $operations = null,
         public readonly ?string $response_body_url = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\BatchOperationStatus $status = null,
@@ -27,6 +27,7 @@ final class BatchOperationResource_jsonld
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -45,6 +46,7 @@ final class BatchOperationResource_jsonld
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

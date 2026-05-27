@@ -15,7 +15,7 @@ final class ListSegment_jsonld_list_segment_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?string $audience = null,
-        /** @var ListSegmentCondition_jsonld_list_segment_read[]|null */
+        /** @var list<ListSegmentCondition_jsonld_list_segment_read>|null */
         public readonly ?array $conditions = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?bool $custom = null,
@@ -29,6 +29,7 @@ final class ListSegment_jsonld_list_segment_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -49,6 +50,7 @@ final class ListSegment_jsonld_list_segment_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

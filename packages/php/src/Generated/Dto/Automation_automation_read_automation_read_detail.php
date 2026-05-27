@@ -11,13 +11,13 @@ final class Automation_automation_read_automation_read_detail
 {
     public function __construct(
         public readonly ?string $audience = null,
-        /** @var AutomationTrigger_automation_read_automation_read_detail[]|null */
+        /** @var list<AutomationTrigger_automation_read_automation_read_detail>|null */
         public readonly ?array $automation_triggers = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?string $description = null,
         public readonly ?AutomationStep_automation_read_automation_read_detail $first_step = null,
         public readonly ?int $id = null,
-        /** @var AutomationStep_automation_read_automation_read_detail[]|null */
+        /** @var list<AutomationStep_automation_read_automation_read_detail>|null */
         public readonly ?array $orphan_steps = null,
         public readonly ?AutomationMetric_automation_read_automation_read_detail $stats = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\AutomationStatus $status = null,
@@ -27,6 +27,7 @@ final class Automation_automation_read_automation_read_detail
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -45,6 +46,7 @@ final class Automation_automation_read_automation_read_detail
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

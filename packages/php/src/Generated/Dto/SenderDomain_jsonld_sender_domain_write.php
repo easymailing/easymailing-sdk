@@ -16,6 +16,7 @@ final class SenderDomain_jsonld_sender_domain_write
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +26,7 @@ final class SenderDomain_jsonld_sender_domain_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

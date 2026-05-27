@@ -23,6 +23,7 @@ final class SmsSender_jsonld_sms_sender_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -38,6 +39,7 @@ final class SmsSender_jsonld_sms_sender_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

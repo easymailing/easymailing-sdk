@@ -23,6 +23,7 @@ final class ListSegment_jsonld_audience_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -38,6 +39,7 @@ final class ListSegment_jsonld_audience_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

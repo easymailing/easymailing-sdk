@@ -10,12 +10,13 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ConditionAction_automation_step_write
 {
     public function __construct(
-        /** @var AutomationConditionItem_automation_step_write[]|null */
+        /** @var list<AutomationConditionItem_automation_step_write>|null */
         public readonly ?array $conditions = null,
         public readonly ?string $match = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +25,7 @@ final class ConditionAction_automation_step_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

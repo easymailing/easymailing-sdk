@@ -16,6 +16,7 @@ final class TitlesDto_design_setting_create
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +26,7 @@ final class TitlesDto_design_setting_create
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

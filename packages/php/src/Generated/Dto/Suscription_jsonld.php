@@ -16,9 +16,9 @@ final class Suscription_jsonld
         public readonly ?string $_type = null,
         public readonly ?string $audience = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $custom_fields = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?float $rating = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\SuscriberSource $source = null,
@@ -28,6 +28,7 @@ final class Suscription_jsonld
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -46,6 +47,7 @@ final class Suscription_jsonld
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

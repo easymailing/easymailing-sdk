@@ -14,6 +14,7 @@ final class MasterTemplate_CreateTemplateFromMasterInput_jsonld_master_template_
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,6 +22,7 @@ final class MasterTemplate_CreateTemplateFromMasterInput_jsonld_master_template_
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

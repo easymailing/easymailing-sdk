@@ -12,7 +12,7 @@ final class Customer_jsonld_customer_update
     public function __construct(
         public readonly string $email,
         public readonly ?string $company = null,
-        /** @var CustomField_jsonld_customer_update[]|null */
+        /** @var list<CustomField_jsonld_customer_update>|null */
         public readonly ?array $custom_fields = null,
         public readonly ?string $firstname = null,
         public readonly ?string $lastname = null,
@@ -20,6 +20,7 @@ final class Customer_jsonld_customer_update
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -32,6 +33,7 @@ final class Customer_jsonld_customer_update
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

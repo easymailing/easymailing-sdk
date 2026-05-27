@@ -12,7 +12,7 @@ final class DelayAction_automation_step_write
     public function __construct(
         public readonly ?\DateTimeImmutable $date_year = null,
         public readonly ?int $day_month = null,
-        /** @var int[]|null */
+        /** @var list<int>|null */
         public readonly ?array $day_week = null,
         public readonly ?string $delay_unit = null,
         public readonly ?int $delay_value = null,
@@ -21,6 +21,7 @@ final class DelayAction_automation_step_write
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -34,6 +35,7 @@ final class DelayAction_automation_step_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

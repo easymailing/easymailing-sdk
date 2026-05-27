@@ -290,7 +290,9 @@ function analyzeProperty(array $schema, array $ctx): array
         $items = $schema['items'] ?? [];
         $itemAnalysis = analyzeProperty($items, $ctx);
         $itemType = $itemAnalysis['typeHint'];
-        $docHint = "/** @var {$itemType}[] */";
+        // PHPStan rejects `array<int|string, mixed>` ambiguity that comes from bare
+        // `array` types. Emit a list<T> annotation so the iterable shape is explicit.
+        $docHint = "/** @var list<{$itemType}> */";
 
         if (isset($items['$ref']) && isset($ctx['enums'][basename($items['$ref'])])) {
             $fqn = $itemAnalysis['typeHint'];
@@ -359,10 +361,24 @@ function analyzeProperty(array $schema, array $ctx): array
 
     $typeHint = ($intrinsicNullable ? '?' : '') . $baseType;
 
+    // Free-form `object` (no `properties`/`$ref`) or nullable `array` (`type:["null","array"]`)
+    // fall back to an unparameterized PHP array. PHPStan level 8 rejects bare `array` —
+    // emit a doc hint so the iterable value type is known. Object → associative
+    // array<string,mixed>; array → list of mixed. Note: no spaces inside the type
+    // spec — generateClass() appends `|null` with a regex that breaks on whitespace.
+    $docHint = null;
+    if ($baseType === 'array') {
+        $isObject = $type === 'object';
+        $inner = $isObject ? 'array<string,mixed>' : 'list<mixed>';
+        $docHint = $intrinsicNullable
+            ? "/** @var {$inner}|null */"
+            : "/** @var {$inner} */";
+    }
+
     return [
         'typeHint' => $typeHint,
         'nullable' => $intrinsicNullable,
-        'docHint' => null,
+        'docHint' => $docHint,
         'from' => makeScalarFromExpr($baseType, $intrinsicNullable),
         'to' => makeScalarToExpr($baseType, $intrinsicNullable),
     ];
@@ -472,10 +488,12 @@ function generateClass(string $namespace, string $className, array $properties, 
     $body .= "    public function __construct(\n";
     $body .= implode("\n", $constructorParams) . "\n";
     $body .= "    ) {\n    }\n\n";
+    $body .= "    /** @param array<string, mixed> \$data */\n";
     $body .= "    public static function fromArray(array \$data): self\n    {\n";
     $body .= "        return new self(\n";
     $body .= implode("\n", $fromArrayLines) . "\n";
     $body .= "        );\n    }\n\n";
+    $body .= "    /** @return array<string, mixed> */\n";
     $body .= "    public function toArray(): array\n    {\n";
     $body .= "        return [\n";
     $body .= implode("\n", $toArrayLines) . "\n";

@@ -15,15 +15,17 @@ final class Campaign_CampaignRevalidationInput_campaign_write
         public readonly ?EmailConfig_campaign_write $email_config,
         public readonly string $send_to,
         public readonly string $title,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $list_segment = null,
         public readonly ?string $template = null,
         public readonly ?string $template_html = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $template_simple_json_code = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -40,6 +42,7 @@ final class Campaign_CampaignRevalidationInput_campaign_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -17,6 +17,7 @@ final class ThemeType_jsonld_theme_type_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class ThemeType_jsonld_theme_type_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

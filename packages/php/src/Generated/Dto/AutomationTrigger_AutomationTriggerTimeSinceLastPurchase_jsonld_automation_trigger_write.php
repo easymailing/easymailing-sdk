@@ -17,6 +17,7 @@ final class AutomationTrigger_AutomationTriggerTimeSinceLastPurchase_jsonld_auto
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class AutomationTrigger_AutomationTriggerTimeSinceLastPurchase_jsonld_auto
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

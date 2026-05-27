@@ -15,6 +15,7 @@ final class AutomationTrigger_AutomationTriggerNotOpenOnCampaign_jsonld_automati
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -23,6 +24,7 @@ final class AutomationTrigger_AutomationTriggerNotOpenOnCampaign_jsonld_automati
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

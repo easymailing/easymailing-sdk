@@ -18,7 +18,7 @@ final class Campaign_campaign_read_campaign_read_detail
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?EmailConfig_campaign_read_campaign_read_detail $email_config = null,
         public readonly ?\DateTimeImmutable $finished_at = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $hash = null,
         public readonly ?int $id = null,
@@ -35,13 +35,14 @@ final class Campaign_campaign_read_campaign_read_detail
         public readonly ?\Easymailing\Sdk\Generated\Enum\CampaignType $type = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
-        /** @var CampaignTestVariantResource_campaign_read_campaign_read_detail[]|null */
+        /** @var list<CampaignTestVariantResource_campaign_read_campaign_read_detail>|null */
         public readonly ?array $variants = null,
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $warnings = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -74,6 +75,7 @@ final class Campaign_campaign_read_campaign_read_detail
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

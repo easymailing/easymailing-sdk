@@ -15,11 +15,12 @@ final class TreatmentPurpose_jsonld_automation_queue_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?string $description = null,
-        /** @var TreatmentPurposeTranslation_jsonld_automation_queue_read[]|null */
+        /** @var list<TreatmentPurposeTranslation_jsonld_automation_queue_read>|null */
         public readonly ?array $translations = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +32,7 @@ final class TreatmentPurpose_jsonld_automation_queue_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

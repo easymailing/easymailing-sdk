@@ -10,14 +10,19 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class TemplateSchema
 {
     public function __construct(
+        /** @var array<string,mixed>|null */
         public readonly ?array $common_errors = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $documentation = null,
         public readonly ?string $id = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $official_example = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $schema = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +34,7 @@ final class TemplateSchema
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

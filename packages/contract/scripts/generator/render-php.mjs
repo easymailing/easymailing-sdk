@@ -31,7 +31,12 @@ function normalizedResources(model) {
 
 function renderTrait(topLevel, resources) {
   const props = topLevel.map((resource) => `public readonly ${className(resource)} $${resource.publicName};`).join("\n");
-  const init = topLevel.map((resource) => `$this->${resource.publicName} = new ${className(resource)}($this);`).join("\n");
+  // wireGeneratedResources() is invoked from the consuming class's constructor, but
+  // PHPStan 1.x doesn't connect trait methods to constructor scope for readonly
+  // analysis. Suppress per-line — the pattern is safe at runtime.
+  const init = topLevel.map((resource) =>
+    `/** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */\n$this->${resource.publicName} = new ${className(resource)}($this);`
+  ).join("\n");
   const scopedMethods = topLevel
     .filter((resource) => needsScopedResource(resource, resources))
     .map((resource) => {

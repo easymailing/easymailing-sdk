@@ -17,6 +17,7 @@ final class SendCampaignAction_automation_step_write
         public readonly ?string $subject = null,
         public readonly ?string $template = null,
         public readonly ?string $template_html = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $template_simple_json_code = null,
         public readonly ?bool $track_clicks = null,
         public readonly ?bool $track_opens = null,
@@ -24,6 +25,7 @@ final class SendCampaignAction_automation_step_write
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -41,6 +43,7 @@ final class SendCampaignAction_automation_step_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

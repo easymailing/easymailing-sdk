@@ -11,13 +11,14 @@ final class SenderDomain_SenderDomainAuthenticateOutput_sender_domain_read
 {
     public function __construct(
         public readonly ?bool $authenticated = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $checks = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $results = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class SenderDomain_SenderDomainAuthenticateOutput_sender_domain_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

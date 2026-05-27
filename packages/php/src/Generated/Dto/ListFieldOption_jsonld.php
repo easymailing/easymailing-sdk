@@ -14,12 +14,13 @@ final class ListFieldOption_jsonld
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $translations = null,
         public readonly ?string $value = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +32,7 @@ final class ListFieldOption_jsonld
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

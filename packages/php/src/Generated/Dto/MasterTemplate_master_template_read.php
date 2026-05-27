@@ -13,6 +13,7 @@ final class MasterTemplate_master_template_read
         public readonly ?string $content = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?int $id = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $simple_json_code = null,
         public readonly ?string $thumbnail = null,
         public readonly ?string $title = null,
@@ -22,6 +23,7 @@ final class MasterTemplate_master_template_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -37,6 +39,7 @@ final class MasterTemplate_master_template_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

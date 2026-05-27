@@ -15,6 +15,7 @@ final class WebhookEvent_jsonld_webhook_event_read
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $created_at = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $event_data = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\WebhookEventType $event_type = null,
         public readonly ?int $id = null,
@@ -25,6 +26,7 @@ final class WebhookEvent_jsonld_webhook_event_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -42,6 +44,7 @@ final class WebhookEvent_jsonld_webhook_event_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

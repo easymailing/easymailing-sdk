@@ -12,13 +12,14 @@ final class ListSegment_jsonld_list_segment_write
     public function __construct(
         public readonly string $name,
         public readonly string $operator_match,
-        /** @var ListSegmentCondition_jsonld_list_segment_write[]|null */
+        /** @var list<ListSegmentCondition_jsonld_list_segment_write>|null */
         public readonly ?array $conditions = null,
         public readonly ?bool $custom = null,
         public readonly ?string $description = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -30,6 +31,7 @@ final class ListSegment_jsonld_list_segment_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

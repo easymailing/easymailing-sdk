@@ -10,13 +10,14 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class SendWebhookAction_automation_step_write
 {
     public function __construct(
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $payload_items = null,
         public readonly ?string $secret = null,
         public readonly ?string $url = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -26,6 +27,7 @@ final class SendWebhookAction_automation_step_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

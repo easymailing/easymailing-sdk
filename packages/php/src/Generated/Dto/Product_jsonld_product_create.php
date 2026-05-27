@@ -12,7 +12,7 @@ final class Product_jsonld_product_create
     public function __construct(
         public readonly string $resource_id,
         public readonly string $title,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $categories = null,
         public readonly ?string $description = null,
         public readonly ?string $image_url = null,
@@ -21,6 +21,7 @@ final class Product_jsonld_product_create
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -34,6 +35,7 @@ final class Product_jsonld_product_create
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

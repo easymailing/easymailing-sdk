@@ -16,15 +16,16 @@ final class ListGdpr_jsonld_audience_read
         public readonly ?string $_type = null,
         public readonly ?DataManager_jsonld_audience_read $data_manager = null,
         public readonly ?bool $enabled = null,
-        /** @var mixed[]|null */
+        /** @var list<mixed>|null */
         public readonly ?array $list_gdpr_treatment_purposes = null,
         public readonly ?string $privacy_url = null,
-        /** @var TreatmentPurpose_jsonld_audience_read[]|null */
+        /** @var list<TreatmentPurpose_jsonld_audience_read>|null */
         public readonly ?array $treatment_purposes = null,
         public readonly ?string $uuid = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -40,6 +41,7 @@ final class ListGdpr_jsonld_audience_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

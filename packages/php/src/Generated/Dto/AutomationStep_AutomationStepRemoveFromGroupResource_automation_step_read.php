@@ -20,6 +20,7 @@ final class AutomationStep_AutomationStepRemoveFromGroupResource_automation_step
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -33,6 +34,7 @@ final class AutomationStep_AutomationStepRemoveFromGroupResource_automation_step
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

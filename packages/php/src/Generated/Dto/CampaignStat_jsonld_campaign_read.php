@@ -40,6 +40,7 @@ final class CampaignStat_jsonld_campaign_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -72,6 +73,7 @@ final class CampaignStat_jsonld_campaign_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

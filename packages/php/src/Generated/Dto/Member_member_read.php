@@ -13,14 +13,14 @@ final class Member_member_read
         public readonly ?string $audience = null,
         public readonly ?string $client_ip = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var CustomField_member_read[]|null */
+        /** @var list<CustomField_member_read>|null */
         public readonly ?array $custom_fields = null,
         public readonly ?string $email = null,
         public readonly ?\DateTimeImmutable $email_opt_in_at = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\SuscriberSource $email_opt_in_source = null,
         public readonly ?\DateTimeImmutable $email_opt_out_at = null,
         public readonly ?string $first_name = null,
-        /** @var Group_member_read[]|null */
+        /** @var list<Group_member_read>|null */
         public readonly ?array $groups = null,
         public readonly ?int $id = null,
         public readonly ?string $last_name = null,
@@ -42,6 +42,7 @@ final class Member_member_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -75,6 +76,7 @@ final class Member_member_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

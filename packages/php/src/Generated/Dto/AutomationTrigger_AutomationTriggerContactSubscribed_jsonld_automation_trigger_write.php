@@ -10,12 +10,13 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class AutomationTrigger_AutomationTriggerContactSubscribed_jsonld_automation_trigger_write
 {
     public function __construct(
-        /** @var string[] */
+        /** @var list<string> */
         public readonly array $sources,
         public readonly ?bool $workflow_repeat = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +25,7 @@ final class AutomationTrigger_AutomationTriggerContactSubscribed_jsonld_automati
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

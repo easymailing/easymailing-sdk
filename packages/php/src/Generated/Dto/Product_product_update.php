@@ -11,7 +11,7 @@ final class Product_product_update
 {
     public function __construct(
         public readonly string $title,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $categories = null,
         public readonly ?string $description = null,
         public readonly ?string $image_url = null,
@@ -20,6 +20,7 @@ final class Product_product_update
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -32,6 +33,7 @@ final class Product_product_update
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

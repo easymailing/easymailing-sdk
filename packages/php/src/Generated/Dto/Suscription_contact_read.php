@@ -12,9 +12,9 @@ final class Suscription_contact_read
     public function __construct(
         public readonly ?string $audience = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var CustomField_contact_read[]|null */
+        /** @var list<CustomField_contact_read>|null */
         public readonly ?array $custom_fields = null,
-        /** @var Group_contact_read[]|null */
+        /** @var list<Group_contact_read>|null */
         public readonly ?array $groups = null,
         public readonly ?float $rating = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\SuscriberSource $source = null,
@@ -24,6 +24,7 @@ final class Suscription_contact_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -39,6 +40,7 @@ final class Suscription_contact_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

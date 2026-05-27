@@ -14,13 +14,14 @@ final class SmsCampaign_CampaignSmsInput_jsonld_campaign_write_sms
         public readonly string $send_to,
         public readonly ?SmsConfigResource_jsonld_campaign_write_sms $sms_config,
         public readonly string $title,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $list_segment = null,
         public readonly ?SmsCampaignConfigResource_jsonld_campaign_write_sms $sms_campaign_config = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -34,6 +35,7 @@ final class SmsCampaign_CampaignSmsInput_jsonld_campaign_write_sms
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

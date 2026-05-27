@@ -18,15 +18,16 @@ final class Campaign_CampaignTestABTemplateInput_jsonld_campaign_write_test_ab_t
         public readonly string $send_to,
         public readonly int $test_size,
         public readonly string $title,
-        /** @var TemplateVariantInput_jsonld_campaign_write_test_ab_template[] */
+        /** @var list<TemplateVariantInput_jsonld_campaign_write_test_ab_template> */
         public readonly array $variants,
         public readonly string $winner_metric,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $list_segment = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -45,6 +46,7 @@ final class Campaign_CampaignTestABTemplateInput_jsonld_campaign_write_test_ab_t
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

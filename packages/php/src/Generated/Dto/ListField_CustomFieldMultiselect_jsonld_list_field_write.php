@@ -10,10 +10,10 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListField_CustomFieldMultiselect_jsonld_list_field_write
 {
     public function __construct(
-        /** @var array[] */
+        /** @var list<array> */
         public readonly array $options,
         public readonly ?string $tag,
-        /** @var CustomFieldTranslationInput_jsonld_list_field_write[] */
+        /** @var list<CustomFieldTranslationInput_jsonld_list_field_write> */
         public readonly array $translations,
         public readonly ?bool $expanded = null,
         public readonly ?bool $public = null,
@@ -21,6 +21,7 @@ final class ListField_CustomFieldMultiselect_jsonld_list_field_write
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -33,6 +34,7 @@ final class ListField_CustomFieldMultiselect_jsonld_list_field_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

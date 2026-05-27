@@ -13,16 +13,20 @@ final class SuscriptionForm_PublishingInfoDto_suscription_form_read
         public readonly ?string $click_trigger_code = null,
         public readonly ?string $form_url = null,
         public readonly ?string $html_placeholder = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $instructions = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $integrations = null,
         public readonly ?bool $is_paused = null,
         public readonly ?string $message = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $requirements = null,
         public readonly ?string $script_code = null,
         public readonly ?string $status = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -39,6 +43,7 @@ final class SuscriptionForm_PublishingInfoDto_suscription_form_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -11,7 +11,7 @@ final class Webhook_webhook_write
 {
     public function __construct(
         public readonly string $audience,
-        /** @var \Easymailing\Sdk\Generated\Enum\WebhookEventType[] */
+        /** @var list<\Easymailing\Sdk\Generated\Enum\WebhookEventType> */
         public readonly array $event_types,
         public readonly string $secret,
         public readonly string $title,
@@ -20,6 +20,7 @@ final class Webhook_webhook_write
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -32,6 +33,7 @@ final class Webhook_webhook_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

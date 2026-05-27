@@ -13,16 +13,17 @@ final class SuscriptionForm_CreatePopupFormDto_jsonld_suscription_form_write
         public readonly ?string $locale,
         public readonly ?string $title,
         public readonly ?PopupBehaviorDto_jsonld_suscription_form_write $behavior = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $channels = null,
         public readonly ?bool $double_opt_in = null,
         public readonly ?bool $enable_welcome_email = null,
-        /** @var Group_jsonld_suscription_form_write[]|null */
+        /** @var list<Group_jsonld_suscription_form_write>|null */
         public readonly ?array $groups = null,
         public readonly ?bool $sms_double_opt_in = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -37,6 +38,7 @@ final class SuscriptionForm_CreatePopupFormDto_jsonld_suscription_form_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -16,7 +16,7 @@ final class DelayAction_jsonld_automation_step_read
         public readonly ?string $_type = null,
         public readonly ?\DateTimeImmutable $date_year = null,
         public readonly ?int $day_month = null,
-        /** @var int[]|null */
+        /** @var list<int>|null */
         public readonly ?array $day_week = null,
         public readonly ?string $delay_unit = null,
         public readonly ?int $delay_value = null,
@@ -25,6 +25,7 @@ final class DelayAction_jsonld_automation_step_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -41,6 +42,7 @@ final class DelayAction_jsonld_automation_step_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

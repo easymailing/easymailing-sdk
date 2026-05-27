@@ -10,12 +10,13 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ListFieldOption_audience_read
 {
     public function __construct(
-        /** @var ListFieldOptionTranslation_audience_read[]|null */
+        /** @var list<ListFieldOptionTranslation_audience_read>|null */
         public readonly ?array $translations = null,
         public readonly ?string $value = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +25,7 @@ final class ListFieldOption_audience_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -18,14 +18,16 @@ final class ConditionField_jsonld_condition_field_read
         public readonly ?string $input_type = null,
         public readonly ?bool $multiple = null,
         public readonly ?string $name = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $operators = null,
+        /** @var list<mixed>|null */
         public readonly ?array $options = null,
         public readonly ?string $type = null,
         public readonly ?string $uuid = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -43,6 +45,7 @@ final class ConditionField_jsonld_condition_field_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

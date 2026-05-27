@@ -10,7 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class CampaignConfigSend
 {
     public function __construct(
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $mailing_confirm_emails = null,
         public readonly ?bool $schedule_mailing = null,
         public readonly ?\DateTimeImmutable $schedule_mailing_date = null,
@@ -18,6 +18,7 @@ final class CampaignConfigSend
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -28,6 +29,7 @@ final class CampaignConfigSend
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

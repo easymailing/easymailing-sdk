@@ -12,20 +12,21 @@ final class DesignSetting_design_setting_write
     public function __construct(
         public readonly string $title,
         public readonly ?ButtonDto_design_setting_write $button = null,
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $color_palette = null,
-        /** @var CustomFontDto_design_setting_write[]|null */
+        /** @var list<CustomFontDto_design_setting_write>|null */
         public readonly ?array $custom_fonts = null,
         public readonly ?bool $default = null,
         public readonly ?int $email_width = null,
         public readonly ?int $page_width = null,
-        /** @var SocialLinkDto_design_setting_write[]|null */
+        /** @var list<SocialLinkDto_design_setting_write>|null */
         public readonly ?array $social_links = null,
         public readonly ?TextsDto_design_setting_write $texts = null,
         public readonly ?TitlesDto_design_setting_write $titles = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -42,6 +43,7 @@ final class DesignSetting_design_setting_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

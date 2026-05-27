@@ -18,18 +18,20 @@ final class Campaign_CampaignTestABSubjectInput_campaign_write_test_ab_subject
         public readonly string $send_to,
         public readonly int $test_size,
         public readonly string $title,
-        /** @var SubjectVariantInput_campaign_write_test_ab_subject[] */
+        /** @var list<SubjectVariantInput_campaign_write_test_ab_subject> */
         public readonly array $variants,
         public readonly string $winner_metric,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $list_segment = null,
         public readonly ?string $template = null,
         public readonly ?string $template_html = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $template_simple_json_code = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -51,6 +53,7 @@ final class Campaign_CampaignTestABSubjectInput_campaign_write_test_ab_subject
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

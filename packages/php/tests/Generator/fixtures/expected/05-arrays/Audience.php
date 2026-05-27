@@ -11,13 +11,14 @@ final class Audience
 {
     public function __construct(
         public readonly string $name,
-        /** @var string[] */
+        /** @var list<string> */
         public readonly array $tags,
-        /** @var Member[] */
+        /** @var list<Member> */
         public readonly array $members,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class Audience
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

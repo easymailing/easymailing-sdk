@@ -14,13 +14,18 @@ final class PopupBehaviorDto_jsonld_suscription_form_read
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $frequency = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $schedule = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $triggers = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $visibility = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -34,6 +39,7 @@ final class PopupBehaviorDto_jsonld_suscription_form_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

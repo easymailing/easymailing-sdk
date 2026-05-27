@@ -14,6 +14,7 @@ final class ListField_jsonld_contact_read
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $options = null,
         public readonly ?bool $public = null,
         public readonly ?bool $required = null,
@@ -23,6 +24,7 @@ final class ListField_jsonld_contact_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -38,6 +40,7 @@ final class ListField_jsonld_contact_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

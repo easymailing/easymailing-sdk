@@ -14,15 +14,16 @@ final class AutomationTrigger_AutomationTriggerAbandonedCart_automation_trigger_
         public readonly string $delay_unit,
         public readonly ?int $delay_value,
         public readonly ?string $store,
-        /** @var Category_automation_trigger_write[]|null */
+        /** @var list<Category_automation_trigger_write>|null */
         public readonly ?array $categories = null,
         public readonly ?bool $exclude = null,
-        /** @var Product_automation_trigger_write[]|null */
+        /** @var list<Product_automation_trigger_write>|null */
         public readonly ?array $products = null,
         public readonly ?bool $workflow_repeat = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -37,6 +38,7 @@ final class AutomationTrigger_AutomationTriggerAbandonedCart_automation_trigger_
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

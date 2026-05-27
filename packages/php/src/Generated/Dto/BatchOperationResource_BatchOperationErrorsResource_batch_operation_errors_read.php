@@ -10,8 +10,9 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class BatchOperationResource_BatchOperationErrorsResource_batch_operation_errors_read
 {
     public function __construct(
-        /** @var array[]|null */
+        /** @var list<array>|null */
         public readonly ?array $errors = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $grouped_by_message = null,
         public readonly ?int $success_count = null,
         public readonly ?int $total_errors = null,
@@ -19,6 +20,7 @@ final class BatchOperationResource_BatchOperationErrorsResource_batch_operation_
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -30,6 +32,7 @@ final class BatchOperationResource_BatchOperationErrorsResource_batch_operation_
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

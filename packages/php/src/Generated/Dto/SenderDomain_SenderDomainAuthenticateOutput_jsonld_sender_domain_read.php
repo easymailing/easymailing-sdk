@@ -15,13 +15,14 @@ final class SenderDomain_SenderDomainAuthenticateOutput_jsonld_sender_domain_rea
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
         public readonly ?bool $authenticated = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $checks = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $results = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -34,6 +35,7 @@ final class SenderDomain_SenderDomainAuthenticateOutput_jsonld_sender_domain_rea
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

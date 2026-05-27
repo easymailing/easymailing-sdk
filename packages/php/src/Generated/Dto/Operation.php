@@ -14,10 +14,12 @@ final class Operation
         public readonly string $path,
         public readonly ?string $body = null,
         public readonly ?string $external_identifier = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $params = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -29,6 +31,7 @@ final class Operation
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

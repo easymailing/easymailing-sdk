@@ -16,6 +16,7 @@ final class AutomationTrigger_AutomationTriggerClickOnCampaignLink_automation_tr
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -25,6 +26,7 @@ final class AutomationTrigger_AutomationTriggerClickOnCampaignLink_automation_tr
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

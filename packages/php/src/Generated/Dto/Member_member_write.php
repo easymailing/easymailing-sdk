@@ -11,11 +11,11 @@ final class Member_member_write
 {
     public function __construct(
         public readonly ?string $client_ip = null,
-        /** @var CustomField_member_write[]|null */
+        /** @var list<CustomField_member_write>|null */
         public readonly ?array $custom_fields = null,
         public readonly ?string $email = null,
         public readonly ?string $first_name = null,
-        /** @var string[]|null */
+        /** @var list<string>|null */
         public readonly ?array $groups = null,
         public readonly ?string $last_name = null,
         public readonly ?string $locale = null,
@@ -25,6 +25,7 @@ final class Member_member_write
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -41,6 +42,7 @@ final class Member_member_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

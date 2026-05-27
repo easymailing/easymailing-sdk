@@ -17,13 +17,13 @@ final class Member_jsonld_automation_queue_read
         public readonly ?string $audience = null,
         public readonly ?string $client_ip = null,
         public readonly ?\DateTimeImmutable $created_at = null,
-        /** @var CustomField_jsonld_automation_queue_read[]|null */
+        /** @var list<CustomField_jsonld_automation_queue_read>|null */
         public readonly ?array $custom_fields = null,
         public readonly ?string $email = null,
         public readonly ?\DateTimeImmutable $email_opt_in_at = null,
         public readonly ?\Easymailing\Sdk\Generated\Enum\SuscriberSource $email_opt_in_source = null,
         public readonly ?\DateTimeImmutable $email_opt_out_at = null,
-        /** @var Group_jsonld_automation_queue_read[]|null */
+        /** @var list<Group_jsonld_automation_queue_read>|null */
         public readonly ?array $groups = null,
         public readonly ?string $locale = null,
         public readonly ?Location_jsonld_automation_queue_read $location = null,
@@ -37,6 +37,7 @@ final class Member_jsonld_automation_queue_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -64,6 +65,7 @@ final class Member_jsonld_automation_queue_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

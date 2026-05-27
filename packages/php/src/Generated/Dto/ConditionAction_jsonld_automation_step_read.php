@@ -14,12 +14,13 @@ final class ConditionAction_jsonld_automation_step_read
         public readonly mixed $_context = null,
         public readonly ?string $_id = null,
         public readonly ?string $_type = null,
-        /** @var AutomationConditionItem_jsonld_automation_step_read[]|null */
+        /** @var list<AutomationConditionItem_jsonld_automation_step_read>|null */
         public readonly ?array $conditions = null,
         public readonly ?string $match = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +32,7 @@ final class ConditionAction_jsonld_automation_step_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

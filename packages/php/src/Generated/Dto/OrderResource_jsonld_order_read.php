@@ -24,7 +24,7 @@ final class OrderResource_jsonld_order_read
         public readonly ?float $currency_exchange_rate = null,
         public readonly ?string $customer = null,
         public readonly ?int $discount_total = null,
-        /** @var OrderItem_jsonld_order_read[]|null */
+        /** @var list<OrderItem_jsonld_order_read>|null */
         public readonly ?array $order_items = null,
         public readonly ?int $order_total = null,
         public readonly ?\DateTimeImmutable $paid_at = null,
@@ -40,6 +40,7 @@ final class OrderResource_jsonld_order_read
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -71,6 +72,7 @@ final class OrderResource_jsonld_order_read
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

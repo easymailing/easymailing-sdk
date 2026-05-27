@@ -10,13 +10,18 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class PopupBehaviorDto_suscription_form_write
 {
     public function __construct(
+        /** @var array<string,mixed>|null */
         public readonly ?array $frequency = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $schedule = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $triggers = null,
+        /** @var array<string,mixed>|null */
         public readonly ?array $visibility = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +32,7 @@ final class PopupBehaviorDto_suscription_form_write
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

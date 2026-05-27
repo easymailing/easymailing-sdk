@@ -17,6 +17,7 @@ final class SmsCampaignConfigResource_jsonld_campaign_write_sms
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -27,6 +28,7 @@ final class SmsCampaignConfigResource_jsonld_campaign_write_sms
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

@@ -12,14 +12,15 @@ final class AutomationTrigger_AutomationTriggerBuyAProduct_automation_trigger_wr
     public function __construct(
         public readonly string $condition,
         public readonly ?string $store,
-        /** @var Category_automation_trigger_write[]|null */
+        /** @var list<Category_automation_trigger_write>|null */
         public readonly ?array $categories = null,
-        /** @var Product_automation_trigger_write[]|null */
+        /** @var list<Product_automation_trigger_write>|null */
         public readonly ?array $products = null,
         public readonly ?bool $workflow_repeat = null,
     ) {
     }
 
+    /** @param array<string, mixed> $data */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -31,6 +32,7 @@ final class AutomationTrigger_AutomationTriggerBuyAProduct_automation_trigger_wr
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [
