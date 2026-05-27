@@ -150,3 +150,4 @@ jobs:
       - name: Run generator tests
         working-directory: packages/php
         run: composer test
+
