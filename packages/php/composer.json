@@ -34,7 +34,11 @@
     "test": "phpunit --testsuite default",
     "test:e2e": "phpunit --testsuite e2e",
     "analyse": "phpstan analyse src tests --level=8",
-    "generate": "php scripts/generate.php",
+    "generate:webhooks": "php scripts/generate-webhook-events.php",
+    "generate": [
+      "@php scripts/generate.php",
+      "@generate:webhooks"
+    ],
     "check": [
       "@generate",
       "@test"

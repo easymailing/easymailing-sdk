@@ -19,6 +19,10 @@ final class EventParser
      * @return array{event_type: string, webhook_id?: string, data: mixed}
      * @throws MalformedWebhookException on invalid JSON, non-object root, or
      *         missing `event_type`/`data`
+     *
+     * @see \Easymailing\Sdk\Generated\Webhooks\WebhookEvents for the catalogue
+     *      of known event_type constants (regenerated from the upstream
+     *      WebhookEventType PHP enum via `composer generate:webhooks`).
      */
     public static function parse(string $payload): array
     {
