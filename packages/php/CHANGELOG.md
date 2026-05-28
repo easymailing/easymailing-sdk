@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.6.0-alpha.0...v0.6.1-alpha.0) (2026-05-28)
+
+
+### Bug Fixes
+
+* **php:** add Packagist discoverability keywords ([5d76b32](https://github.com/easymailing/easymailing-sdk/commit/5d76b324c85473080a0f13ed0f1e9f025b54cc17))
+
 ## [0.6.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.5.0-alpha.0...v0.6.0-alpha.0) (2026-05-28)
 
 
