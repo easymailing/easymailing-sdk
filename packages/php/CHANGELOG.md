@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.4.1-alpha.0...v0.5.0-alpha.0) (2026-05-28)
+
+
+### Features
+
+* **contract:** sync upstream — Customer.phone + search by phone ([2ae856c](https://github.com/easymailing/easymailing-sdk/commit/2ae856c003bd07018978a2625709f615e714b78d))
+
 ## [0.4.1-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.4.0-alpha.0...v0.4.1-alpha.0) (2026-05-27)
 
 
