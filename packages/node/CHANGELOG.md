@@ -1,5 +1,24 @@
 # @easymailing/sdk
 
+## 0.3.0
+
+### Minor Changes
+
+- [`2ae856c`](https://github.com/easymailing/easymailing-sdk/commit/2ae856c003bd07018978a2625709f615e714b78d) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Expose Customer `phone` field and the `?phone=` query filter on the
+  ecommerce customers endpoint.
+
+  `components["schemas"]["Customer-customer.read"]` now includes
+  `phone?: string` (E.164 format, e.g. `+34612345678`). The same field
+  is available on `Customer-customer.create` and `Customer-customer.update`
+  for write operations.
+
+  `em.stores(storeId).customers.list({ phone: "+34..." })` now type-checks
+  because `operations["list_store_customers"].parameters.query` declares
+  `phone` as a filter alongside the existing `email`, `firstname`,
+  `lastname`, `company` filters.
+
+  Sync from upstream API; non-breaking minor.
+
 ## 0.2.1
 
 ### Patch Changes
