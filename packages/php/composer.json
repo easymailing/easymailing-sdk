@@ -4,6 +4,18 @@
   "type": "library",
   "license": "MIT",
   "homepage": "https://github.com/easymailing/easymailing-sdk",
+  "keywords": [
+    "easymailing",
+    "sdk",
+    "email-marketing",
+    "newsletter",
+    "transactional-email",
+    "marketing-automation",
+    "api-client",
+    "hydra",
+    "jsonld",
+    "webhooks"
+  ],
   "support": {
     "issues": "https://github.com/easymailing/easymailing-sdk/issues",
     "source": "https://github.com/easymailing/easymailing-sdk/tree/main/packages/php"
