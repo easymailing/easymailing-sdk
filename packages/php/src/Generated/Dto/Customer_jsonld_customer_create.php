@@ -18,6 +18,7 @@ final class Customer_jsonld_customer_create
         public readonly ?string $firstname = null,
         public readonly ?string $lastname = null,
         public readonly ?MemberConsent_jsonld_customer_create $member_consent = null,
+        public readonly ?string $phone = null,
     ) {
     }
 
@@ -32,6 +33,7 @@ final class Customer_jsonld_customer_create
             firstname: $data['firstname'] ?? null,
             lastname: $data['lastname'] ?? null,
             member_consent: isset($data['member_consent']) ? MemberConsent_jsonld_customer_create::fromArray($data['member_consent']) : null,
+            phone: $data['phone'] ?? null,
         );
     }
 
@@ -46,6 +48,7 @@ final class Customer_jsonld_customer_create
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
             'member_consent' => $this->member_consent?->toArray(),
+            'phone' => $this->phone,
         ];
     }
 
@@ -59,6 +62,7 @@ final class Customer_jsonld_customer_create
             firstname: array_key_exists('firstname', $fields) ? $fields['firstname'] : $this->firstname,
             lastname: array_key_exists('lastname', $fields) ? $fields['lastname'] : $this->lastname,
             member_consent: array_key_exists('member_consent', $fields) ? $fields['member_consent'] : $this->member_consent,
+            phone: array_key_exists('phone', $fields) ? $fields['phone'] : $this->phone,
         );
     }
 }

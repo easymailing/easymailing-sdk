@@ -18,6 +18,7 @@ final class Customer_jsonld_customer_read
         public readonly ?string $iri = null,
         public readonly ?string $lastname = null,
         public readonly ?string $member = null,
+        public readonly ?string $phone = null,
         public readonly ?\DateTimeImmutable $updated_at = null,
         public readonly ?string $uuid = null,
     ) {
@@ -35,6 +36,7 @@ final class Customer_jsonld_customer_read
             iri: $data['iri'] ?? null,
             lastname: $data['lastname'] ?? null,
             member: $data['member'] ?? null,
+            phone: $data['phone'] ?? null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
             uuid: $data['uuid'] ?? null,
         );
@@ -52,6 +54,7 @@ final class Customer_jsonld_customer_read
             'iri' => $this->iri,
             'lastname' => $this->lastname,
             'member' => $this->member,
+            'phone' => $this->phone,
             'updated_at' => $this->updated_at?->format(\DateTimeInterface::ATOM),
             'uuid' => $this->uuid,
         ];
@@ -68,6 +71,7 @@ final class Customer_jsonld_customer_read
             iri: array_key_exists('iri', $fields) ? $fields['iri'] : $this->iri,
             lastname: array_key_exists('lastname', $fields) ? $fields['lastname'] : $this->lastname,
             member: array_key_exists('member', $fields) ? $fields['member'] : $this->member,
+            phone: array_key_exists('phone', $fields) ? $fields['phone'] : $this->phone,
             updated_at: array_key_exists('updated_at', $fields) ? $fields['updated_at'] : $this->updated_at,
             uuid: array_key_exists('uuid', $fields) ? $fields['uuid'] : $this->uuid,
         );

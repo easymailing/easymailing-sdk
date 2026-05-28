@@ -13582,6 +13582,11 @@
               }
             ]
           },
+          "phone": {
+            "description": "Phone number in E.164 format",
+            "example": "+34612345678",
+            "type": "string"
+          },
           "resource_id": {
             "description": "A unique identifier for the customer",
             "example": "id",
@@ -13635,6 +13640,11 @@
               "string",
               "null"
             ]
+          },
+          "phone": {
+            "description": "Phone number in E.164 format",
+            "example": "+34612345678",
+            "type": "string"
           },
           "resource_id": {
             "description": "A unique identifier for the customer",
@@ -13697,6 +13707,11 @@
                 "type": "null"
               }
             ]
+          },
+          "phone": {
+            "description": "Phone number in E.164 format",
+            "example": "+34612345678",
+            "type": "string"
           }
         },
         "required": [
@@ -13743,6 +13758,11 @@
                 "type": "null"
               }
             ]
+          },
+          "phone": {
+            "description": "Phone number in E.164 format",
+            "example": "+34612345678",
+            "type": "string"
           },
           "resource_id": {
             "description": "A unique identifier for the customer",
@@ -13797,6 +13817,11 @@
               "string",
               "null"
             ]
+          },
+          "phone": {
+            "description": "Phone number in E.164 format",
+            "example": "+34612345678",
+            "type": "string"
           },
           "resource_id": {
             "description": "A unique identifier for the customer",
@@ -13859,6 +13884,11 @@
                 "type": "null"
               }
             ]
+          },
+          "phone": {
+            "description": "Phone number in E.164 format",
+            "example": "+34612345678",
+            "type": "string"
           }
         },
         "required": [
@@ -54049,6 +54079,21 @@
             "explode": false,
             "in": "query",
             "name": "lastname",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "allowEmptyValue": true,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Filter using phone in E.164 format",
+            "example": "+34612345678",
+            "explode": false,
+            "in": "query",
+            "name": "phone",
             "required": false,
             "schema": {
               "type": "string"

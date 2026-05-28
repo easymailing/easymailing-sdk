@@ -12247,6 +12247,11 @@ export interface components {
             lastname?: string;
             member_consent?: components["schemas"]["MemberConsent-customer.create"] | null;
             /**
+             * @description Phone number in E.164 format
+             * @example +34612345678
+             */
+            phone?: string;
+            /**
              * @description A unique identifier for the customer
              * @example id
              */
@@ -12277,6 +12282,11 @@ export interface components {
              */
             member?: string | null;
             /**
+             * @description Phone number in E.164 format
+             * @example +34612345678
+             */
+            phone?: string;
+            /**
              * @description A unique identifier for the customer
              * @example id
              */
@@ -12303,6 +12313,11 @@ export interface components {
             /** @description Customer lastname */
             lastname?: string;
             member_consent?: components["schemas"]["MemberConsent-customer.update"] | null;
+            /**
+             * @description Phone number in E.164 format
+             * @example +34612345678
+             */
+            phone?: string;
         };
         "Customer.jsonld-customer.create": {
             /** @description Customer company */
@@ -12318,6 +12333,11 @@ export interface components {
             /** @description Customer lastname */
             lastname?: string;
             member_consent?: components["schemas"]["MemberConsent.jsonld-customer.create"] | null;
+            /**
+             * @description Phone number in E.164 format
+             * @example +34612345678
+             */
+            phone?: string;
             /**
              * @description A unique identifier for the customer
              * @example id
@@ -12349,6 +12369,11 @@ export interface components {
              */
             member?: string | null;
             /**
+             * @description Phone number in E.164 format
+             * @example +34612345678
+             */
+            phone?: string;
+            /**
              * @description A unique identifier for the customer
              * @example id
              */
@@ -12375,6 +12400,11 @@ export interface components {
             /** @description Customer lastname */
             lastname?: string;
             member_consent?: components["schemas"]["MemberConsent.jsonld-customer.update"] | null;
+            /**
+             * @description Phone number in E.164 format
+             * @example +34612345678
+             */
+            phone?: string;
         };
         "DataManager-audience.read": {
             /**
@@ -35804,6 +35834,11 @@ export interface operations {
                  * @example search query
                  */
                 lastname?: string;
+                /**
+                 * @description Filter using phone in E.164 format
+                 * @example +34612345678
+                 */
+                phone?: string;
             };
             header?: never;
             path: {

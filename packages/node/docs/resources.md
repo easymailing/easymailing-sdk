@@ -606,7 +606,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
-| `list` | `em.stores("storeResourceId").customers.list(query)` | `GET` | `/stores/{storeResourceId}/customers` | page?: int, itemsPerPage?: int, email?: string, company?: string, firstname?: string, lastname?: string | - | `Page<Customer-customer.read>` | `list_store_customers` |
+| `list` | `em.stores("storeResourceId").customers.list(query)` | `GET` | `/stores/{storeResourceId}/customers` | page?: int, itemsPerPage?: int, email?: string, company?: string, firstname?: string, lastname?: string, phone?: string | - | `Page<Customer-customer.read>` | `list_store_customers` |
 | `create` | `em.stores("storeResourceId").customers.create(body, query)` | `POST` | `/stores/{storeResourceId}/customers` | disableDoubleOptIn?: bool, disableWelcomeEmail?: bool, disableSmsDoubleOptIn?: bool | `Customer-customer.create` | `Customer-customer.read` | `create_store_customer` |
 | `get` | `em.stores("storeResourceId").customers.get("resourceId")` | `GET` | `/stores/{storeResourceId}/customers/{resourceId}` | - | - | `Customer-customer.read` | `get_store_customer` |
 | `update` | `em.stores("storeResourceId").customers.update("resourceId", body)` | `PUT` | `/stores/{storeResourceId}/customers/{resourceId}` | - | `Customer-customer.update` | `Customer-customer.read` | `update_store_customer` |
