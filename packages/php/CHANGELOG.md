@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.5.0-alpha.0...v0.6.0-alpha.0) (2026-05-28)
+
+
+### Features
+
+* **telemetry:** structured event stream for consumer-owned logging ([0ee437b](https://github.com/easymailing/easymailing-sdk/commit/0ee437b535529997f5cc96247d96e91b6f23bf13))
+
 ## [0.5.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.4.1-alpha.0...v0.5.0-alpha.0) (2026-05-28)
 
 
