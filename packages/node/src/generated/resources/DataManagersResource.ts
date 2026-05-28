@@ -15,6 +15,7 @@ export class DataManagersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/data_managers", {  }),
+      pathTemplate: "/data_managers",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class DataManagersResource {
     const result = await this.client.request<components["schemas"]["DataManager-data_manager.read"]>({
       method: "POST",
       path: pathWithParams("/data_managers", {  }),
+      pathTemplate: "/data_managers",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class DataManagersResource {
     const result = await this.client.request<components["schemas"]["DataManager-data_manager.read"]>({
       method: "GET",
       path: pathWithParams("/data_managers/{uuid}", { uuid: uuid }),
+      pathTemplate: "/data_managers/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class DataManagersResource {
     const result = await this.client.request<components["schemas"]["DataManager-data_manager.read"]>({
       method: "PUT",
       path: pathWithParams("/data_managers/{uuid}", { uuid: uuid }),
+      pathTemplate: "/data_managers/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class DataManagersResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/data_managers/{uuid}", { uuid: uuid }),
+      pathTemplate: "/data_managers/{uuid}",
     });
     return;
   }

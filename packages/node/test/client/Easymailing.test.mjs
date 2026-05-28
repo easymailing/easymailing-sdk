@@ -138,21 +138,26 @@ test("parses Hydra collection in response", async () => {
   assert.equal(data.hasMore, false);
 });
 
-test("calls onRequest and onResponse hooks", async () => {
+test("emits request.start and request.end via onEvent", async () => {
   const transport = createMockTransport();
   transport.enqueue({ status: 200, body: {} });
-  let reqHook = 0;
-  let resHook = 0;
+  const events = [];
   const em = new Easymailing({
     apiKey: "k",
     baseUrl: "https://api.test",
     transport,
-    onRequest: () => reqHook++,
-    onResponse: () => resHook++,
+    onEvent: (e) => events.push(e),
   });
   await em.request({ method: "GET", path: "/x" });
-  assert.equal(reqHook, 1);
-  assert.equal(resHook, 1);
+  assert.equal(events.length, 2);
+  assert.equal(events[0].type, "request.start");
+  assert.equal(events[1].type, "request.end");
+  assert.equal(events[1].status, 200);
+  assert.equal(events[1].attempt, 1);
+  // requestId correlates start ↔ end
+  assert.equal(events[0].requestId, events[1].requestId);
+  // pathTemplate falls back to path when omitted
+  assert.equal(events[0].pathTemplate, "/x");
 });
 
 test("retries on 503 then succeeds", async () => {
@@ -258,4 +263,207 @@ test("Content-Type: body explicit null treated as no body", async () => {
   await em.request({ method: "POST", path: "/x", body: null });
   assert.equal(transport.received[0].headers["Content-Type"], "application/json");
   assert.equal(transport.received[0].body, "null");
+});
+
+// Telemetry events ---------------------------------------------------------
+
+test("telemetry: pathTemplate passed by caller is propagated", async () => {
+  const transport = createMockTransport();
+  transport.enqueue({ status: 200, body: {} });
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport,
+    onEvent: (e) => events.push(e),
+  });
+  await em.request({
+    method: "GET",
+    path: "/audiences/01ABC/members/01XYZ",
+    pathTemplate: "/audiences/{audienceUuid}/members/{uuid}",
+  });
+  assert.equal(events[0].pathTemplate, "/audiences/{audienceUuid}/members/{uuid}");
+  assert.equal(events[0].path, "/audiences/01ABC/members/01XYZ");
+});
+
+test("telemetry: 503 retry emits request.retry between start and end", async () => {
+  const transport = createMockTransport();
+  transport.enqueue({ status: 503, body: { status: 503 } });
+  transport.enqueue({ status: 200, body: {} });
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport,
+    maxRetries: 2,
+    onEvent: (e) => events.push(e),
+  });
+  await em.request({ method: "GET", path: "/x" });
+  assert.equal(events.length, 3);
+  assert.equal(events[0].type, "request.start");
+  assert.equal(events[1].type, "request.retry");
+  assert.equal(events[1].reason, "5xx");
+  assert.equal(events[1].status, 503);
+  assert.equal(events[2].type, "request.end");
+  assert.equal(events[2].attempt, 2); // succeeded on 2nd attempt
+  // requestId stable across all three
+  const ids = new Set(events.map((e) => e.requestId));
+  assert.equal(ids.size, 1);
+});
+
+test("telemetry: 401 emits request.end with error payload (no retry)", async () => {
+  const transport = createMockTransport();
+  transport.enqueue({ status: 401, body: { status: 401, title: "Unauthorized" } });
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport,
+    onEvent: (e) => events.push(e),
+  });
+  await assert.rejects(em.request({ method: "GET", path: "/x" }));
+  assert.equal(events.length, 2);
+  assert.equal(events[1].type, "request.end");
+  assert.equal(events[1].status, 401);
+  assert.equal(events[1].error.name, "AuthError");
+  assert.equal(events[1].error.status, 401);
+});
+
+test("telemetry: 422 emits violations inside error payload", async () => {
+  const transport = createMockTransport();
+  transport.enqueue({
+    status: 422,
+    body: {
+      status: 422,
+      title: "Validation failed",
+      violations: [{ propertyPath: "email", message: "required" }],
+    },
+  });
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport,
+    onEvent: (e) => events.push(e),
+  });
+  await assert.rejects(em.request({ method: "POST", path: "/x", body: {} }));
+  const endEvent = events.find((e) => e.type === "request.end");
+  assert.equal(endEvent.error.name, "ValidationError");
+  assert.equal(endEvent.error.violations.length, 1);
+  assert.equal(endEvent.error.violations[0].propertyPath, "email");
+});
+
+test("telemetry: throwing onEvent handler does NOT break the request", async () => {
+  const transport = createMockTransport();
+  transport.enqueue({ status: 200, body: { ok: true } });
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport,
+    onEvent: () => { throw new Error("boom"); },
+  });
+  // Should succeed despite handler throwing.
+  const { data } = await em.request({ method: "GET", path: "/x" });
+  assert.deepEqual(data, { ok: true });
+});
+
+test("telemetry: rejecting async onEvent handler does NOT cause unhandledRejection", async () => {
+  const transport = createMockTransport();
+  transport.enqueue({ status: 200, body: {} });
+  let unhandled = false;
+  const listener = () => { unhandled = true; };
+  process.on("unhandledRejection", listener);
+  try {
+    const em = new Easymailing({
+      apiKey: "k",
+      baseUrl: "https://api.test",
+      transport,
+      onEvent: async () => { throw new Error("async boom"); },
+    });
+    await em.request({ method: "GET", path: "/x" });
+    // Wait a tick for any rejection to surface.
+    await new Promise((r) => setImmediate(r));
+    assert.equal(unhandled, false);
+  } finally {
+    process.off("unhandledRejection", listener);
+  }
+});
+
+test("telemetry: diagnostics_channel publishes the same events as onEvent", async () => {
+  const { channel } = await import("node:diagnostics_channel");
+  const ch = channel("easymailing:event");
+  const transport = createMockTransport();
+  transport.enqueue({ status: 200, body: {} });
+  const fromOnEvent = [];
+  const fromChannel = [];
+  const sub = (data) => fromChannel.push(data);
+  ch.subscribe(sub);
+  try {
+    const em = new Easymailing({
+      apiKey: "k",
+      baseUrl: "https://api.test",
+      transport,
+      onEvent: (e) => fromOnEvent.push(e),
+    });
+    await em.request({ method: "GET", path: "/x" });
+  } finally {
+    ch.unsubscribe(sub);
+  }
+  assert.equal(fromOnEvent.length, fromChannel.length);
+  assert.equal(fromChannel[0].type, "request.start");
+});
+
+test("telemetry: em.webhooks.verify emits webhook.verified on valid signature", async () => {
+  const { createHmac } = await import("node:crypto");
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport: createMockTransport(),
+    onEvent: (e) => events.push(e),
+  });
+  const payload = '{"event_type":"x","data":{}}';
+  const sig = "sha256=" + createHmac("sha256", "secret").update(payload).digest("hex");
+  assert.equal(em.webhooks.verify(payload, sig, "secret"), true);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].type, "webhook.verified");
+});
+
+test("telemetry: em.webhooks.verify emits webhook.rejected on bad signature", async () => {
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport: createMockTransport(),
+    onEvent: (e) => events.push(e),
+  });
+  assert.equal(em.webhooks.verify("payload", "sha256=deadbeef", "secret"), false);
+  assert.equal(events[0].type, "webhook.rejected");
+  assert.equal(events[0].reason, "signature-mismatch");
+});
+
+test("telemetry: em.webhooks.verify with bad format emits invalid-format", async () => {
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport: createMockTransport(),
+    onEvent: (e) => events.push(e),
+  });
+  assert.equal(em.webhooks.verify("payload", "not-a-signature", "secret"), false);
+  assert.equal(events[0].type, "webhook.rejected");
+  assert.equal(events[0].reason, "invalid-format");
+});
+
+test("telemetry: em.webhooks.verify with empty secret emits invalid-secret", async () => {
+  const events = [];
+  const em = new Easymailing({
+    apiKey: "k",
+    baseUrl: "https://api.test",
+    transport: createMockTransport(),
+    onEvent: (e) => events.push(e),
+  });
+  assert.equal(em.webhooks.verify("payload", "sha256=abc", ""), false);
+  assert.equal(events[0].type, "webhook.rejected");
+  assert.equal(events[0].reason, "invalid-secret");
 });

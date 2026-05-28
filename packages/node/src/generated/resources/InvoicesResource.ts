@@ -15,6 +15,7 @@ export class InvoicesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/invoices", {  }),
+      pathTemplate: "/invoices",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class InvoicesResource {
     const result = await this.client.request<components["schemas"]["Invoice-invoice.read"]>({
       method: "GET",
       path: pathWithParams("/invoices/{uuid}", { uuid: uuid }),
+      pathTemplate: "/invoices/{uuid}",
     });
     return result.data;
   }

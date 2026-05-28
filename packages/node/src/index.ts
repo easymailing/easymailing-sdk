@@ -59,7 +59,21 @@ export type {
 
 // Telemetry
 export { buildUserAgent } from "./telemetry/userAgent.js";
-export type { RequestHook, ResponseHook } from "./telemetry/hooks.js";
+export {
+  EVENT_CHANNEL,
+  type EasymailingEvent,
+  type EventBase,
+  type EventError,
+  type EventHandler,
+  type RequestStartEvent,
+  type RequestEndEvent,
+  type RequestRetryEvent,
+  type BatchPollingEvent,
+  type BatchFinishedEvent,
+  type BatchTimeoutEvent,
+  type WebhookVerifiedEvent,
+  type WebhookRejectedEvent,
+} from "./telemetry/events.js";
 
 // Client
 export {

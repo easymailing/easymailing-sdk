@@ -15,6 +15,7 @@ export class ListSegmentConditionsResource {
     const result = await this.client.request<components["schemas"]["ListSegmentCondition"]>({
       method: "GET",
       path: pathWithParams("/list_segment_conditions", {  }),
+      pathTemplate: "/list_segment_conditions",
     });
     return result.data;
   }

@@ -20,7 +20,7 @@ final class SendersResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/senders', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/senders', []), query: $query, pathTemplate: '/senders');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Sender_sender_read => \Easymailing\Sdk\Generated\Dto\Sender_sender_read::fromArray($item));
     }
 
@@ -29,21 +29,21 @@ final class SendersResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Sender_sender_write $body): \Easymailing\Sdk\Generated\Dto\Sender_sender_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/senders', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/senders', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/senders');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Sender_sender_read::fromArray($data);
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\Sender_sender_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/senders/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/senders/{uuid}', ['uuid' => $uuid]), pathTemplate: '/senders/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Sender_sender_read::fromArray($data);
     }
 
     public function delete(string $uuid): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/senders/{uuid}', ['uuid' => $uuid]));
+        $this->client->request('DELETE', $this->resolvePath('/senders/{uuid}', ['uuid' => $uuid]), pathTemplate: '/senders/{uuid}');
     }
 
     /**
@@ -51,7 +51,7 @@ final class SendersResource extends AbstractResource
      */
     public function resendVerification(string $uuid): array
     {
-        $result = $this->client->request('POST', $this->resolvePath('/senders/{uuid}/actions/resend_verification', ['uuid' => $uuid]));
+        $result = $this->client->request('POST', $this->resolvePath('/senders/{uuid}/actions/resend_verification', ['uuid' => $uuid]), pathTemplate: '/senders/{uuid}/actions/resend_verification');
         $data = is_array($result['data']) ? $result['data'] : [];
         return $data;
     }

@@ -15,6 +15,7 @@ export class AudiencesConditionFieldsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/condition_fields", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/condition_fields",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AudiencesConditionFieldsResource {
     const result = await this.client.request<components["schemas"]["ConditionField-condition_field.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/condition_fields/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/condition_fields/{uuid}",
     });
     return result.data;
   }

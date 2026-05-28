@@ -15,6 +15,7 @@ export class SmsSendersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/sms_senders", {  }),
+      pathTemplate: "/sms_senders",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class SmsSendersResource {
     const result = await this.client.request<components["schemas"]["SmsSender-sms_sender.read"]>({
       method: "POST",
       path: pathWithParams("/sms_senders", {  }),
+      pathTemplate: "/sms_senders",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class SmsSendersResource {
     const result = await this.client.request<components["schemas"]["SmsSender-sms_sender.read"]>({
       method: "GET",
       path: pathWithParams("/sms_senders/{id}", { id: id }),
+      pathTemplate: "/sms_senders/{id}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class SmsSendersResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/sms_senders/{id}", { id: id }),
+      pathTemplate: "/sms_senders/{id}",
     });
     return;
   }

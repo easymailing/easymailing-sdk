@@ -16,7 +16,7 @@ final class TemplatesSchemaResource extends AbstractResource
 
     public function get(): \Easymailing\Sdk\Generated\Dto\TemplateSchema
     {
-        $result = $this->client->request('GET', $this->resolvePath('/templates_schema', []));
+        $result = $this->client->request('GET', $this->resolvePath('/templates_schema', []), pathTemplate: '/templates_schema');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\TemplateSchema::fromArray($data);
     }

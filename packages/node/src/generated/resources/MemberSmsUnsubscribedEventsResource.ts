@@ -15,6 +15,7 @@ export class MemberSmsUnsubscribedEventsResource {
     const result = await this.client.request<components["schemas"]["MemberSmsUnsubscribedEvent"]>({
       method: "GET",
       path: pathWithParams("/member_sms_unsubscribed_events", {  }),
+      pathTemplate: "/member_sms_unsubscribed_events",
     });
     return result.data;
   }

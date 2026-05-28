@@ -210,16 +210,57 @@ final class BatchClient
         while ($snapshot->status !== 'finished') {
             $elapsedMs = (int) ((hrtime(true) - $start) / 1_000_000);
             if ($elapsedMs >= $this->maxWaitMs) {
+                $this->client->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+                    type: \Easymailing\Sdk\Telemetry\EventTypes::BATCH_TIMEOUT,
+                    payload: [
+                        'batchUuid' => $uuid,
+                        'totalWaitedMs' => $elapsedMs,
+                        'lastSnapshot' => self::snapshotProgress($snapshot),
+                    ],
+                ));
                 throw new BatchTimeoutException($uuid, $snapshot->status, $this->maxWaitMs);
             }
             $backoffMs = $this->computeBackoffMs($attempt);
             $remainingMs = $this->maxWaitMs - $elapsedMs;
             $sleepMs = max(50, min($backoffMs, $remainingMs));
+            $this->client->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+                type: \Easymailing\Sdk\Telemetry\EventTypes::BATCH_POLLING,
+                payload: [
+                    'batchUuid' => $uuid,
+                    'snapshot' => self::snapshotProgress($snapshot),
+                    'pollNumber' => $attempt + 1,
+                    'nextPollMs' => $sleepMs,
+                ],
+            ));
             usleep($sleepMs * 1000);
             $attempt++;
             $snapshot = $this->get($uuid);
         }
+        $totalMs = (int) ((hrtime(true) - $start) / 1_000_000);
+        $this->client->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+            type: \Easymailing\Sdk\Telemetry\EventTypes::BATCH_FINISHED,
+            payload: [
+                'batchUuid' => $uuid,
+                'total' => $snapshot->total ?? 0,
+                'finished' => $snapshot->finished ?? 0,
+                'errored' => $snapshot->errored ?? 0,
+                'durationMs' => $totalMs,
+            ],
+        ));
         return $snapshot;
+    }
+
+    /**
+     * @return array{total: int, finished: int, errored: int, status: string}
+     */
+    private static function snapshotProgress(BatchSnapshot $s): array
+    {
+        return [
+            'total' => $s->total ?? 0,
+            'finished' => $s->finished ?? 0,
+            'errored' => $s->errored ?? 0,
+            'status' => $s->status,
+        ];
     }
 
     /**

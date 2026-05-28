@@ -15,6 +15,7 @@ export class MemberSmsClickedEventsResource {
     const result = await this.client.request<components["schemas"]["MemberSmsClickedEvent"]>({
       method: "GET",
       path: pathWithParams("/member_sms_clicked_events", {  }),
+      pathTemplate: "/member_sms_clicked_events",
     });
     return result.data;
   }

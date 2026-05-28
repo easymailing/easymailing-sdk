@@ -15,6 +15,7 @@ export class MembersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/members/search", {  }),
+      pathTemplate: "/members/search",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);

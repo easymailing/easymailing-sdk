@@ -16,7 +16,7 @@ final class MySubscriptionResource extends AbstractResource
 
     public function get(): \Easymailing\Sdk\Generated\Dto\MySuscription_my_suscription_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/my_suscription', []));
+        $result = $this->client->request('GET', $this->resolvePath('/my_suscription', []), pathTemplate: '/my_suscription');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\MySuscription_my_suscription_read::fromArray($data);
     }

@@ -15,6 +15,7 @@ export class ThemeIndustriesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/theme_industries", {  }),
+      pathTemplate: "/theme_industries",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);

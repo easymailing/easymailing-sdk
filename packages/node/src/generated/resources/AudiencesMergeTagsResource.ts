@@ -15,6 +15,7 @@ export class AudiencesMergeTagsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/merge_tags", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/merge_tags",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);

@@ -15,6 +15,7 @@ export class AsyncTasksResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/async_tasks", {  }),
+      pathTemplate: "/async_tasks",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AsyncTasksResource {
     const result = await this.client.request<components["schemas"]["AsyncTask-async_task.read"]>({
       method: "GET",
       path: pathWithParams("/async_tasks/{uuid}", { uuid: uuid }),
+      pathTemplate: "/async_tasks/{uuid}",
     });
     return result.data;
   }

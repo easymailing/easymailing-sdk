@@ -15,6 +15,7 @@ export class WebhookConfigsWebhookEventsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/webhooks/{webhookUuid}/webhook_events", { webhookUuid: this.boundParams["webhookUuid"]! }),
+      pathTemplate: "/webhooks/{webhookUuid}/webhook_events",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class WebhookConfigsWebhookEventsResource {
     const result = await this.client.request<components["schemas"]["WebhookEvent-webhook_event.read"]>({
       method: "GET",
       path: pathWithParams("/webhooks/{webhookUuid}/webhook_events/{uuid}", { webhookUuid: this.boundParams["webhookUuid"]!, uuid: uuid }),
+      pathTemplate: "/webhooks/{webhookUuid}/webhook_events/{uuid}",
     });
     return result.data;
   }

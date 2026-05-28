@@ -200,6 +200,7 @@ function renderTsMethod(method, resource) {
   const requestLines = [
     `method: "${method.httpMethod}",`,
     `path: pathWithParams("${method.pathTemplate}", ${renderParamMap(method, resource, localPathParams)}),`,
+    `pathTemplate: "${method.pathTemplate}",`,
   ];
   if (method.queryParams.length > 0 || method.kind === "list") requestLines.push(`query: query as ${QUERY_TYPE} | undefined,`);
   if (method.requestSchema) requestLines.push("body,");

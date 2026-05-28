@@ -20,7 +20,7 @@ final class SupportResource extends AbstractResource
      */
     public function listTickets(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/support/tickets', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/support/tickets', []), query: $query, pathTemplate: '/support/tickets');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\SupportTicket_support_ticket_read => \Easymailing\Sdk\Generated\Dto\SupportTicket_support_ticket_read::fromArray($item));
     }
 
@@ -29,7 +29,7 @@ final class SupportResource extends AbstractResource
      */
     public function createTickets(array|\Easymailing\Sdk\Generated\Dto\SupportTicket_SupportTicketInput $body): \Easymailing\Sdk\Generated\Dto\SupportTicket_support_ticket_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/support/tickets', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/support/tickets', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/support/tickets');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\SupportTicket_support_ticket_read::fromArray($data);
     }

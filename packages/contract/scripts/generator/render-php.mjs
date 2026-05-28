@@ -205,6 +205,7 @@ function renderPhpMethod(method, resource) {
       .join(", ");
     requestArgs.push(`query: array_filter([${queryEntries}], static fn($value): bool => $value !== null)`);
   }
+  requestArgs.push(`pathTemplate: '${method.pathTemplate}'`);
 
   const responseType = method.responseSchema ? phpDtoType(method.responseSchema) : "array";
   const returnType = method.returnsPage ? "Page" : method.kind === "delete" ? "void" : responseType;

@@ -13,16 +13,18 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "^10.0",
-    "phpstan/phpstan": "^1.10",
     "friendsofphp/php-cs-fixer": "^3.50",
+    "phpstan/phpstan": "^1.10",
+    "phpunit/phpunit": "^10.0",
     "psr/http-client": "^1.0",
     "psr/http-factory": "^1.0",
-    "psr/http-message": "^1.0 || ^2.0"
+    "psr/http-message": "^1.0 || ^2.0",
+    "psr/log": "^2.0 || ^3.0"
   },
   "suggest": {
     "psr/http-client": "Required to use Psr18Transport (Guzzle, Symfony HttpClient, etc.)",
-    "psr/http-factory": "Required to use Psr18Transport (PSR-17 request/stream factories)"
+    "psr/http-factory": "Required to use Psr18Transport (PSR-17 request/stream factories)",
+    "psr/log": "Required to use Psr3EventListener (bridges SDK telemetry events to any PSR-3 logger)"
   },
   "autoload": {
     "psr-4": {

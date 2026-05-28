@@ -20,7 +20,7 @@ final class SmsSendersResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/sms_senders', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/sms_senders', []), query: $query, pathTemplate: '/sms_senders');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_read => \Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_read::fromArray($item));
     }
 
@@ -29,21 +29,21 @@ final class SmsSendersResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_write $body): \Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/sms_senders', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/sms_senders', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/sms_senders');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_read::fromArray($data);
     }
 
     public function get(string $id): \Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/sms_senders/{id}', ['id' => $id]));
+        $result = $this->client->request('GET', $this->resolvePath('/sms_senders/{id}', ['id' => $id]), pathTemplate: '/sms_senders/{id}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\SmsSender_sms_sender_read::fromArray($data);
     }
 
     public function delete(string $id): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/sms_senders/{id}', ['id' => $id]));
+        $this->client->request('DELETE', $this->resolvePath('/sms_senders/{id}', ['id' => $id]), pathTemplate: '/sms_senders/{id}');
     }
 
 }

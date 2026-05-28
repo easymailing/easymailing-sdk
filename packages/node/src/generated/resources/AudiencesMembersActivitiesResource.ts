@@ -15,6 +15,7 @@ export class AudiencesMembersActivitiesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/members/{memberUuid}/activities", { audienceUuid: this.boundParams["audienceUuid"]!, memberUuid: this.boundParams["memberUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{memberUuid}/activities",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);

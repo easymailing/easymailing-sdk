@@ -15,6 +15,7 @@ export class SendersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/senders", {  }),
+      pathTemplate: "/senders",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class SendersResource {
     const result = await this.client.request<components["schemas"]["Sender-sender.read"]>({
       method: "POST",
       path: pathWithParams("/senders", {  }),
+      pathTemplate: "/senders",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class SendersResource {
     const result = await this.client.request<components["schemas"]["Sender-sender.read"]>({
       method: "GET",
       path: pathWithParams("/senders/{uuid}", { uuid: uuid }),
+      pathTemplate: "/senders/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class SendersResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/senders/{uuid}", { uuid: uuid }),
+      pathTemplate: "/senders/{uuid}",
     });
     return;
   }
@@ -49,6 +53,7 @@ export class SendersResource {
     const result = await this.client.request<unknown>({
       method: "POST",
       path: pathWithParams("/senders/{uuid}/actions/resend_verification", { uuid: uuid }),
+      pathTemplate: "/senders/{uuid}/actions/resend_verification",
     });
     return result.data;
   }

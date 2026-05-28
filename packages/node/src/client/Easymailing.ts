@@ -16,7 +16,15 @@ import {
   type RateLimitInfo,
 } from "../ratelimit/parseRateLimit.js";
 import { buildUserAgent } from "../telemetry/userAgent.js";
-import type { RequestHook, ResponseHook } from "../telemetry/hooks.js";
+import {
+  dispatchEvent,
+  newRequestId,
+  type EasymailingEvent,
+  type EventError,
+  type EventHandler,
+  type RequestEndEvent,
+  type RequestStartEvent,
+} from "../telemetry/events.js";
 import { BatchClient } from "../batch/BatchClient.js";
 import { WebhooksClient } from "../webhooks/WebhooksClient.js";
 import { parseCollection } from "../hydra/parseCollection.js";
@@ -30,8 +38,21 @@ export interface EasymailingOptions {
   transport?: Transport;
   maxRetries?: number;
   debug?: boolean;
-  onRequest?: RequestHook;
-  onResponse?: ResponseHook;
+  /**
+   * Telemetry event handler. The SDK emits structured events for every
+   * request lifecycle stage (start, retry, end), batch poll progress, and
+   * webhook signature verification. See `EasymailingEvent` for the full
+   * discriminated union.
+   *
+   * - Fire-and-forget: the SDK does not await async handlers.
+   * - Safe: throws and Promise rejections are caught; a broken handler
+   *   never breaks the API call.
+   * - Same events are also published on the `node:diagnostics_channel`
+   *   channel `easymailing:event` for tracing integrations (OpenTelemetry,
+   *   Datadog APM, etc.) that can subscribe without code changes from the
+   *   consumer.
+   */
+  onEvent?: EventHandler;
   version?: string;
 }
 
@@ -41,6 +62,13 @@ export interface RequestArgs {
   query?: Record<string, string | number | boolean>;
   body?: unknown;
   headers?: Record<string, string>;
+  /**
+   * Stable path template for telemetry (`/audiences/{audienceUuid}/members/{uuid}`).
+   * Generated resources always pass this so consumers can aggregate metrics
+   * by endpoint without UUID cardinality explosion. Falls back to `path`
+   * when omitted.
+   */
+  pathTemplate?: string;
 }
 
 export interface RequestResult<T> {
@@ -63,8 +91,8 @@ export class Easymailing {
   private readonly retryPolicy: RetryPolicy;
   private readonly authHeader: () => Record<string, string>;
   private readonly userAgent: string;
-  private readonly onRequest?: RequestHook;
-  private readonly onResponse?: ResponseHook;
+  /** @internal — exposed for BatchClient + WebhooksClient to share. */
+  readonly _onEvent?: EventHandler;
   private readonly debug: boolean;
 
   constructor(options: EasymailingOptions) {
@@ -84,8 +112,7 @@ export class Easymailing {
     this.transport = options.transport ?? new FetchTransport();
     this.retryPolicy = new RetryPolicy({ maxRetries: options.maxRetries });
     this.userAgent = buildUserAgent(options.version ?? "0.0.0");
-    this.onRequest = options.onRequest;
-    this.onResponse = options.onResponse;
+    this._onEvent = options.onEvent;
     this.debug = options.debug ?? false;
 
     if (options.apiKey) {
@@ -100,7 +127,7 @@ export class Easymailing {
       client: this,
       transport: this.transport,
     });
-    this.webhooks = new WebhooksClient();
+    this.webhooks = new WebhooksClient((e) => this.emit(e));
     Object.assign(this, wireResources(this));
   }
 
@@ -122,17 +149,55 @@ export class Easymailing {
       body,
     };
 
-    let attempt = 0;
+    // Telemetry context: requestId correlates start → retry → end.
+    const requestId = newRequestId();
+    const pathTemplate = args.pathTemplate ?? args.path;
+    const startedAt = Date.now();
+    const startEvent: RequestStartEvent = {
+      v: 1,
+      type: "request.start",
+      timestamp: startedAt,
+      requestId,
+      method: args.method,
+      path: args.path,
+      pathTemplate,
+    };
+    this.emit(startEvent);
+
+    let attempt = 1;
     while (true) {
       let response: TransportResponse;
       if (this.debug) console.error(`[easymailing] → ${args.method} ${url}`);
-      this.onRequest?.(request);
       try {
         response = await this.transport.send(request);
       } catch (err) {
-        throw new NetworkError("Network request failed", err);
+        // Network error: count it as a final attempt failure for telemetry,
+        // emit retry if we will retry, else emit end with error.
+        if (attempt - 1 < this.retryPolicy.maxRetries) {
+          const delay = this.retryPolicy.computeDelay(attempt - 1, null);
+          this.emit({
+            v: 1,
+            type: "request.retry",
+            timestamp: Date.now(),
+            requestId,
+            method: args.method,
+            path: args.path,
+            pathTemplate,
+            attempt,
+            reason: "network",
+            delayMs: delay,
+          });
+          attempt++;
+          await new Promise((r) => setTimeout(r, delay));
+          continue;
+        }
+        const networkErr = new NetworkError("Network request failed", err);
+        this.emit(this.buildEndEvent(
+          requestId, args.method, args.path, pathTemplate, startedAt,
+          0, attempt, undefined, networkErr, true,
+        ));
+        throw networkErr;
       }
-      this.onResponse?.(response, request);
       if (this.debug) console.error(`[easymailing] ← ${response.status} ${url}`);
 
       if (response.status >= 200 && response.status < 300) {
@@ -142,29 +207,104 @@ export class Easymailing {
           try {
             raw = JSON.parse(response.body);
           } catch (err) {
-            throw new MalformedResponseError(
+            const malformed = new MalformedResponseError(
               `Response body is not valid JSON (status ${response.status})`,
               response.status,
               response.body,
               err,
             );
+            this.emit(this.buildEndEvent(
+              requestId, args.method, args.path, pathTemplate, startedAt,
+              response.status, attempt, rateLimit, malformed, false,
+            ));
+            throw malformed;
           }
         }
         const data = parseAsHydraIfPossible<T>(raw);
+        this.emit(this.buildEndEvent(
+          requestId, args.method, args.path, pathTemplate, startedAt,
+          response.status, attempt, rateLimit, undefined, false,
+        ));
         return { data, rateLimit, raw };
       }
 
-      if (attempt < this.retryPolicy.maxRetries && shouldRetry(args.method, response.status)) {
+      if (attempt - 1 < this.retryPolicy.maxRetries && shouldRetry(args.method, response.status)) {
         const err = fromResponse(response);
         const retryAfter = err instanceof RateLimitError ? err.retryAfterSeconds : null;
-        const delay = this.retryPolicy.computeDelay(attempt, retryAfter);
+        const delay = this.retryPolicy.computeDelay(attempt - 1, retryAfter);
+        const reason: "rate-limit" | "5xx" | "other" =
+          response.status === 429 ? "rate-limit" : response.status >= 500 ? "5xx" : "other";
+        this.emit({
+          v: 1,
+          type: "request.retry",
+          timestamp: Date.now(),
+          requestId,
+          method: args.method,
+          path: args.path,
+          pathTemplate,
+          attempt,
+          reason,
+          delayMs: delay,
+          retryAfterSeconds: retryAfter,
+          status: response.status,
+        });
         attempt++;
         await new Promise((r) => setTimeout(r, delay));
         continue;
       }
 
-      throw fromResponse(response);
+      const finalErr = fromResponse(response);
+      const rateLimit = parseRateLimit(response.headers);
+      this.emit(this.buildEndEvent(
+        requestId, args.method, args.path, pathTemplate, startedAt,
+        response.status, attempt, rateLimit, finalErr, false,
+      ));
+      throw finalErr;
     }
+  }
+
+  /** @internal — used by BatchClient + WebhooksClient to emit via the same path. */
+  emit(event: EasymailingEvent): void {
+    dispatchEvent(event, this._onEvent);
+  }
+
+  private buildEndEvent(
+    requestId: string,
+    method: string,
+    path: string,
+    pathTemplate: string,
+    startedAt: number,
+    status: number,
+    attempt: number,
+    rateLimit: RateLimitInfo | undefined,
+    error: Error | undefined,
+    retryable: boolean,
+  ): RequestEndEvent {
+    let projected: EventError | undefined;
+    if (error !== undefined) {
+      const violations = (error as { violations?: unknown[] }).violations;
+      projected = {
+        name: error.name || "Error",
+        message: error.message,
+        status: (error as { status?: number }).status ?? status,
+        retryable,
+        ...(Array.isArray(violations) ? { violations } : {}),
+      };
+    }
+    return {
+      v: 1,
+      type: "request.end",
+      timestamp: Date.now(),
+      requestId,
+      method,
+      path,
+      pathTemplate,
+      status,
+      durationMs: Date.now() - startedAt,
+      attempt,
+      ...(rateLimit ? { rateLimit } : {}),
+      ...(projected ? { error: projected } : {}),
+    };
   }
 
   private commonHeaders(): Record<string, string> {

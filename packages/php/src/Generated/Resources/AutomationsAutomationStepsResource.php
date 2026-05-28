@@ -23,20 +23,20 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/automations/{automationUuid}/automation_steps', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/automations/{automationUuid}/automation_steps', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), query: $query, pathTemplate: '/automations/{automationUuid}/automation_steps');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\AutomationStep_automation_step_read => \Easymailing\Sdk\Generated\Dto\AutomationStep_automation_step_read::fromArray($item));
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\AutomationStep_automation_step_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_automation_step_read::fromArray($data);
     }
 
     public function delete(string $uuid, ?string $mode = null): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), query: array_filter(['mode' => $mode], static fn($value): bool => $value !== null));
+        $this->client->request('DELETE', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), query: array_filter(['mode' => $mode], static fn($value): bool => $value !== null), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}');
     }
 
     /**
@@ -44,7 +44,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createAddToGroup(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepAddToGroup_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepAddToGroupResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/add_to_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/add_to_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/add_to_group');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepAddToGroupResource_automation_step_read::fromArray($data);
     }
@@ -54,7 +54,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createCondition(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepCondition_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepConditionResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/condition', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/condition', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/condition');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepConditionResource_automation_step_read::fromArray($data);
     }
@@ -64,7 +64,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createDelay(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepDelay_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepDelayResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/delay', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/delay', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/delay');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepDelayResource_automation_step_read::fromArray($data);
     }
@@ -74,7 +74,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createMoveToStep(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepMoveToStep_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepMoveToStepResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/move_to_step', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/move_to_step', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/move_to_step');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepMoveToStepResource_automation_step_read::fromArray($data);
     }
@@ -84,7 +84,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createRemoveFromGroup(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepRemoveFromGroup_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepRemoveFromGroupResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/remove_from_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/remove_from_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/remove_from_group');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepRemoveFromGroupResource_automation_step_read::fromArray($data);
     }
@@ -94,7 +94,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createSendCampaign(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendCampaign_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendCampaignResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_campaign', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_campaign', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/send_campaign');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendCampaignResource_automation_step_read::fromArray($data);
     }
@@ -104,14 +104,14 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createSendNotification(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendNotification_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendNotificationResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_notification', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_notification', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/send_notification');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendNotificationResource_automation_step_read::fromArray($data);
     }
 
     public function createSendSms(): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendSmsResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_sms', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]));
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_sms', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), pathTemplate: '/automations/{automationUuid}/automation_steps/send_sms');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendSmsResource_automation_step_read::fromArray($data);
     }
@@ -121,7 +121,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createSendWebhook(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendWebhook_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendWebhookResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_webhook', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/send_webhook', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/send_webhook');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendWebhookResource_automation_step_read::fromArray($data);
     }
@@ -131,7 +131,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createTriggerAutomation(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepTriggerAutomation_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepTriggerAutomationResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/trigger_automation', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/trigger_automation', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/trigger_automation');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepTriggerAutomationResource_automation_step_read::fromArray($data);
     }
@@ -141,7 +141,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createUnsubscribe(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUnsubscribe_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUnsubscribeResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/unsubscribe', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/unsubscribe', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/unsubscribe');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUnsubscribeResource_automation_step_read::fromArray($data);
     }
@@ -151,7 +151,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createUpdateCustomField(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateCustomField_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateCustomFieldResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/update_custom_field', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/update_custom_field', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/update_custom_field');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateCustomFieldResource_automation_step_read::fromArray($data);
     }
@@ -161,7 +161,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function createUpdateScore(array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateScore_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateScoreResource_automation_step_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/update_score', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations/{automationUuid}/automation_steps/update_score', ['automationUuid' => $this->boundParams['automationUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/update_score');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateScoreResource_automation_step_read::fromArray($data);
     }
@@ -171,7 +171,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateAddToGroup(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepAddToGroup_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepAddToGroupResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/add_to_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/add_to_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/add_to_group');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepAddToGroupResource_automation_step_read::fromArray($data);
     }
@@ -181,7 +181,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateCondition(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepCondition_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepConditionResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/condition', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/condition', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/condition');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepConditionResource_automation_step_read::fromArray($data);
     }
@@ -191,7 +191,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateDelay(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepDelay_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepDelayResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/delay', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/delay', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/delay');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepDelayResource_automation_step_read::fromArray($data);
     }
@@ -201,7 +201,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateMoveToStep(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepMoveToStep_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepMoveToStepResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/move_to_step', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/move_to_step', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/move_to_step');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepMoveToStepResource_automation_step_read::fromArray($data);
     }
@@ -211,7 +211,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updatePosition(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepPosition_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/position', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/position', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/position');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_automation_step_read::fromArray($data);
     }
@@ -221,7 +221,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateRemoveFromGroup(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepRemoveFromGroup_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepRemoveFromGroupResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepRemoveFromGroupResource_automation_step_read::fromArray($data);
     }
@@ -231,7 +231,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateSendCampaign(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendCampaign_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendCampaignResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_campaign', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_campaign', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/send_campaign');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendCampaignResource_automation_step_read::fromArray($data);
     }
@@ -241,14 +241,14 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateSendNotification(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendNotification_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendNotificationResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_notification', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_notification', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/send_notification');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendNotificationResource_automation_step_read::fromArray($data);
     }
 
     public function updateSendSms(string $uuid): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendSmsResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_sms', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]));
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_sms', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/send_sms');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendSmsResource_automation_step_read::fromArray($data);
     }
@@ -258,7 +258,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateSendWebhook(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendWebhook_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendWebhookResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_webhook', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/send_webhook', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/send_webhook');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepSendWebhookResource_automation_step_read::fromArray($data);
     }
@@ -268,7 +268,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateTriggerAutomation(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepTriggerAutomation_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepTriggerAutomationResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepTriggerAutomationResource_automation_step_read::fromArray($data);
     }
@@ -278,7 +278,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateUnsubscribe(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUnsubscribe_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUnsubscribeResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUnsubscribeResource_automation_step_read::fromArray($data);
     }
@@ -288,7 +288,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateUpdateCustomField(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateCustomField_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateCustomFieldResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateCustomFieldResource_automation_step_read::fromArray($data);
     }
@@ -298,7 +298,7 @@ final class AutomationsAutomationStepsResource extends AbstractResource
      */
     public function updateUpdateScore(string $uuid, array|\Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateScore_automation_step_write $body): \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateScoreResource_automation_step_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/update_score', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{automationUuid}/automation_steps/{uuid}/update_score', ['automationUuid' => $this->boundParams['automationUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{automationUuid}/automation_steps/{uuid}/update_score');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AutomationStep_AutomationStepUpdateScoreResource_automation_step_read::fromArray($data);
     }

@@ -16,7 +16,7 @@ final class MemberSmsUnsubscribedEventsResource extends AbstractResource
 
     public function get(): \Easymailing\Sdk\Generated\Dto\MemberSmsUnsubscribedEvent
     {
-        $result = $this->client->request('GET', $this->resolvePath('/member_sms_unsubscribed_events', []));
+        $result = $this->client->request('GET', $this->resolvePath('/member_sms_unsubscribed_events', []), pathTemplate: '/member_sms_unsubscribed_events');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\MemberSmsUnsubscribedEvent::fromArray($data);
     }

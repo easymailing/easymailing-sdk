@@ -15,6 +15,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/{uuid}",
     });
     return;
   }
@@ -40,6 +43,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/multiselect", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/multiselect",
       body,
     });
     return result.data;
@@ -49,6 +53,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/select", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/select",
       body,
     });
     return result.data;
@@ -58,6 +63,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/simple", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/simple",
       body,
     });
     return result.data;
@@ -67,6 +73,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}/multiselect", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/{uuid}/multiselect",
       body,
     });
     return result.data;
@@ -76,6 +83,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}/select", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/{uuid}/select",
       body,
     });
     return result.data;
@@ -85,6 +93,7 @@ export class AudiencesListFieldsResource {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}/simple", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_fields/{uuid}/simple",
       body,
     });
     return result.data;

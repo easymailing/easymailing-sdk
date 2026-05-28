@@ -23,7 +23,7 @@ final class AudiencesMergeTagsResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/audiences/{audienceUuid}/merge_tags', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/audiences/{audienceUuid}/merge_tags', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), query: $query, pathTemplate: '/audiences/{audienceUuid}/merge_tags');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\MergeTag_merge_tag_read => \Easymailing\Sdk\Generated\Dto\MergeTag_merge_tag_read::fromArray($item));
     }
 

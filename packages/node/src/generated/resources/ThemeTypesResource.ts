@@ -15,6 +15,7 @@ export class ThemeTypesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/theme_types", {  }),
+      pathTemplate: "/theme_types",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);

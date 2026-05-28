@@ -15,6 +15,7 @@ export class CampaignsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/campaigns", {  }),
+      pathTemplate: "/campaigns",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns", {  }),
+      pathTemplate: "/campaigns",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read_campaign.read.detail"]>({
       method: "GET",
       path: pathWithParams("/campaigns/{uuid}", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "PUT",
       path: pathWithParams("/campaigns/{uuid}", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class CampaignsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/campaigns/{uuid}", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}",
     });
     return;
   }
@@ -58,6 +63,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/{uuid}/actions/duplicate", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}/actions/duplicate",
       body,
     });
     return result.data;
@@ -67,6 +73,7 @@ export class CampaignsResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/campaigns/{uuid}/actions/schedule", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}/actions/schedule",
       body,
     });
     return result.data;
@@ -76,6 +83,7 @@ export class CampaignsResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/campaigns/{uuid}/actions/send_now", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}/actions/send_now",
       body,
     });
     return result.data;
@@ -85,6 +93,7 @@ export class CampaignsResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/campaigns/{uuid}/actions/send_test", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}/actions/send_test",
       body,
     });
     return result.data;
@@ -94,6 +103,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/revalidation", {  }),
+      pathTemplate: "/campaigns/revalidation",
       body,
     });
     return result.data;
@@ -103,6 +113,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/test_ab/sender", {  }),
+      pathTemplate: "/campaigns/test_ab/sender",
       body,
     });
     return result.data;
@@ -112,6 +123,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/test_ab/subject", {  }),
+      pathTemplate: "/campaigns/test_ab/subject",
       body,
     });
     return result.data;
@@ -121,6 +133,7 @@ export class CampaignsResource {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/test_ab/template", {  }),
+      pathTemplate: "/campaigns/test_ab/template",
       body,
     });
     return result.data;

@@ -23,7 +23,7 @@ final class AudiencesMembersActivitiesResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/audiences/{audienceUuid}/members/{memberUuid}/activities', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'memberUuid' => $this->boundParams['memberUuid'] ?? null]), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/audiences/{audienceUuid}/members/{memberUuid}/activities', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'memberUuid' => $this->boundParams['memberUuid'] ?? null]), query: $query, pathTemplate: '/audiences/{audienceUuid}/members/{memberUuid}/activities');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\MemberActivity_member_activity_read => \Easymailing\Sdk\Generated\Dto\MemberActivity_member_activity_read::fromArray($item));
     }
 

@@ -15,6 +15,7 @@ export class TreatmentPurposesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/treatment_purposes", {  }),
+      pathTemplate: "/treatment_purposes",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class TreatmentPurposesResource {
     const result = await this.client.request<components["schemas"]["TreatmentPurpose-treatment_purpose.read"]>({
       method: "POST",
       path: pathWithParams("/treatment_purposes", {  }),
+      pathTemplate: "/treatment_purposes",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class TreatmentPurposesResource {
     const result = await this.client.request<components["schemas"]["TreatmentPurpose-treatment_purpose.read"]>({
       method: "GET",
       path: pathWithParams("/treatment_purposes/{uuid}", { uuid: uuid }),
+      pathTemplate: "/treatment_purposes/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class TreatmentPurposesResource {
     const result = await this.client.request<components["schemas"]["TreatmentPurpose-treatment_purpose.read"]>({
       method: "PUT",
       path: pathWithParams("/treatment_purposes/{uuid}", { uuid: uuid }),
+      pathTemplate: "/treatment_purposes/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class TreatmentPurposesResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/treatment_purposes/{uuid}", { uuid: uuid }),
+      pathTemplate: "/treatment_purposes/{uuid}",
     });
     return;
   }

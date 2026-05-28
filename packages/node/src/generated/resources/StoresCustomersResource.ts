@@ -15,6 +15,7 @@ export class StoresCustomersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/customers", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/customers",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class StoresCustomersResource {
     const result = await this.client.request<components["schemas"]["Customer-customer.read"]>({
       method: "POST",
       path: pathWithParams("/stores/{storeResourceId}/customers", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/customers",
       query: query as Record<string, string | number | boolean> | undefined,
       body,
     });
@@ -34,6 +36,7 @@ export class StoresCustomersResource {
     const result = await this.client.request<components["schemas"]["Customer-customer.read"]>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/customers/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/customers/{resourceId}",
     });
     return result.data;
   }
@@ -42,6 +45,7 @@ export class StoresCustomersResource {
     const result = await this.client.request<components["schemas"]["Customer-customer.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/customers/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/customers/{resourceId}",
       body,
     });
     return result.data;
@@ -51,6 +55,7 @@ export class StoresCustomersResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/stores/{storeResourceId}/customers/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/customers/{resourceId}",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return;

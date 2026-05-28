@@ -20,7 +20,7 @@ final class TreatmentPurposesResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/treatment_purposes', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/treatment_purposes', []), query: $query, pathTemplate: '/treatment_purposes');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read => \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read::fromArray($item));
     }
 
@@ -29,14 +29,14 @@ final class TreatmentPurposesResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_write $body): \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/treatment_purposes', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/treatment_purposes', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/treatment_purposes');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read::fromArray($data);
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/treatment_purposes/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/treatment_purposes/{uuid}', ['uuid' => $uuid]), pathTemplate: '/treatment_purposes/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read::fromArray($data);
     }
@@ -46,14 +46,14 @@ final class TreatmentPurposesResource extends AbstractResource
      */
     public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_write $body): \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/treatment_purposes/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/treatment_purposes/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/treatment_purposes/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\TreatmentPurpose_treatment_purpose_read::fromArray($data);
     }
 
     public function delete(string $uuid): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/treatment_purposes/{uuid}', ['uuid' => $uuid]));
+        $this->client->request('DELETE', $this->resolvePath('/treatment_purposes/{uuid}', ['uuid' => $uuid]), pathTemplate: '/treatment_purposes/{uuid}');
     }
 
 }

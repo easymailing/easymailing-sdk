@@ -15,6 +15,7 @@ export class TemplatesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/templates", {  }),
+      pathTemplate: "/templates",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class TemplatesResource {
     const result = await this.client.request<components["schemas"]["Template-template.read"]>({
       method: "POST",
       path: pathWithParams("/templates", {  }),
+      pathTemplate: "/templates",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class TemplatesResource {
     const result = await this.client.request<components["schemas"]["Template-template.read_template.read.detail"]>({
       method: "GET",
       path: pathWithParams("/templates/{uuid}", { uuid: uuid }),
+      pathTemplate: "/templates/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class TemplatesResource {
     const result = await this.client.request<components["schemas"]["Template-template.read"]>({
       method: "PUT",
       path: pathWithParams("/templates/{uuid}", { uuid: uuid }),
+      pathTemplate: "/templates/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class TemplatesResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/templates/{uuid}", { uuid: uuid }),
+      pathTemplate: "/templates/{uuid}",
     });
     return;
   }
@@ -58,6 +63,7 @@ export class TemplatesResource {
     const result = await this.client.request<components["schemas"]["Template-template.read"]>({
       method: "POST",
       path: pathWithParams("/templates/{uuid}/actions/regenerate_simple_json", { uuid: uuid }),
+      pathTemplate: "/templates/{uuid}/actions/regenerate_simple_json",
     });
     return result.data;
   }
@@ -66,6 +72,7 @@ export class TemplatesResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/templates/{uuid}/actions/send_test", { uuid: uuid }),
+      pathTemplate: "/templates/{uuid}/actions/send_test",
       body,
     });
     return result.data;

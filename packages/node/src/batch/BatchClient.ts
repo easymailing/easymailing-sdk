@@ -216,21 +216,49 @@ export class BatchClient {
    * (e.g. from a job queue) without losing work.
    */
   async wait(uuid: string): Promise<BatchSnapshot> {
-    const deadline = Date.now() + this.maxWaitMs;
+    const startedAt = Date.now();
+    const deadline = startedAt + this.maxWaitMs;
     let snapshot = await this.get(uuid);
     let attempt = 0;
     while (snapshot.status !== "finished") {
       const now = Date.now();
       if (now >= deadline) {
+        this.client.emit({
+          v: 1,
+          type: "batch.timeout",
+          timestamp: now,
+          batchUuid: uuid,
+          totalWaitedMs: now - startedAt,
+          lastSnapshot: snapshotProgress(snapshot),
+        });
         throw new BatchTimeoutError(uuid, snapshot.status, this.maxWaitMs);
       }
       // Sleep, but not past the deadline.
       const backoff = computeBackoffMs(attempt, this.initialPollMs);
-      const remaining = deadline - now;
-      await sleep(Math.min(backoff, Math.max(50, remaining)));
+      const nextPollMs = Math.min(backoff, Math.max(50, deadline - now));
+      this.client.emit({
+        v: 1,
+        type: "batch.polling",
+        timestamp: now,
+        batchUuid: uuid,
+        snapshot: snapshotProgress(snapshot),
+        pollNumber: attempt + 1,
+        nextPollMs,
+      });
+      await sleep(nextPollMs);
       attempt++;
       snapshot = await this.get(uuid);
     }
+    this.client.emit({
+      v: 1,
+      type: "batch.finished",
+      timestamp: Date.now(),
+      batchUuid: uuid,
+      total: snapshot.total ?? 0,
+      finished: snapshot.finished ?? 0,
+      errored: snapshot.errored ?? 0,
+      durationMs: Date.now() - startedAt,
+    });
     return snapshot;
   }
 
@@ -329,6 +357,21 @@ export class BatchClient {
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Project a BatchSnapshot to the telemetry-safe progress shape. */
+function snapshotProgress(s: BatchSnapshot): {
+  total: number;
+  finished: number;
+  errored: number;
+  status: string;
+} {
+  return {
+    total: s.total ?? 0,
+    finished: s.finished ?? 0,
+    errored: s.errored ?? 0,
+    status: s.status,
+  };
 }
 
 /**

@@ -15,6 +15,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/automations/{automationUuid}/automation_steps", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep-automation_step.read"]>({
       method: "GET",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return;
@@ -41,6 +44,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepAddToGroupResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/add_to_group", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/add_to_group",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepConditionResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/condition", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/condition",
       body,
     });
     return result.data;
@@ -59,6 +64,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepDelayResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/delay", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/delay",
       body,
     });
     return result.data;
@@ -68,6 +74,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepMoveToStepResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/move_to_step", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/move_to_step",
       body,
     });
     return result.data;
@@ -77,6 +84,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/remove_from_group", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/remove_from_group",
       body,
     });
     return result.data;
@@ -86,6 +94,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendCampaignResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/send_campaign", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/send_campaign",
       body,
     });
     return result.data;
@@ -95,6 +104,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendNotificationResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/send_notification", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/send_notification",
       body,
     });
     return result.data;
@@ -104,6 +114,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendSmsResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/send_sms", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/send_sms",
     });
     return result.data;
   }
@@ -112,6 +123,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendWebhookResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/send_webhook", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/send_webhook",
       body,
     });
     return result.data;
@@ -121,6 +133,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/trigger_automation", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/trigger_automation",
       body,
     });
     return result.data;
@@ -130,6 +143,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUnsubscribeResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/unsubscribe", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/unsubscribe",
       body,
     });
     return result.data;
@@ -139,6 +153,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/update_custom_field", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/update_custom_field",
       body,
     });
     return result.data;
@@ -148,6 +163,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUpdateScoreResource-automation_step.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/update_score", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/update_score",
       body,
     });
     return result.data;
@@ -157,6 +173,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepAddToGroupResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/add_to_group", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/add_to_group",
       body,
     });
     return result.data;
@@ -166,6 +183,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepConditionResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/condition", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/condition",
       body,
     });
     return result.data;
@@ -175,6 +193,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepDelayResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/delay", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/delay",
       body,
     });
     return result.data;
@@ -184,6 +203,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepMoveToStepResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/move_to_step", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/move_to_step",
       body,
     });
     return result.data;
@@ -193,6 +213,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/position", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/position",
       body,
     });
     return result.data;
@@ -202,6 +223,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group",
       body,
     });
     return result.data;
@@ -211,6 +233,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendCampaignResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/send_campaign",
       body,
     });
     return result.data;
@@ -220,6 +243,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendNotificationResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_notification", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/send_notification",
       body,
     });
     return result.data;
@@ -229,6 +253,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendSmsResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_sms", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/send_sms",
     });
     return result.data;
   }
@@ -237,6 +262,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendWebhookResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_webhook", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/send_webhook",
       body,
     });
     return result.data;
@@ -246,6 +272,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation",
       body,
     });
     return result.data;
@@ -255,6 +282,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUnsubscribeResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe",
       body,
     });
     return result.data;
@@ -264,6 +292,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field",
       body,
     });
     return result.data;
@@ -273,6 +302,7 @@ export class AutomationsAutomationStepsResource {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUpdateScoreResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/update_score", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_steps/{uuid}/update_score",
       body,
     });
     return result.data;

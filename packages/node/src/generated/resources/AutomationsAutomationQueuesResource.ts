@@ -15,6 +15,7 @@ export class AutomationsAutomationQueuesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/automations/{automationUuid}/automation_queues", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_queues",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AutomationsAutomationQueuesResource {
     const result = await this.client.request<components["schemas"]["AutomationQueue-automation_queue.read"]>({
       method: "GET",
       path: pathWithParams("/automations/{automationUuid}/automation_queues/{uuid}", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_queues/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class AutomationsAutomationQueuesResource {
     const result = await this.client.request<components["schemas"]["AutomationQueue-automation_queue.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_queues/trigger_custom_api", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_queues/trigger_custom_api",
       body,
     });
     return result.data;

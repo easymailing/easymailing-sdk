@@ -15,6 +15,7 @@ export class ThemesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/themes", {  }),
+      pathTemplate: "/themes",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class ThemesResource {
     const result = await this.client.request<components["schemas"]["Theme-theme.read"]>({
       method: "GET",
       path: pathWithParams("/themes/{uuid}", { uuid: uuid }),
+      pathTemplate: "/themes/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class ThemesResource {
     const result = await this.client.request<components["schemas"]["Theme.TemplateResource-template.read"]>({
       method: "POST",
       path: pathWithParams("/themes/{uuid}/actions/create_template", { uuid: uuid }),
+      pathTemplate: "/themes/{uuid}/actions/create_template",
       body,
     });
     return result.data;

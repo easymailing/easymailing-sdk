@@ -16,6 +16,7 @@ export class StoresProductsCollectionResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/products", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/products",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -25,6 +26,7 @@ export class StoresProductsCollectionResource {
     const result = await this.client.request<components["schemas"]["Product-product.read"]>({
       method: "POST",
       path: pathWithParams("/stores/{storeResourceId}/products", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/products",
       body,
     });
     return result.data;
@@ -34,6 +36,7 @@ export class StoresProductsCollectionResource {
     const result = await this.client.request<components["schemas"]["Product-product.read"]>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/products/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/products/{resourceId}",
     });
     return result.data;
   }
@@ -42,6 +45,7 @@ export class StoresProductsCollectionResource {
     const result = await this.client.request<components["schemas"]["Product-product.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/products/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/products/{resourceId}",
       body,
     });
     return result.data;
@@ -51,6 +55,7 @@ export class StoresProductsCollectionResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/stores/{storeResourceId}/products/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/products/{resourceId}",
     });
     return;
   }

@@ -15,6 +15,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}",
     });
     return;
   }
@@ -58,6 +63,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment.AsyncTaskResource"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}/actions/add_to_group", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}/actions/add_to_group",
     });
     return result.data;
   }
@@ -66,6 +72,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment.AsyncTaskResource"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}/actions/delete_contacts", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}/actions/delete_contacts",
     });
     return result.data;
   }
@@ -74,6 +81,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment.AsyncTaskResource"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}/actions/export", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}/actions/export",
     });
     return result.data;
   }
@@ -82,6 +90,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment.AsyncTaskResource"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}/actions/remove_from_group", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}/actions/remove_from_group",
     });
     return result.data;
   }
@@ -90,6 +99,7 @@ export class AudiencesListSegmentsResource {
     const result = await this.client.request<components["schemas"]["ListSegment.AsyncTaskResource"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}/actions/unsubscribe", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}/actions/unsubscribe",
     });
     return result.data;
   }

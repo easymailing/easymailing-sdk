@@ -15,6 +15,7 @@ export class StoresCategoriesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/categories", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/categories",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class StoresCategoriesResource {
     const result = await this.client.request<components["schemas"]["Category-category.read"]>({
       method: "POST",
       path: pathWithParams("/stores/{storeResourceId}/categories", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/categories",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class StoresCategoriesResource {
     const result = await this.client.request<components["schemas"]["Category-category.read"]>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/categories/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/categories/{resourceId}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class StoresCategoriesResource {
     const result = await this.client.request<components["schemas"]["Category-category.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/categories/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/categories/{resourceId}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class StoresCategoriesResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/stores/{storeResourceId}/categories/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/categories/{resourceId}",
     });
     return;
   }

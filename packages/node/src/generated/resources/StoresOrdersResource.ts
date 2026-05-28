@@ -15,6 +15,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/orders", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/orders",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["Order-order.read"]>({
       method: "POST",
       path: pathWithParams("/stores/{storeResourceId}/orders", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/orders",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["Order-order.read"]>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["Order-order.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}",
     });
     return;
   }
@@ -58,6 +63,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["OrderResource-order.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}/actions/cancel_order", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}/actions/cancel_order",
       body,
     });
     return result.data;
@@ -67,6 +73,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["Order-order.read"]>({
       method: "POST",
       path: pathWithParams("/stores/{storeResourceId}/orders/import", { storeResourceId: this.boundParams["storeResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/orders/import",
       body,
     });
     return result.data;
@@ -76,6 +83,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["OrderResource-order.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}/actions/pay_order", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}/actions/pay_order",
       body,
     });
     return result.data;
@@ -85,6 +93,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["OrderResource-order.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}/actions/process_order", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}/actions/process_order",
       body,
     });
     return result.data;
@@ -94,6 +103,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["OrderResource-order.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}/actions/refund_order", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}/actions/refund_order",
       body,
     });
     return result.data;
@@ -103,6 +113,7 @@ export class StoresOrdersResource {
     const result = await this.client.request<components["schemas"]["OrderResource-order.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/orders/{resourceId}/actions/ship_order", { storeResourceId: this.boundParams["storeResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/orders/{resourceId}/actions/ship_order",
       body,
     });
     return result.data;

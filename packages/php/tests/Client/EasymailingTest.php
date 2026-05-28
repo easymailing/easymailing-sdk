@@ -129,22 +129,26 @@ final class EasymailingTest extends TestCase
         self::assertFalse($result['data']['hasMore']);
     }
 
-    public function testCallsHooks(): void
+    public function testEmitsRequestStartAndRequestEndViaOnEvent(): void
     {
         $transport = new MockTransport();
         $transport->enqueue(200, []);
-        $reqHook = 0;
-        $resHook = 0;
+        $events = [];
         $em = new Easymailing(
             apiKey: 'k',
             baseUrl: 'https://api.test',
             transport: $transport,
-            onRequest: function () use (&$reqHook) { $reqHook++; },
-            onResponse: function () use (&$resHook) { $resHook++; },
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
         );
         $em->request('GET', '/x');
-        self::assertSame(1, $reqHook);
-        self::assertSame(1, $resHook);
+        self::assertCount(2, $events);
+        self::assertSame('request.start', $events[0]->type);
+        self::assertSame('request.end', $events[1]->type);
+        self::assertSame(200, $events[1]->payload['status']);
+        self::assertSame(1, $events[1]->payload['attempt']);
+        // requestId correlates start ↔ end
+        self::assertSame($events[0]->requestId, $events[1]->requestId);
+        self::assertSame('/x', $events[0]->pathTemplate);
     }
 
     public function testRetriesOn503ThenSucceeds(): void
@@ -229,5 +233,149 @@ final class EasymailingTest extends TestCase
         $headers = $transport->received[0]->headers;
         self::assertSame('application/merge-patch+json', $headers['content-type']);
         self::assertArrayNotHasKey('Content-Type', $headers);
+    }
+
+    // Telemetry events -----------------------------------------------------
+
+    public function testTelemetryCallerPathTemplatePropagated(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(200, []);
+        $events = [];
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: $transport,
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
+        );
+        $em->request('GET', '/audiences/01ABC/members/01XYZ', pathTemplate: '/audiences/{audienceUuid}/members/{uuid}');
+        self::assertSame('/audiences/{audienceUuid}/members/{uuid}', $events[0]->pathTemplate);
+        self::assertSame('/audiences/01ABC/members/01XYZ', $events[0]->path);
+    }
+
+    public function testTelemetry503RetryEmitsRequestRetry(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(503, ['status' => 503]);
+        $transport->enqueue(200, []);
+        $events = [];
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: $transport,
+            maxRetries: 2,
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
+        );
+        $em->request('GET', '/x');
+        self::assertCount(3, $events);
+        self::assertSame('request.start', $events[0]->type);
+        self::assertSame('request.retry', $events[1]->type);
+        self::assertSame('5xx', $events[1]->payload['reason']);
+        self::assertSame(503, $events[1]->payload['status']);
+        self::assertSame('request.end', $events[2]->type);
+        self::assertSame(2, $events[2]->payload['attempt']);
+        // requestId stable across all three
+        $ids = array_unique(array_map(fn($e) => $e->requestId, $events));
+        self::assertCount(1, $ids);
+    }
+
+    public function testTelemetry401EmitsRequestEndWithError(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(401, ['status' => 401, 'title' => 'Unauthorized']);
+        $events = [];
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: $transport,
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
+        );
+        try {
+            $em->request('GET', '/x');
+            self::fail('Expected AuthException');
+        } catch (\Easymailing\Sdk\Exception\AuthException) {
+            // expected
+        }
+        self::assertCount(2, $events);
+        self::assertSame('request.end', $events[1]->type);
+        self::assertSame(401, $events[1]->payload['status']);
+        self::assertSame('AuthException', $events[1]->payload['error']['name']);
+    }
+
+    public function testTelemetry422EmitsViolationsInError(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(422, [
+            'status' => 422,
+            'title' => 'Validation failed',
+            'violations' => [['propertyPath' => 'email', 'message' => 'required']],
+        ]);
+        $events = [];
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: $transport,
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
+        );
+        try {
+            $em->request('POST', '/x', []);
+            self::fail('Expected ValidationException');
+        } catch (\Easymailing\Sdk\Exception\ValidationException) {
+            // expected
+        }
+        self::assertNotEmpty($events);
+        $end = $events[count($events) - 1];
+        self::assertSame('request.end', $end->type);
+        self::assertSame('email', $end->payload['error']['violations'][0]['propertyPath']);
+    }
+
+    public function testTelemetryThrowingHandlerDoesNotBreakRequest(): void
+    {
+        $transport = new MockTransport();
+        $transport->enqueue(200, ['ok' => true]);
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: $transport,
+            onEvent: function () { throw new \RuntimeException('boom'); },
+        );
+        $result = $em->request('GET', '/x');
+        self::assertSame(true, $result['data']['ok']);
+    }
+
+    public function testTelemetryWebhookVerifiedEvent(): void
+    {
+        $events = [];
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: new MockTransport(),
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
+        );
+        $payload = '{"event_type":"x","data":{}}';
+        $sig = 'sha256=' . hash_hmac('sha256', $payload, 'secret');
+        self::assertTrue($em->webhooks->verify($payload, $sig, 'secret'));
+        self::assertCount(1, $events);
+        self::assertSame('webhook.verified', $events[0]->type);
+    }
+
+    public function testTelemetryWebhookRejectedEvents(): void
+    {
+        $events = [];
+        $em = new Easymailing(
+            apiKey: 'k',
+            baseUrl: 'https://api.test',
+            transport: new MockTransport(),
+            onEvent: function (\Easymailing\Sdk\Telemetry\SdkEvent $e) use (&$events) { $events[] = $e; },
+        );
+        // bad signature
+        self::assertFalse($em->webhooks->verify('payload', 'sha256=deadbeef', 'secret'));
+        self::assertSame('signature-mismatch', $events[0]->payload['reason']);
+        // bad format
+        self::assertFalse($em->webhooks->verify('payload', 'not-a-sig', 'secret'));
+        self::assertSame('invalid-format', $events[1]->payload['reason']);
+        // bad secret
+        self::assertFalse($em->webhooks->verify('payload', 'sha256=abc', ''));
+        self::assertSame('invalid-secret', $events[2]->payload['reason']);
     }
 }

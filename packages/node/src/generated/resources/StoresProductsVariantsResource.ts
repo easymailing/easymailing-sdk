@@ -15,6 +15,7 @@ export class StoresProductsVariantsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/products/{productResourceId}/variants", { storeResourceId: this.boundParams["storeResourceId"]!, productResourceId: this.boundParams["productResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/products/{productResourceId}/variants",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class StoresProductsVariantsResource {
     const result = await this.client.request<components["schemas"]["Variant-variant.read"]>({
       method: "POST",
       path: pathWithParams("/stores/{storeResourceId}/products/{productResourceId}/variants", { storeResourceId: this.boundParams["storeResourceId"]!, productResourceId: this.boundParams["productResourceId"]! }),
+      pathTemplate: "/stores/{storeResourceId}/products/{productResourceId}/variants",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class StoresProductsVariantsResource {
     const result = await this.client.request<components["schemas"]["Variant-variant.read"]>({
       method: "GET",
       path: pathWithParams("/stores/{storeResourceId}/products/{productResourceId}/variants/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, productResourceId: this.boundParams["productResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/products/{productResourceId}/variants/{resourceId}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class StoresProductsVariantsResource {
     const result = await this.client.request<components["schemas"]["Variant-variant.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{storeResourceId}/products/{productResourceId}/variants/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, productResourceId: this.boundParams["productResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/products/{productResourceId}/variants/{resourceId}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class StoresProductsVariantsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/stores/{storeResourceId}/products/{productResourceId}/variants/{resourceId}", { storeResourceId: this.boundParams["storeResourceId"]!, productResourceId: this.boundParams["productResourceId"]!, resourceId: resourceId }),
+      pathTemplate: "/stores/{storeResourceId}/products/{productResourceId}/variants/{resourceId}",
     });
     return;
   }

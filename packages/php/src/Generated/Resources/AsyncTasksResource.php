@@ -20,13 +20,13 @@ final class AsyncTasksResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/async_tasks', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/async_tasks', []), query: $query, pathTemplate: '/async_tasks');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\AsyncTask_async_task_read => \Easymailing\Sdk\Generated\Dto\AsyncTask_async_task_read::fromArray($item));
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\AsyncTask_async_task_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/async_tasks/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/async_tasks/{uuid}', ['uuid' => $uuid]), pathTemplate: '/async_tasks/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\AsyncTask_async_task_read::fromArray($data);
     }

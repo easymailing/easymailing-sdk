@@ -15,6 +15,7 @@ export class SupportResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/support/tickets", {  }),
+      pathTemplate: "/support/tickets",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class SupportResource {
     const result = await this.client.request<components["schemas"]["SupportTicket-support_ticket.read"]>({
       method: "POST",
       path: pathWithParams("/support/tickets", {  }),
+      pathTemplate: "/support/tickets",
       body,
     });
     return result.data;

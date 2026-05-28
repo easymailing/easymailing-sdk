@@ -41,12 +41,20 @@ final class Easymailing
     /** @var callable(): array<string, string> */
     private $authHeader;
     private readonly string $userAgent;
-    /** @var callable(TransportRequest): void|null */
-    private $onRequest;
-    /** @var callable(TransportResponse, TransportRequest): void|null */
-    private $onResponse;
+    /** @var (callable(\Easymailing\Sdk\Telemetry\SdkEvent): void)|null */
+    private $onEvent;
     private readonly bool $debug;
 
+    /**
+     * @param (callable(\Easymailing\Sdk\Telemetry\SdkEvent): void)|null $onEvent
+     *   Telemetry event handler. The SDK emits structured events for every
+     *   request lifecycle stage (start, retry, end), batch poll progress, and
+     *   webhook signature verification. See \Easymailing\Sdk\Telemetry\SdkEvent
+     *   for the shape and EventTypes for the canonical type strings.
+     *   Use \Easymailing\Sdk\Telemetry\Psr3EventListener to bridge to a PSR-3
+     *   logger without writing the mapping yourself. A throwing handler never
+     *   breaks the API call.
+     */
     public function __construct(
         ?string $apiKey = null,
         ?string $accessToken = null,
@@ -54,8 +62,7 @@ final class Easymailing
         ?Transport $transport = null,
         int $maxRetries = 3,
         bool $debug = false,
-        ?callable $onRequest = null,
-        ?callable $onResponse = null,
+        ?callable $onEvent = null,
         string $version = '0.0.0',
     ) {
         if ($apiKey === null && $accessToken === null) {
@@ -75,8 +82,7 @@ final class Easymailing
         $this->transport = $transport ?? new CurlTransport();
         $this->retryPolicy = new RetryPolicy(maxRetries: $maxRetries);
         $this->userAgent = sprintf('easymailing-sdk/%s (php/%s; %s)', $version, PHP_VERSION, PHP_OS_FAMILY);
-        $this->onRequest = $onRequest;
-        $this->onResponse = $onResponse;
+        $this->onEvent = $onEvent;
         $this->debug = $debug;
 
         if ($apiKey !== null) {
@@ -91,7 +97,7 @@ final class Easymailing
             client: $this,
             transport: $this->transport,
         );
-        $this->webhooks = new WebhooksClient();
+        $this->webhooks = new WebhooksClient(fn(\Easymailing\Sdk\Telemetry\SdkEvent $e) => $this->emit($e));
         $this->wireGeneratedResources();
     }
 
@@ -102,6 +108,11 @@ final class Easymailing
      * @param array<string, scalar>|null      $query
      * @param array<string, mixed>|null       $body
      * @param array<string, string>|null      $headers
+     * @param ?string                         $pathTemplate Stable template (e.g.
+     *   "/audiences/{audienceUuid}/members/{uuid}") emitted in telemetry events
+     *   for metrics aggregation without UUID cardinality blow-up. Generated
+     *   resources always set this; manual callers can pass it explicitly.
+     *   Falls back to $path when omitted.
      * @return array{data: mixed, rateLimit: RateLimitInfo, raw: mixed}
      */
     public function request(
@@ -110,15 +121,11 @@ final class Easymailing
         ?array $body = null,
         ?array $query = null,
         ?array $headers = null,
+        ?string $pathTemplate = null,
     ): array {
         $url = $this->buildUrl($path, $query);
         $mergedHeaders = [...$this->commonHeaders(), ...($headers ?? [])];
         $bodyJson = $body === null ? null : json_encode($body, JSON_THROW_ON_ERROR);
-        // RFC 7231 §3.1.1.5: clients SHOULD send Content-Type when the
-        // request has a payload body. The SDK always serialises bodies as
-        // JSON, so default to `application/json` unless the caller already
-        // provided their own Content-Type (case-insensitive — HTTP headers
-        // are case-insensitive).
         if ($bodyJson !== null && !self::hasHeaderCi($mergedHeaders, 'content-type')) {
             $mergedHeaders['Content-Type'] = 'application/json';
         }
@@ -129,17 +136,44 @@ final class Easymailing
             body: $bodyJson,
         );
 
-        $attempt = 0;
+        $requestId = \Easymailing\Sdk\Telemetry\SdkEvent::newRequestId();
+        $effectiveTemplate = $pathTemplate ?? $path;
+        $startedAtMs = (int) (microtime(true) * 1000);
+        $this->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+            type: \Easymailing\Sdk\Telemetry\EventTypes::REQUEST_START,
+            payload: [],
+            requestId: $requestId,
+            method: $method,
+            path: $path,
+            pathTemplate: $effectiveTemplate,
+            timestampMs: $startedAtMs,
+        ));
+
+        $attempt = 1;
         while (true) {
             $response = null;
             if ($this->debug) fwrite(STDERR, "[easymailing] → {$method} {$url}\n");
-            if ($this->onRequest !== null) ($this->onRequest)($req);
             try {
                 $response = $this->transport->send($req);
             } catch (Throwable $err) {
-                throw new NetworkException('Network request failed', $err);
+                if ($attempt - 1 < $this->retryPolicy->maxRetries) {
+                    $delay = $this->retryPolicy->computeDelayMs($attempt - 1, null);
+                    $this->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+                        type: \Easymailing\Sdk\Telemetry\EventTypes::REQUEST_RETRY,
+                        payload: ['attempt' => $attempt, 'reason' => 'network', 'delayMs' => $delay],
+                        requestId: $requestId,
+                        method: $method,
+                        path: $path,
+                        pathTemplate: $effectiveTemplate,
+                    ));
+                    $attempt++;
+                    usleep($delay * 1000);
+                    continue;
+                }
+                $netErr = new NetworkException('Network request failed', $err);
+                $this->emitRequestEnd($requestId, $method, $path, $effectiveTemplate, $startedAtMs, 0, $attempt, null, $netErr, true);
+                throw $netErr;
             }
-            if ($this->onResponse !== null) ($this->onResponse)($response, $req);
             if ($this->debug) fwrite(STDERR, "[easymailing] ← {$response->status} {$url}\n");
 
             if ($response->status >= 200 && $response->status < 300) {
@@ -150,29 +184,109 @@ final class Easymailing
                     try {
                         $raw = json_decode($response->body, true, flags: JSON_THROW_ON_ERROR);
                     } catch (JsonException $err) {
-                        throw new MalformedResponseException(
+                        $malformed = new MalformedResponseException(
                             "Response body is not valid JSON (status {$response->status})",
                             $response->status,
                             $response->body,
                             $err,
                         );
+                        $this->emitRequestEnd($requestId, $method, $path, $effectiveTemplate, $startedAtMs, $response->status, $attempt, $rateLimit, $malformed, false);
+                        throw $malformed;
                     }
                 }
                 $data = $this->parseAsHydraIfPossible($raw);
+                $this->emitRequestEnd($requestId, $method, $path, $effectiveTemplate, $startedAtMs, $response->status, $attempt, $rateLimit, null, false);
                 return ['data' => $data, 'rateLimit' => $rateLimit, 'raw' => $raw];
             }
 
-            if ($attempt < $this->retryPolicy->maxRetries && ShouldRetry::evaluate($method, $response->status)) {
+            if ($attempt - 1 < $this->retryPolicy->maxRetries && ShouldRetry::evaluate($method, $response->status)) {
                 $err = ResponseToException::from($response);
                 $retryAfter = $err instanceof RateLimitException ? $err->retryAfterSeconds : null;
-                $delay = $this->retryPolicy->computeDelayMs($attempt, $retryAfter);
+                $delay = $this->retryPolicy->computeDelayMs($attempt - 1, $retryAfter);
+                $reason = $response->status === 429 ? 'rate-limit' : ($response->status >= 500 ? '5xx' : 'other');
+                $this->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+                    type: \Easymailing\Sdk\Telemetry\EventTypes::REQUEST_RETRY,
+                    payload: [
+                        'attempt' => $attempt,
+                        'reason' => $reason,
+                        'delayMs' => $delay,
+                        'retryAfterSeconds' => $retryAfter,
+                        'status' => $response->status,
+                    ],
+                    requestId: $requestId,
+                    method: $method,
+                    path: $path,
+                    pathTemplate: $effectiveTemplate,
+                ));
                 $attempt++;
                 usleep($delay * 1000);
                 continue;
             }
 
-            throw ResponseToException::from($response);
+            $rateLimit = RateLimitInfo::fromHeaders($response->headers);
+            $finalErr = ResponseToException::from($response);
+            $this->emitRequestEnd($requestId, $method, $path, $effectiveTemplate, $startedAtMs, $response->status, $attempt, $rateLimit, $finalErr, false);
+            throw $finalErr;
         }
+    }
+
+    /** @internal — used by BatchClient and WebhooksClient. */
+    public function emit(\Easymailing\Sdk\Telemetry\SdkEvent $event): void
+    {
+        \Easymailing\Sdk\Telemetry\EventDispatcher::dispatch($event, $this->onEvent);
+    }
+
+    private function emitRequestEnd(
+        string $requestId,
+        string $method,
+        string $path,
+        string $pathTemplate,
+        int $startedAtMs,
+        int $status,
+        int $attempt,
+        ?RateLimitInfo $rateLimit,
+        ?Throwable $error,
+        bool $retryable,
+    ): void {
+        $errorPayload = null;
+        if ($error !== null) {
+            $errStatus = $status;
+            if ($error instanceof \Easymailing\Sdk\Exception\ApiException) {
+                $errStatus = $error->status;
+            }
+            $violations = null;
+            if ($error instanceof \Easymailing\Sdk\Exception\ValidationException) {
+                $violations = $error->violations;
+            }
+            $errorPayload = [
+                'name' => (new \ReflectionClass($error))->getShortName(),
+                'message' => $error->getMessage(),
+                'status' => $errStatus,
+                'retryable' => $retryable,
+            ];
+            if ($violations !== null) {
+                $errorPayload['violations'] = $violations;
+            }
+        }
+        $payload = [
+            'status' => $status,
+            'durationMs' => (int) (microtime(true) * 1000) - $startedAtMs,
+            'attempt' => $attempt,
+        ];
+        if ($rateLimit !== null) {
+            $payload['rateLimit'] = $rateLimit;
+        }
+        if ($errorPayload !== null) {
+            $payload['error'] = $errorPayload;
+        }
+        $this->emit(\Easymailing\Sdk\Telemetry\SdkEvent::create(
+            type: \Easymailing\Sdk\Telemetry\EventTypes::REQUEST_END,
+            payload: $payload,
+            requestId: $requestId,
+            method: $method,
+            path: $path,
+            pathTemplate: $pathTemplate,
+        ));
     }
 
     /** @return array<string, string> */

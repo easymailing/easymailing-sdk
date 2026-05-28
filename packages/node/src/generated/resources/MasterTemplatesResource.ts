@@ -15,6 +15,7 @@ export class MasterTemplatesResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/master_templates", {  }),
+      pathTemplate: "/master_templates",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class MasterTemplatesResource {
     const result = await this.client.request<components["schemas"]["MasterTemplate-master_template.read"]>({
       method: "GET",
       path: pathWithParams("/master_templates/{uuid}", { uuid: uuid }),
+      pathTemplate: "/master_templates/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class MasterTemplatesResource {
     const result = await this.client.request<components["schemas"]["MasterTemplate.TemplateResource-template.read"]>({
       method: "POST",
       path: pathWithParams("/master_templates/{uuid}/actions/create_template", { uuid: uuid }),
+      pathTemplate: "/master_templates/{uuid}/actions/create_template",
       body,
     });
     return result.data;

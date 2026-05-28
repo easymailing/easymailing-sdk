@@ -16,6 +16,7 @@ export class AudiencesCollectionResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences", {  }),
+      pathTemplate: "/audiences",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -25,6 +26,7 @@ export class AudiencesCollectionResource {
     const result = await this.client.request<components["schemas"]["Audience-audience.read"]>({
       method: "POST",
       path: pathWithParams("/audiences", {  }),
+      pathTemplate: "/audiences",
       body,
     });
     return result.data;
@@ -34,6 +36,7 @@ export class AudiencesCollectionResource {
     const result = await this.client.request<components["schemas"]["Audience-audience.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{uuid}", { uuid: uuid }),
+      pathTemplate: "/audiences/{uuid}",
     });
     return result.data;
   }
@@ -42,6 +45,7 @@ export class AudiencesCollectionResource {
     const result = await this.client.request<components["schemas"]["Audience-audience.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{uuid}", { uuid: uuid }),
+      pathTemplate: "/audiences/{uuid}",
       body,
     });
     return result.data;

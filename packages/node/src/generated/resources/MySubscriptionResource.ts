@@ -15,6 +15,7 @@ export class MySubscriptionResource {
     const result = await this.client.request<components["schemas"]["MySuscription-my_suscription.read"]>({
       method: "GET",
       path: pathWithParams("/my_suscription", {  }),
+      pathTemplate: "/my_suscription",
     });
     return result.data;
   }

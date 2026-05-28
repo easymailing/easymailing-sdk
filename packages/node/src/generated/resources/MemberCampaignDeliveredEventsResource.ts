@@ -15,6 +15,7 @@ export class MemberCampaignDeliveredEventsResource {
     const result = await this.client.request<components["schemas"]["MemberCampaignDeliveredEvent"]>({
       method: "GET",
       path: pathWithParams("/member_campaign_delivered_events", {  }),
+      pathTemplate: "/member_campaign_delivered_events",
     });
     return result.data;
   }

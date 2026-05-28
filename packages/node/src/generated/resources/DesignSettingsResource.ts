@@ -15,6 +15,7 @@ export class DesignSettingsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/design_settings", {  }),
+      pathTemplate: "/design_settings",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class DesignSettingsResource {
     const result = await this.client.request<components["schemas"]["DesignSetting-design_setting.read"]>({
       method: "POST",
       path: pathWithParams("/design_settings", {  }),
+      pathTemplate: "/design_settings",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class DesignSettingsResource {
     const result = await this.client.request<components["schemas"]["DesignSetting-design_setting.read"]>({
       method: "GET",
       path: pathWithParams("/design_settings/{uuid}", { uuid: uuid }),
+      pathTemplate: "/design_settings/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class DesignSettingsResource {
     const result = await this.client.request<components["schemas"]["DesignSetting-design_setting.read"]>({
       method: "PUT",
       path: pathWithParams("/design_settings/{uuid}", { uuid: uuid }),
+      pathTemplate: "/design_settings/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class DesignSettingsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/design_settings/{uuid}", { uuid: uuid }),
+      pathTemplate: "/design_settings/{uuid}",
     });
     return;
   }
@@ -58,6 +63,7 @@ export class DesignSettingsResource {
     const result = await this.client.request<components["schemas"]["DesignSetting-design_setting.read"]>({
       method: "POST",
       path: pathWithParams("/design_settings/from_url", {  }),
+      pathTemplate: "/design_settings/from_url",
       body,
     });
     return result.data;

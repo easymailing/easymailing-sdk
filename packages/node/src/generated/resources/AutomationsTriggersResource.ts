@@ -15,6 +15,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "GET",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}",
     });
     return;
   }
@@ -40,6 +43,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/abandoned_cart", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/abandoned_cart",
       body,
     });
     return result.data;
@@ -49,6 +53,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/admin_manual", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/admin_manual",
       body,
     });
     return result.data;
@@ -58,6 +63,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/aniversary_date", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/aniversary_date",
       body,
     });
     return result.data;
@@ -67,6 +73,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/buy_a_product", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/buy_a_product",
       body,
     });
     return result.data;
@@ -76,6 +83,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/click_on_campaign", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/click_on_campaign",
       body,
     });
     return result.data;
@@ -85,6 +93,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/click_on_campaign_link", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/click_on_campaign_link",
       body,
     });
     return result.data;
@@ -94,6 +103,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/contact_added_to_group", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/contact_added_to_group",
       body,
     });
     return result.data;
@@ -103,6 +113,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/contact_removed_from_group", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/contact_removed_from_group",
       body,
     });
     return result.data;
@@ -112,6 +123,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/contact_subscribed", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/contact_subscribed",
       body,
     });
     return result.data;
@@ -121,6 +133,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/custom_api", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/custom_api",
       body,
     });
     return result.data;
@@ -130,6 +143,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/form_completed", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/form_completed",
       body,
     });
     return result.data;
@@ -139,6 +153,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/not_click_on_campaign", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/not_click_on_campaign",
       body,
     });
     return result.data;
@@ -148,6 +163,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/not_open_on_campaign", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/not_open_on_campaign",
       body,
     });
     return result.data;
@@ -157,6 +173,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/open_on_campaign", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/open_on_campaign",
       body,
     });
     return result.data;
@@ -166,6 +183,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/order_cancelled", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/order_cancelled",
       body,
     });
     return result.data;
@@ -175,6 +193,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/order_paid", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/order_paid",
       body,
     });
     return result.data;
@@ -184,6 +203,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/order_processed", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/order_processed",
       body,
     });
     return result.data;
@@ -193,6 +213,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/order_refunded", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/order_refunded",
       body,
     });
     return result.data;
@@ -202,6 +223,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/order_shipped", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/order_shipped",
       body,
     });
     return result.data;
@@ -211,6 +233,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/payment_reminder", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/payment_reminder",
       body,
     });
     return result.data;
@@ -220,6 +243,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/send_a_campaign", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/send_a_campaign",
       body,
     });
     return result.data;
@@ -229,6 +253,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/specific_date", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/specific_date",
       body,
     });
     return result.data;
@@ -238,6 +263,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/suscriber_revalidation", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/suscriber_revalidation",
       body,
     });
     return result.data;
@@ -247,6 +273,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/suscription_date", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/suscription_date",
       body,
     });
     return result.data;
@@ -256,6 +283,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "POST",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/time_since_last_purchase", { automationUuid: this.boundParams["automationUuid"]! }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/time_since_last_purchase",
       body,
     });
     return result.data;
@@ -265,6 +293,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/abandoned_cart", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/abandoned_cart",
       body,
     });
     return result.data;
@@ -274,6 +303,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/admin_manual", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/admin_manual",
       body,
     });
     return result.data;
@@ -283,6 +313,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/aniversary_date", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/aniversary_date",
       body,
     });
     return result.data;
@@ -292,6 +323,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/buy_a_product", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/buy_a_product",
       body,
     });
     return result.data;
@@ -301,6 +333,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/click_on_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/click_on_campaign",
       body,
     });
     return result.data;
@@ -310,6 +343,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/click_on_campaign_link", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/click_on_campaign_link",
       body,
     });
     return result.data;
@@ -319,6 +353,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/contact_added_to_group", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/contact_added_to_group",
       body,
     });
     return result.data;
@@ -328,6 +363,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/contact_removed_from_group", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/contact_removed_from_group",
       body,
     });
     return result.data;
@@ -337,6 +373,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/contact_subscribed", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/contact_subscribed",
       body,
     });
     return result.data;
@@ -346,6 +383,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/custom_api", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/custom_api",
       body,
     });
     return result.data;
@@ -355,6 +393,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/enable", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/enable",
     });
     return result.data;
   }
@@ -363,6 +402,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/form_completed", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/form_completed",
       body,
     });
     return result.data;
@@ -372,6 +412,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/not_click_on_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/not_click_on_campaign",
       body,
     });
     return result.data;
@@ -381,6 +422,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/not_open_on_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/not_open_on_campaign",
       body,
     });
     return result.data;
@@ -390,6 +432,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/open_on_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/open_on_campaign",
       body,
     });
     return result.data;
@@ -399,6 +442,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/order_cancelled", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/order_cancelled",
       body,
     });
     return result.data;
@@ -408,6 +452,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/order_paid", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/order_paid",
       body,
     });
     return result.data;
@@ -417,6 +462,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/order_processed", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/order_processed",
       body,
     });
     return result.data;
@@ -426,6 +472,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/order_refunded", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/order_refunded",
       body,
     });
     return result.data;
@@ -435,6 +482,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/order_shipped", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/order_shipped",
       body,
     });
     return result.data;
@@ -444,6 +492,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/pause", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/pause",
     });
     return result.data;
   }
@@ -452,6 +501,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/payment_reminder", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/payment_reminder",
       body,
     });
     return result.data;
@@ -461,6 +511,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/send_a_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/send_a_campaign",
       body,
     });
     return result.data;
@@ -470,6 +521,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/specific_date", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/specific_date",
       body,
     });
     return result.data;
@@ -479,6 +531,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/suscriber_revalidation", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/suscriber_revalidation",
       body,
     });
     return result.data;
@@ -488,6 +541,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/suscription_date", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/suscription_date",
       body,
     });
     return result.data;
@@ -497,6 +551,7 @@ export class AutomationsTriggersResource {
     const result = await this.client.request<components["schemas"]["AutomationTrigger-automation_trigger.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_triggers/{uuid}/time_since_last_purchase", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
+      pathTemplate: "/automations/{automationUuid}/automation_triggers/{uuid}/time_since_last_purchase",
       body,
     });
     return result.data;

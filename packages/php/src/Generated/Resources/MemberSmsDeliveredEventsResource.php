@@ -16,7 +16,7 @@ final class MemberSmsDeliveredEventsResource extends AbstractResource
 
     public function get(): \Easymailing\Sdk\Generated\Dto\MemberSmsDeliveredEvent
     {
-        $result = $this->client->request('GET', $this->resolvePath('/member_sms_delivered_events', []));
+        $result = $this->client->request('GET', $this->resolvePath('/member_sms_delivered_events', []), pathTemplate: '/member_sms_delivered_events');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\MemberSmsDeliveredEvent::fromArray($data);
     }

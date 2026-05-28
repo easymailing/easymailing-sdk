@@ -16,6 +16,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/automations", {  }),
+      pathTemplate: "/automations",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -25,6 +26,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<components["schemas"]["Automation-automation.read"]>({
       method: "POST",
       path: pathWithParams("/automations", {  }),
+      pathTemplate: "/automations",
       body,
     });
     return result.data;
@@ -34,6 +36,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<components["schemas"]["Automation-automation.read_automation.read.detail"]>({
       method: "GET",
       path: pathWithParams("/automations/{uuid}", { uuid: uuid }),
+      pathTemplate: "/automations/{uuid}",
     });
     return result.data;
   }
@@ -42,6 +45,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<components["schemas"]["Automation-automation.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{uuid}", { uuid: uuid }),
+      pathTemplate: "/automations/{uuid}",
       body,
     });
     return result.data;
@@ -51,6 +55,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/automations/{uuid}", { uuid: uuid }),
+      pathTemplate: "/automations/{uuid}",
     });
     return;
   }
@@ -59,6 +64,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<components["schemas"]["Automation-automation.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{uuid}/actions/activate", { uuid: uuid }),
+      pathTemplate: "/automations/{uuid}/actions/activate",
     });
     return result.data;
   }
@@ -67,6 +73,7 @@ export class AutomationsCollectionResource {
     const result = await this.client.request<components["schemas"]["Automation-automation.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{uuid}/actions/pause", { uuid: uuid }),
+      pathTemplate: "/automations/{uuid}/actions/pause",
     });
     return result.data;
   }

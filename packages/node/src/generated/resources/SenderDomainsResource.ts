@@ -15,6 +15,7 @@ export class SenderDomainsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/sender_domains", {  }),
+      pathTemplate: "/sender_domains",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class SenderDomainsResource {
     const result = await this.client.request<components["schemas"]["SenderDomain-sender_domain.read"]>({
       method: "POST",
       path: pathWithParams("/sender_domains", {  }),
+      pathTemplate: "/sender_domains",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class SenderDomainsResource {
     const result = await this.client.request<components["schemas"]["SenderDomain-sender_domain.read"]>({
       method: "GET",
       path: pathWithParams("/sender_domains/{uuid}", { uuid: uuid }),
+      pathTemplate: "/sender_domains/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class SenderDomainsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/sender_domains/{uuid}", { uuid: uuid }),
+      pathTemplate: "/sender_domains/{uuid}",
     });
     return;
   }
@@ -49,6 +53,7 @@ export class SenderDomainsResource {
     const result = await this.client.request<components["schemas"]["SenderDomain.SenderDomainAuthenticateOutput-sender_domain.read"]>({
       method: "PUT",
       path: pathWithParams("/sender_domains/{uuid}/actions/authenticate", { uuid: uuid }),
+      pathTemplate: "/sender_domains/{uuid}/actions/authenticate",
     });
     return result.data;
   }
@@ -57,6 +62,7 @@ export class SenderDomainsResource {
     const result = await this.client.request<unknown>({
       method: "POST",
       path: pathWithParams("/sender_domains/{uuid}/actions/resend_verification", { uuid: uuid }),
+      pathTemplate: "/sender_domains/{uuid}/actions/resend_verification",
     });
     return result.data;
   }

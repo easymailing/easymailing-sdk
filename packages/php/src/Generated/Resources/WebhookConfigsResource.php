@@ -20,7 +20,7 @@ final class WebhookConfigsResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/webhooks', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/webhooks', []), query: $query, pathTemplate: '/webhooks');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read => \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read::fromArray($item));
     }
 
@@ -29,14 +29,14 @@ final class WebhookConfigsResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Webhook_webhook_write $body): \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/webhooks', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/webhooks', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/webhooks');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read::fromArray($data);
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/webhooks/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/webhooks/{uuid}', ['uuid' => $uuid]), pathTemplate: '/webhooks/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read::fromArray($data);
     }
@@ -46,14 +46,14 @@ final class WebhookConfigsResource extends AbstractResource
      */
     public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Webhook_webhook_write $body): \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/webhooks/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/webhooks/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/webhooks/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read::fromArray($data);
     }
 
     public function delete(string $uuid): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/webhooks/{uuid}', ['uuid' => $uuid]));
+        $this->client->request('DELETE', $this->resolvePath('/webhooks/{uuid}', ['uuid' => $uuid]), pathTemplate: '/webhooks/{uuid}');
     }
 
 }

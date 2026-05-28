@@ -20,13 +20,13 @@ final class ThemesResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/themes', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/themes', []), query: $query, pathTemplate: '/themes');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Theme_theme_read => \Easymailing\Sdk\Generated\Dto\Theme_theme_read::fromArray($item));
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\Theme_theme_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/themes/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/themes/{uuid}', ['uuid' => $uuid]), pathTemplate: '/themes/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Theme_theme_read::fromArray($data);
     }
@@ -36,7 +36,7 @@ final class ThemesResource extends AbstractResource
      */
     public function createTemplate(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Theme_CreateTemplateFromThemeInput_theme_write $body): \Easymailing\Sdk\Generated\Dto\Theme_TemplateResource_template_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/themes/{uuid}/actions/create_template', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/themes/{uuid}/actions/create_template', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/themes/{uuid}/actions/create_template');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Theme_TemplateResource_template_read::fromArray($data);
     }

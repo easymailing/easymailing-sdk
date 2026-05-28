@@ -15,6 +15,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/sms_campaigns", {  }),
+      pathTemplate: "/sms_campaigns",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<components["schemas"]["SmsCampaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/sms_campaigns", {  }),
+      pathTemplate: "/sms_campaigns",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<components["schemas"]["SmsCampaign-campaign.read_campaign.read.detail"]>({
       method: "GET",
       path: pathWithParams("/sms_campaigns/{uuid}", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<components["schemas"]["SmsCampaign-campaign.read"]>({
       method: "PUT",
       path: pathWithParams("/sms_campaigns/{uuid}", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}",
       body,
     });
     return result.data;
@@ -50,6 +54,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/sms_campaigns/{uuid}", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}",
     });
     return;
   }
@@ -58,6 +63,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<components["schemas"]["SmsCampaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/sms_campaigns/{uuid}/actions/duplicate", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}/actions/duplicate",
       body,
     });
     return result.data;
@@ -67,6 +73,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/sms_campaigns/{uuid}/actions/schedule", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}/actions/schedule",
       body,
     });
     return result.data;
@@ -76,6 +83,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/sms_campaigns/{uuid}/actions/send_now", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}/actions/send_now",
       body,
     });
     return result.data;
@@ -85,6 +93,7 @@ export class SmsCampaignsResource {
     const result = await this.client.request<unknown>({
       method: "PUT",
       path: pathWithParams("/sms_campaigns/{uuid}/actions/send_test", { uuid: uuid }),
+      pathTemplate: "/sms_campaigns/{uuid}/actions/send_test",
       body,
     });
     return result.data;

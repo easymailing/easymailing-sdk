@@ -20,7 +20,7 @@ final class TemplatesResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/templates', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/templates', []), query: $query, pathTemplate: '/templates');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Template_template_read => \Easymailing\Sdk\Generated\Dto\Template_template_read::fromArray($item));
     }
 
@@ -29,14 +29,14 @@ final class TemplatesResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Template_template_write $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/templates', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/templates', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Template_template_read::fromArray($data);
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\Template_template_read_template_read_detail
     {
-        $result = $this->client->request('GET', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), pathTemplate: '/templates/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Template_template_read_template_read_detail::fromArray($data);
     }
@@ -46,19 +46,19 @@ final class TemplatesResource extends AbstractResource
      */
     public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Template_template_write $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Template_template_read::fromArray($data);
     }
 
     public function delete(string $uuid): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]));
+        $this->client->request('DELETE', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), pathTemplate: '/templates/{uuid}');
     }
 
     public function regenerateSimpleJson(string $uuid): \Easymailing\Sdk\Generated\Dto\Template_template_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/templates/{uuid}/actions/regenerate_simple_json', ['uuid' => $uuid]));
+        $result = $this->client->request('POST', $this->resolvePath('/templates/{uuid}/actions/regenerate_simple_json', ['uuid' => $uuid]), pathTemplate: '/templates/{uuid}/actions/regenerate_simple_json');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Template_template_read::fromArray($data);
     }
@@ -69,7 +69,7 @@ final class TemplatesResource extends AbstractResource
      */
     public function sendTest(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Template_TemplateSendTestInput_template_write_send_test $body): array
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/templates/{uuid}/actions/send_test', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/templates/{uuid}/actions/send_test', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates/{uuid}/actions/send_test');
         $data = is_array($result['data']) ? $result['data'] : [];
         return $data;
     }

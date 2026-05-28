@@ -16,6 +16,7 @@ export class StoresCollectionResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/stores", {  }),
+      pathTemplate: "/stores",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -25,6 +26,7 @@ export class StoresCollectionResource {
     const result = await this.client.request<components["schemas"]["Store-store.read"]>({
       method: "POST",
       path: pathWithParams("/stores", {  }),
+      pathTemplate: "/stores",
       body,
     });
     return result.data;
@@ -34,6 +36,7 @@ export class StoresCollectionResource {
     const result = await this.client.request<components["schemas"]["Store-store.read"]>({
       method: "GET",
       path: pathWithParams("/stores/{resourceId}", { resourceId: resourceId }),
+      pathTemplate: "/stores/{resourceId}",
     });
     return result.data;
   }
@@ -42,6 +45,7 @@ export class StoresCollectionResource {
     const result = await this.client.request<components["schemas"]["Store-store.read"]>({
       method: "PUT",
       path: pathWithParams("/stores/{resourceId}", { resourceId: resourceId }),
+      pathTemplate: "/stores/{resourceId}",
       body,
     });
     return result.data;
@@ -51,6 +55,7 @@ export class StoresCollectionResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/stores/{resourceId}", { resourceId: resourceId }),
+      pathTemplate: "/stores/{resourceId}",
     });
     return;
   }

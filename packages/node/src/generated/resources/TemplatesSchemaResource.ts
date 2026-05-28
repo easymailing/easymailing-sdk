@@ -15,6 +15,7 @@ export class TemplatesSchemaResource {
     const result = await this.client.request<components["schemas"]["TemplateSchema"]>({
       method: "GET",
       path: pathWithParams("/templates_schema", {  }),
+      pathTemplate: "/templates_schema",
     });
     return result.data;
   }

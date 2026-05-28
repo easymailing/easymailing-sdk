@@ -23,13 +23,13 @@ final class WebhookConfigsWebhookRequestsResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/webhooks/{webhookUuid}/webhook_requests', ['webhookUuid' => $this->boundParams['webhookUuid'] ?? null]), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/webhooks/{webhookUuid}/webhook_requests', ['webhookUuid' => $this->boundParams['webhookUuid'] ?? null]), query: $query, pathTemplate: '/webhooks/{webhookUuid}/webhook_requests');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\WebhookRequest_webhook_request_read => \Easymailing\Sdk\Generated\Dto\WebhookRequest_webhook_request_read::fromArray($item));
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\WebhookRequest_webhook_request_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/webhooks/{webhookUuid}/webhook_requests/{uuid}', ['webhookUuid' => $this->boundParams['webhookUuid'] ?? null, 'uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/webhooks/{webhookUuid}/webhook_requests/{uuid}', ['webhookUuid' => $this->boundParams['webhookUuid'] ?? null, 'uuid' => $uuid]), pathTemplate: '/webhooks/{webhookUuid}/webhook_requests/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\WebhookRequest_webhook_request_read::fromArray($data);
     }

@@ -16,6 +16,7 @@ export class WebhookConfigsCollectionResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/webhooks", {  }),
+      pathTemplate: "/webhooks",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -25,6 +26,7 @@ export class WebhookConfigsCollectionResource {
     const result = await this.client.request<components["schemas"]["Webhook-webhook.read"]>({
       method: "POST",
       path: pathWithParams("/webhooks", {  }),
+      pathTemplate: "/webhooks",
       body,
     });
     return result.data;
@@ -34,6 +36,7 @@ export class WebhookConfigsCollectionResource {
     const result = await this.client.request<components["schemas"]["Webhook-webhook.read"]>({
       method: "GET",
       path: pathWithParams("/webhooks/{uuid}", { uuid: uuid }),
+      pathTemplate: "/webhooks/{uuid}",
     });
     return result.data;
   }
@@ -42,6 +45,7 @@ export class WebhookConfigsCollectionResource {
     const result = await this.client.request<components["schemas"]["Webhook-webhook.read"]>({
       method: "PUT",
       path: pathWithParams("/webhooks/{uuid}", { uuid: uuid }),
+      pathTemplate: "/webhooks/{uuid}",
       body,
     });
     return result.data;
@@ -51,6 +55,7 @@ export class WebhookConfigsCollectionResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/webhooks/{uuid}", { uuid: uuid }),
+      pathTemplate: "/webhooks/{uuid}",
     });
     return;
   }

@@ -20,7 +20,7 @@ final class AutomationsResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/automations', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/automations', []), query: $query, pathTemplate: '/automations');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Automation_automation_read => \Easymailing\Sdk\Generated\Dto\Automation_automation_read::fromArray($item));
     }
 
@@ -29,14 +29,14 @@ final class AutomationsResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Automation_automation_write $body): \Easymailing\Sdk\Generated\Dto\Automation_automation_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/automations', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/automations', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Automation_automation_read::fromArray($data);
     }
 
     public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\Automation_automation_read_automation_read_detail
     {
-        $result = $this->client->request('GET', $this->resolvePath('/automations/{uuid}', ['uuid' => $uuid]));
+        $result = $this->client->request('GET', $this->resolvePath('/automations/{uuid}', ['uuid' => $uuid]), pathTemplate: '/automations/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Automation_automation_read_automation_read_detail::fromArray($data);
     }
@@ -46,26 +46,26 @@ final class AutomationsResource extends AbstractResource
      */
     public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Automation_automation_write $body): \Easymailing\Sdk\Generated\Dto\Automation_automation_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Automation_automation_read::fromArray($data);
     }
 
     public function delete(string $uuid): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/automations/{uuid}', ['uuid' => $uuid]));
+        $this->client->request('DELETE', $this->resolvePath('/automations/{uuid}', ['uuid' => $uuid]), pathTemplate: '/automations/{uuid}');
     }
 
     public function activate(string $uuid): \Easymailing\Sdk\Generated\Dto\Automation_automation_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{uuid}/actions/activate', ['uuid' => $uuid]));
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{uuid}/actions/activate', ['uuid' => $uuid]), pathTemplate: '/automations/{uuid}/actions/activate');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Automation_automation_read::fromArray($data);
     }
 
     public function pause(string $uuid): \Easymailing\Sdk\Generated\Dto\Automation_automation_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/automations/{uuid}/actions/pause', ['uuid' => $uuid]));
+        $result = $this->client->request('PUT', $this->resolvePath('/automations/{uuid}/actions/pause', ['uuid' => $uuid]), pathTemplate: '/automations/{uuid}/actions/pause');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Automation_automation_read::fromArray($data);
     }

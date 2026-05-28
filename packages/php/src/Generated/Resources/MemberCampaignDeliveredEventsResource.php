@@ -16,7 +16,7 @@ final class MemberCampaignDeliveredEventsResource extends AbstractResource
 
     public function get(): \Easymailing\Sdk\Generated\Dto\MemberCampaignDeliveredEvent
     {
-        $result = $this->client->request('GET', $this->resolvePath('/member_campaign_delivered_events', []));
+        $result = $this->client->request('GET', $this->resolvePath('/member_campaign_delivered_events', []), pathTemplate: '/member_campaign_delivered_events');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\MemberCampaignDeliveredEvent::fromArray($data);
     }

@@ -20,7 +20,7 @@ final class StoresResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/stores', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/stores', []), query: $query, pathTemplate: '/stores');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Store_store_read => \Easymailing\Sdk\Generated\Dto\Store_store_read::fromArray($item));
     }
 
@@ -29,14 +29,14 @@ final class StoresResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Store_store_create $body): \Easymailing\Sdk\Generated\Dto\Store_store_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/stores', []), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/stores', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/stores');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Store_store_read::fromArray($data);
     }
 
     public function get(string $resourceId): \Easymailing\Sdk\Generated\Dto\Store_store_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/stores/{resourceId}', ['resourceId' => $resourceId]));
+        $result = $this->client->request('GET', $this->resolvePath('/stores/{resourceId}', ['resourceId' => $resourceId]), pathTemplate: '/stores/{resourceId}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Store_store_read::fromArray($data);
     }
@@ -46,14 +46,14 @@ final class StoresResource extends AbstractResource
      */
     public function update(string $resourceId, array|\Easymailing\Sdk\Generated\Dto\Store_store_update $body): \Easymailing\Sdk\Generated\Dto\Store_store_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/stores/{resourceId}', ['resourceId' => $resourceId]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/stores/{resourceId}', ['resourceId' => $resourceId]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/stores/{resourceId}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Store_store_read::fromArray($data);
     }
 
     public function delete(string $resourceId): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/stores/{resourceId}', ['resourceId' => $resourceId]));
+        $this->client->request('DELETE', $this->resolvePath('/stores/{resourceId}', ['resourceId' => $resourceId]), pathTemplate: '/stores/{resourceId}');
     }
 
 }

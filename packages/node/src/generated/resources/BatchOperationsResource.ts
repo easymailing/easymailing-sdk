@@ -15,6 +15,7 @@ export class BatchOperationsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/batch_operations", {  }),
+      pathTemplate: "/batch_operations",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class BatchOperationsResource {
     const result = await this.client.request<components["schemas"]["BatchOperation-batch_operation.read"]>({
       method: "POST",
       path: pathWithParams("/batch_operations", {  }),
+      pathTemplate: "/batch_operations",
       body,
     });
     return result.data;
@@ -33,6 +35,7 @@ export class BatchOperationsResource {
     const result = await this.client.request<components["schemas"]["BatchOperation-batch_operation.read"]>({
       method: "GET",
       path: pathWithParams("/batch_operations/{uuid}", { uuid: uuid }),
+      pathTemplate: "/batch_operations/{uuid}",
     });
     return result.data;
   }
@@ -41,6 +44,7 @@ export class BatchOperationsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/batch_operations/{uuid}", { uuid: uuid }),
+      pathTemplate: "/batch_operations/{uuid}",
     });
     return;
   }
@@ -49,6 +53,7 @@ export class BatchOperationsResource {
     const result = await this.client.request<components["schemas"]["BatchOperationResource"]>({
       method: "PUT",
       path: pathWithParams("/batch_operations/{uuid}/actions/regenerate_response_body_url", { uuid: uuid }),
+      pathTemplate: "/batch_operations/{uuid}/actions/regenerate_response_body_url",
     });
     return result.data;
   }
@@ -57,6 +62,7 @@ export class BatchOperationsResource {
     const result = await this.client.request<components["schemas"]["BatchOperationResource.BatchOperationErrorsResource-batch_operation_errors.read"]>({
       method: "GET",
       path: pathWithParams("/batch_operations/{uuid}/errors", { uuid: uuid }),
+      pathTemplate: "/batch_operations/{uuid}/errors",
     });
     return result.data;
   }

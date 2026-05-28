@@ -20,7 +20,7 @@ final class ThemeIndustriesResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/theme_industries', []), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/theme_industries', []), query: $query, pathTemplate: '/theme_industries');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\ThemeIndustry_theme_industry_read => \Easymailing\Sdk\Generated\Dto\ThemeIndustry_theme_industry_read::fromArray($item));
     }
 

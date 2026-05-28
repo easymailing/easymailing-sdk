@@ -16,6 +16,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/members", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/members",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -25,6 +26,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/members", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/members",
       query: query as Record<string, string | number | boolean> | undefined,
       body,
     });
@@ -35,6 +37,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}",
     });
     return result.data;
   }
@@ -43,6 +46,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}",
       body,
     });
     return result.data;
@@ -52,6 +56,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}",
     });
     return;
   }
@@ -60,6 +65,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}/actions/add_to_group/{groupUuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid, groupUuid: groupUuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}/actions/add_to_group/{groupUuid}",
     });
     return result.data;
   }
@@ -68,6 +74,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}/actions/remove_from_group/{groupUuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid, groupUuid: groupUuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}/actions/remove_from_group/{groupUuid}",
     });
     return result.data;
   }
@@ -76,6 +83,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}/actions/subscribe", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}/actions/subscribe",
       body,
     });
     return result.data;
@@ -85,6 +93,7 @@ export class AudiencesMembersCollectionResource {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}/actions/unsubscribe", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/members/{uuid}/actions/unsubscribe",
       body,
     });
     return result.data;

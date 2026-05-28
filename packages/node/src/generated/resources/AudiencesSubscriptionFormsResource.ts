@@ -15,6 +15,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms",
       query: query as Record<string, string | number | boolean> | undefined,
     });
     return toPage(result);
@@ -24,6 +25,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}",
     });
     return result.data;
   }
@@ -32,6 +34,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<unknown>({
       method: "DELETE",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}",
     });
     return;
   }
@@ -40,6 +43,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/pause", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/pause",
     });
     return result.data;
   }
@@ -48,6 +52,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/publish", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/publish",
     });
     return result.data;
   }
@@ -56,6 +61,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/resume", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/resume",
     });
     return result.data;
   }
@@ -64,6 +70,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/unpublish", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/actions/unpublish",
     });
     return result.data;
   }
@@ -72,6 +79,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/embedded", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/embedded",
       body,
     });
     return result.data;
@@ -81,6 +89,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/popup", { audienceUuid: this.boundParams["audienceUuid"]! }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/popup",
       body,
     });
     return result.data;
@@ -90,6 +99,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm.PublishingInfoDto-suscription_form.read"]>({
       method: "GET",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/publishing_info", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/publishing_info",
     });
     return result.data;
   }
@@ -98,6 +108,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/embedded", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/embedded",
       body,
     });
     return result.data;
@@ -107,6 +118,7 @@ export class AudiencesSubscriptionFormsResource {
     const result = await this.client.request<components["schemas"]["SuscriptionForm-suscription_form.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/suscription_forms/{uuid}/popup", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
+      pathTemplate: "/audiences/{audienceUuid}/suscription_forms/{uuid}/popup",
       body,
     });
     return result.data;

@@ -23,7 +23,7 @@ final class StoresProductsResource extends AbstractResource
      */
     public function list(?array $query = null): Page
     {
-        $result = $this->client->request('GET', $this->resolvePath('/stores/{storeResourceId}/products', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null]), query: $query);
+        $result = $this->client->request('GET', $this->resolvePath('/stores/{storeResourceId}/products', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null]), query: $query, pathTemplate: '/stores/{storeResourceId}/products');
         return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\Product_product_read => \Easymailing\Sdk\Generated\Dto\Product_product_read::fromArray($item));
     }
 
@@ -32,14 +32,14 @@ final class StoresProductsResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Product_product_create $body): \Easymailing\Sdk\Generated\Dto\Product_product_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/stores/{storeResourceId}/products', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('POST', $this->resolvePath('/stores/{storeResourceId}/products', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/stores/{storeResourceId}/products');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Product_product_read::fromArray($data);
     }
 
     public function get(string $resourceId): \Easymailing\Sdk\Generated\Dto\Product_product_read
     {
-        $result = $this->client->request('GET', $this->resolvePath('/stores/{storeResourceId}/products/{resourceId}', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null, 'resourceId' => $resourceId]));
+        $result = $this->client->request('GET', $this->resolvePath('/stores/{storeResourceId}/products/{resourceId}', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null, 'resourceId' => $resourceId]), pathTemplate: '/stores/{storeResourceId}/products/{resourceId}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Product_product_read::fromArray($data);
     }
@@ -49,14 +49,14 @@ final class StoresProductsResource extends AbstractResource
      */
     public function update(string $resourceId, array|\Easymailing\Sdk\Generated\Dto\Product_product_update $body): \Easymailing\Sdk\Generated\Dto\Product_product_read
     {
-        $result = $this->client->request('PUT', $this->resolvePath('/stores/{storeResourceId}/products/{resourceId}', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null, 'resourceId' => $resourceId]), body: is_array($body) ? $body : $body->toArray());
+        $result = $this->client->request('PUT', $this->resolvePath('/stores/{storeResourceId}/products/{resourceId}', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null, 'resourceId' => $resourceId]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/stores/{storeResourceId}/products/{resourceId}');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Product_product_read::fromArray($data);
     }
 
     public function delete(string $resourceId): void
     {
-        $this->client->request('DELETE', $this->resolvePath('/stores/{storeResourceId}/products/{resourceId}', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null, 'resourceId' => $resourceId]));
+        $this->client->request('DELETE', $this->resolvePath('/stores/{storeResourceId}/products/{resourceId}', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null, 'resourceId' => $resourceId]), pathTemplate: '/stores/{storeResourceId}/products/{resourceId}');
     }
 
 }

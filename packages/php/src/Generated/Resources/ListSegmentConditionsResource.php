@@ -16,7 +16,7 @@ final class ListSegmentConditionsResource extends AbstractResource
 
     public function get(): \Easymailing\Sdk\Generated\Dto\ListSegmentCondition
     {
-        $result = $this->client->request('GET', $this->resolvePath('/list_segment_conditions', []));
+        $result = $this->client->request('GET', $this->resolvePath('/list_segment_conditions', []), pathTemplate: '/list_segment_conditions');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\ListSegmentCondition::fromArray($data);
     }
