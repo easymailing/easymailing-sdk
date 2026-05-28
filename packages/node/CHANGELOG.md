@@ -1,5 +1,20 @@
 # @easymailing/sdk
 
+## 0.4.1
+
+### Patch Changes
+
+- [`f760723`](https://github.com/easymailing/easymailing-sdk/commit/f76072375cb3e281c42e00f1732ca8e935981a9c) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Refresh README with current API surface: documents Hydra `iri`/`uuid`
+  fields, the full telemetry events catalogue (`onEvent` + `diagnostics_channel`,
+  event types table, `requestId` correlation, `pathTemplate` for
+  cardinality-safe metrics), Content-Type auto-injection, fixes the
+  stale install instructions (no `@alpha` dist-tag), corrects the ESM-only
+  note (the package was never CJS), and replaces dead `docs/superpowers/`
+  Status pointers with a Changelog section.
+
+  No code changes — patch release exists so npm renders the up-to-date
+  README on the package page.
+
 ## 0.4.0
 
 ### Minor Changes
