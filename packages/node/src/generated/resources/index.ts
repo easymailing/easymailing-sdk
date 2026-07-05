@@ -13,6 +13,7 @@ export * from "./AudiencesMembersScopedResource.js";
 export * from "./AudiencesMembersActivitiesResource.js";
 export * from "./AudiencesMergeTagsResource.js";
 export * from "./AudiencesSubscriptionFormsResource.js";
+export * from "./AudiencesSurveysResource.js";
 export * from "./AutomationsResource.js";
 export * from "./AutomationsScopedResource.js";
 export * from "./AutomationsAutomationQueuesResource.js";

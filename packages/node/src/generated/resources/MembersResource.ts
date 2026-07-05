@@ -11,7 +11,7 @@ export class MembersResource {
     protected readonly boundParams: Record<string, string> = {},
   ) {}
 
-  async search(query?: NonNullable<operations["search_member_by_email"]["parameters"]["query"]>): Promise<Page<components["schemas"]["Member-member.read"]>> {
+  async search(query?: NonNullable<operations["search_member"]["parameters"]["query"]>): Promise<Page<components["schemas"]["Member-member.read"]>> {
     const result = await this.client.request<unknown>({
       method: "GET",
       path: pathWithParams("/members/search", {  }),

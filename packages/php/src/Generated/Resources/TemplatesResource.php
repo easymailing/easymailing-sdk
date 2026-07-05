@@ -56,6 +56,16 @@ final class TemplatesResource extends AbstractResource
         $this->client->request('DELETE', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), pathTemplate: '/templates/{uuid}');
     }
 
+    /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Template_CreateTemplateFromBeeSessionInput_template_write_from_bee_session $body
+     */
+    public function fromBeeSession(array|\Easymailing\Sdk\Generated\Dto\Template_CreateTemplateFromBeeSessionInput_template_write_from_bee_session $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
+    {
+        $result = $this->client->request('POST', $this->resolvePath('/templates/actions/from_bee_session', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates/actions/from_bee_session');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\Template_template_read::fromArray($data);
+    }
+
     public function regenerateSimpleJson(string $uuid): \Easymailing\Sdk\Generated\Dto\Template_template_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/templates/{uuid}/actions/regenerate_simple_json', ['uuid' => $uuid]), pathTemplate: '/templates/{uuid}/actions/regenerate_simple_json');

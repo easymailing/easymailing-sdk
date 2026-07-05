@@ -23,7 +23,7 @@ operations:
   create_campaign_test_ab_template:
     resource: campaigns
     method: createTestAbTemplate
-  search_member_by_email:
+  search_member:
     resource: members
     method: search
   import_order:

@@ -15,6 +15,7 @@ final class AudiencesScopedResource
     public readonly AudiencesMembersResource $members;
     public readonly AudiencesMergeTagsResource $mergeTags;
     public readonly AudiencesSubscriptionFormsResource $subscriptionForms;
+    public readonly AudiencesSurveysResource $surveys;
 
     public function __construct(
         private readonly \Easymailing\Sdk\Easymailing $client,
@@ -27,6 +28,7 @@ final class AudiencesScopedResource
         $this->members = new AudiencesMembersResource($client, ['audienceUuid' => $this->audienceUuid]);
         $this->mergeTags = new AudiencesMergeTagsResource($client, ['audienceUuid' => $this->audienceUuid]);
         $this->subscriptionForms = new AudiencesSubscriptionFormsResource($client, ['audienceUuid' => $this->audienceUuid]);
+        $this->surveys = new AudiencesSurveysResource($client, ['audienceUuid' => $this->audienceUuid]);
     }
 
     public function members(string $memberUuid): AudiencesMembersScopedResource
