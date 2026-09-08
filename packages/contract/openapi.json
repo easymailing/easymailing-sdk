@@ -8132,6 +8132,14 @@
               "null"
             ]
           },
+          "survey": {
+            "description": "Uuid of the survey linked to this survey campaign (null for other campaign types or when no survey is selected yet). Use get_survey with the campaign audience for details.",
+            "format": "uuid",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "template": {
             "description": "Template",
             "example": "/templates/0df14405-90ff-4287-b3e4-ef088901ee6f",
@@ -8510,6 +8518,104 @@
         ],
         "type": "object"
       },
+      "Campaign.CampaignSelectSurveyInput-campaign.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "survey": {
+            "description": "Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.",
+            "externalDocs": {
+              "url": "https://schema.org/identifier"
+            },
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "survey"
+        ],
+        "type": "object"
+      },
+      "Campaign.CampaignSelectSurveyInput.jsonld-campaign.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "survey": {
+            "description": "Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.",
+            "externalDocs": {
+              "url": "https://schema.org/identifier"
+            },
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "survey"
+        ],
+        "type": "object"
+      },
+      "Campaign.CampaignSelectSurveyOutput-campaign.read": {
+        "deprecated": false,
+        "description": "Email campaign response. SMS campaigns are exposed separately under /sms_campaigns.",
+        "properties": {
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "survey": {
+            "description": "Uuid of the linked survey",
+            "format": "uuid",
+            "type": "string"
+          },
+          "template_has_survey_block": {
+            "description": "Whether the campaign template now carries the survey email block ({{ block.poll.<uuid> }})",
+            "type": "boolean"
+          },
+          "uuid": {
+            "description": "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+            "type": "string"
+          },
+          "warning": {
+            "description": "Actionable warning when the template was left untouched (own template without the survey block)",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
+      "Campaign.CampaignSelectSurveyOutput.jsonld-campaign.read": {
+        "deprecated": false,
+        "description": "Email campaign response. SMS campaigns are exposed separately under /sms_campaigns.",
+        "properties": {
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "survey": {
+            "description": "Uuid of the linked survey",
+            "format": "uuid",
+            "type": "string"
+          },
+          "template_has_survey_block": {
+            "description": "Whether the campaign template now carries the survey email block ({{ block.poll.<uuid> }})",
+            "type": "boolean"
+          },
+          "uuid": {
+            "description": "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+            "type": "string"
+          },
+          "warning": {
+            "description": "Actionable warning when the template was left untouched (own template without the survey block)",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      },
       "Campaign.CampaignSendInput-campaign.write_schedule": {
         "deprecated": false,
         "description": "",
@@ -8655,6 +8761,198 @@
         },
         "required": [
           "emails"
+        ],
+        "type": "object"
+      },
+      "Campaign.CampaignSurveyInput-campaign.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "audience": {
+            "description": "Audience IRI",
+            "example": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "campaign_config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CampaignConfig-campaign.write"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Campaign configuration - included in ALL campaign types."
+          },
+          "email_config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmailConfig-campaign.write"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Email configuration - included in ALL campaign types\nNote: The fields inside emailConfig have their own group restrictions."
+          },
+          "groups": {
+            "description": "Groups IRIs (required when sendTo is send_to_groups)",
+            "items": {
+              "example": "/audiences/{uuid}/groups/{uuid}",
+              "format": "iri-reference",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "list_segment": {
+            "description": "List segment IRI (required when sendTo is send_to_segment)",
+            "example": "/audiences/{uuid}/segments/{uuid}",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "send_to": {
+            "description": "Who to send the campaign to",
+            "enum": [
+              "send_to_all",
+              "send_to_groups",
+              "send_to_segment"
+            ],
+            "type": "string"
+          },
+          "survey": {
+            "description": "Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.",
+            "externalDocs": {
+              "url": "https://schema.org/identifier"
+            },
+            "format": "uuid",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "template": {
+            "description": "Template IRI",
+            "example": "/templates/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "template_html": {
+            "description": "Template HTML content",
+            "type": "string"
+          },
+          "template_simple_json_code": {
+            "description": "Simple JSON structure for BeeEditor templates",
+            "type": "object"
+          },
+          "title": {
+            "description": "Campaign title",
+            "example": "My awesome campaign",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email_config",
+          "campaign_config",
+          "title",
+          "audience",
+          "send_to"
+        ],
+        "type": "object"
+      },
+      "Campaign.CampaignSurveyInput.jsonld-campaign.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "audience": {
+            "description": "Audience IRI",
+            "example": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "campaign_config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CampaignConfig.jsonld-campaign.write"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Campaign configuration - included in ALL campaign types."
+          },
+          "email_config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EmailConfig.jsonld-campaign.write"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Email configuration - included in ALL campaign types\nNote: The fields inside emailConfig have their own group restrictions."
+          },
+          "groups": {
+            "description": "Groups IRIs (required when sendTo is send_to_groups)",
+            "items": {
+              "example": "/audiences/{uuid}/groups/{uuid}",
+              "format": "iri-reference",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "list_segment": {
+            "description": "List segment IRI (required when sendTo is send_to_segment)",
+            "example": "/audiences/{uuid}/segments/{uuid}",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "send_to": {
+            "description": "Who to send the campaign to",
+            "enum": [
+              "send_to_all",
+              "send_to_groups",
+              "send_to_segment"
+            ],
+            "type": "string"
+          },
+          "survey": {
+            "description": "Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.",
+            "externalDocs": {
+              "url": "https://schema.org/identifier"
+            },
+            "format": "uuid",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "template": {
+            "description": "Template IRI",
+            "example": "/templates/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "template_html": {
+            "description": "Template HTML content",
+            "type": "string"
+          },
+          "template_simple_json_code": {
+            "description": "Simple JSON structure for BeeEditor templates",
+            "type": "object"
+          },
+          "title": {
+            "description": "Campaign title",
+            "example": "My awesome campaign",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email_config",
+          "campaign_config",
+          "title",
+          "audience",
+          "send_to"
         ],
         "type": "object"
       },
@@ -9710,6 +10008,14 @@
           },
           "status": {
             "$ref": "#/components/schemas/CampaignStatus",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "survey": {
+            "description": "Uuid of the survey linked to this survey campaign (null for other campaign types or when no survey is selected yet). Use get_survey with the campaign audience for details.",
+            "format": "uuid",
             "type": [
               "string",
               "null"
@@ -12007,12 +12313,13 @@
         "type": "object"
       },
       "CampaignType": {
-        "description": "Campaign status:\n* `campaign.regular` - Regular campaign\n* `campaign.test.ab` - A/B Test campaign\n* `campaign.automation` - Automation campaign\n* `campaign.revalidation` - Revalidation campaign",
+        "description": "Campaign status:\n* `campaign.regular` - Regular campaign\n* `campaign.test.ab` - A/B Test campaign\n* `campaign.automation` - Automation campaign\n* `campaign.revalidation` - Revalidation campaign\n* `campaign.survey` - Survey campaign",
         "enum": [
           "campaign.regular",
           "campaign.test.ab",
           "campaign.automation",
-          "campaign.revalidation"
+          "campaign.revalidation",
+          "campaign.survey"
         ],
         "type": "string"
       },
@@ -29467,6 +29774,862 @@
         },
         "type": "object"
       },
+      "Survey-survey.read": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "audience": {
+            "example": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Date & Time resource created",
+            "format": "date-time",
+            "type": "string"
+          },
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale of the public pages of the survey",
+            "example": "es",
+            "type": "string"
+          },
+          "name": {
+            "description": "Survey name",
+            "example": "Newsletter feedback",
+            "type": "string"
+          },
+          "redirect_url": {
+            "description": "Optional URL the respondent is redirected to after answering (instead of the thank-you page)",
+            "format": "uri",
+            "type": "string"
+          },
+          "show_results": {
+            "description": "Whether respondents can see the aggregated results page after answering",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.",
+            "enum": [
+              "draft",
+              "active",
+              "closed"
+            ],
+            "type": "string"
+          },
+          "type": {
+            "description": "Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)",
+            "enum": [
+              "poll",
+              "page"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Date & Time resource updated",
+            "format": "date-time",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Resource UUID",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Survey-survey.read_survey.read.detail": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "audience": {
+            "example": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Date & Time resource created",
+            "format": "date-time",
+            "type": "string"
+          },
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale of the public pages of the survey",
+            "example": "es",
+            "type": "string"
+          },
+          "name": {
+            "description": "Survey name",
+            "example": "Newsletter feedback",
+            "type": "string"
+          },
+          "public_url": {
+            "description": "Public URL of the multi-question page (only for active `page` surveys; null otherwise)",
+            "format": "uri",
+            "type": "string"
+          },
+          "questions": {
+            "description": "Questions ordered by position",
+            "items": {
+              "properties": {
+                "display": {
+                  "description": "Visual presentation (cosmetic only): smileys renders the 1-5 rating as emoji faces; icons renders rating faces or yes_no thumbs as app icons (emails always fall back to emojis)",
+                  "enum": [
+                    "default",
+                    "smileys",
+                    "icons"
+                  ],
+                  "type": "string"
+                },
+                "options": {
+                  "items": {
+                    "properties": {
+                      "position": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "uuid": {
+                        "format": "uuid",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "position": {
+                  "type": "integer"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "single_choice",
+                    "multiple_choice",
+                    "yes_no",
+                    "rating",
+                    "nps",
+                    "text"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "redirect_url": {
+            "description": "Optional URL the respondent is redirected to after answering (instead of the thank-you page)",
+            "format": "uri",
+            "type": "string"
+          },
+          "show_results": {
+            "description": "Whether respondents can see the aggregated results page after answering",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.",
+            "enum": [
+              "draft",
+              "active",
+              "closed"
+            ],
+            "type": "string"
+          },
+          "type": {
+            "description": "Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)",
+            "enum": [
+              "poll",
+              "page"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Date & Time resource updated",
+            "format": "date-time",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Resource UUID",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Survey.CreateSurveyInput-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "locale": {
+            "description": "Locale of the public pages of the survey (defaults to the app locale when the app has a single language)",
+            "example": "es_ES",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "name": {
+            "description": "Survey name (internal)",
+            "example": "Newsletter feedback",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "questions": {
+            "description": "Questions in display order. A poll takes exactly one question votable with one click from the email (single_choice, yes_no, rating or nps); a page survey takes any number of questions of any type.",
+            "items": {
+              "$ref": "#/components/schemas/SurveyQuestionInput-survey.write"
+            },
+            "type": "array"
+          },
+          "type": {
+            "description": "Survey type: `poll` (exactly one question voted inline from the email: single_choice, yes_no, rating or nps) or `page` (public multi-question page linked from the email)",
+            "enum": [
+              "poll",
+              "page"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "type": "object"
+      },
+      "Survey.CreateSurveyInput.jsonld-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "locale": {
+            "description": "Locale of the public pages of the survey (defaults to the app locale when the app has a single language)",
+            "example": "es_ES",
+            "maxLength": 10,
+            "type": "string"
+          },
+          "name": {
+            "description": "Survey name (internal)",
+            "example": "Newsletter feedback",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "questions": {
+            "description": "Questions in display order. A poll takes exactly one question votable with one click from the email (single_choice, yes_no, rating or nps); a page survey takes any number of questions of any type.",
+            "items": {
+              "$ref": "#/components/schemas/SurveyQuestionInput.jsonld-survey.write"
+            },
+            "type": "array"
+          },
+          "type": {
+            "description": "Survey type: `poll` (exactly one question voted inline from the email: single_choice, yes_no, rating or nps) or `page` (public multi-question page linked from the email)",
+            "enum": [
+              "poll",
+              "page"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "type": "object"
+      },
+      "Survey.SurveyStatsOutput-survey.stats": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "completion_rate": {
+            "description": "Completion rate in percent (only for `page` surveys with at least one started response)",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "identified_responses": {
+            "description": "Completed responses linked to an identified contact",
+            "type": "integer"
+          },
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "last_response_at": {
+            "description": "Date & Time of the last completed response",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "poll_winner": {
+            "description": "Most voted option of the poll ({text, percent}; null without votes or for `page` surveys)",
+            "properties": {
+              "percent": {
+                "type": "integer"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "questions": {
+            "description": "Aggregates per question, ordered by position. Choice questions (single_choice / multiple_choice / yes_no) carry total_votes and options[{text, votes, percent}] — in yes_no the first option is the 👍 answer and the second the 👎 one; rating questions carry average (1 decimal, null without answers), distribution (1..5) and total_ratings; nps questions carry nps_score (-100..100, null without answers), detractors (0-6), passives (7-8), promoters (9-10), average, distribution (0..10) and total_ratings; text questions carry total_texts only (individual answers are not exposed).",
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "responses_by_campaign": {
+            "description": "Completed responses grouped by the campaign that brought them (campaign null for answers outside a campaign)",
+            "items": {
+              "properties": {
+                "campaign_title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "campaign_uuid": {
+                  "format": "uuid",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "responses": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "responses_last_seven_days": {
+            "description": "Completed responses in the last 7 days",
+            "type": "integer"
+          },
+          "started_not_completed": {
+            "description": "Responses started but not completed (only for `page` surveys; null for polls)",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "total_responses": {
+            "description": "Completed human responses",
+            "type": "integer"
+          },
+          "uuid": {
+            "description": "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Survey.SurveyStatsOutput.jsonld-survey.stats": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "completion_rate": {
+            "description": "Completion rate in percent (only for `page` surveys with at least one started response)",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "identified_responses": {
+            "description": "Completed responses linked to an identified contact",
+            "type": "integer"
+          },
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "last_response_at": {
+            "description": "Date & Time of the last completed response",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "poll_winner": {
+            "description": "Most voted option of the poll ({text, percent}; null without votes or for `page` surveys)",
+            "properties": {
+              "percent": {
+                "type": "integer"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "questions": {
+            "description": "Aggregates per question, ordered by position. Choice questions (single_choice / multiple_choice / yes_no) carry total_votes and options[{text, votes, percent}] — in yes_no the first option is the 👍 answer and the second the 👎 one; rating questions carry average (1 decimal, null without answers), distribution (1..5) and total_ratings; nps questions carry nps_score (-100..100, null without answers), detractors (0-6), passives (7-8), promoters (9-10), average, distribution (0..10) and total_ratings; text questions carry total_texts only (individual answers are not exposed).",
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "responses_by_campaign": {
+            "description": "Completed responses grouped by the campaign that brought them (campaign null for answers outside a campaign)",
+            "items": {
+              "properties": {
+                "campaign_title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "campaign_uuid": {
+                  "format": "uuid",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "responses": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "responses_last_seven_days": {
+            "description": "Completed responses in the last 7 days",
+            "type": "integer"
+          },
+          "started_not_completed": {
+            "description": "Responses started but not completed (only for `page` surveys; null for polls)",
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "total_responses": {
+            "description": "Completed human responses",
+            "type": "integer"
+          },
+          "uuid": {
+            "description": "Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Survey.UpdateSurveyInput-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "name": {
+            "description": "Survey name (internal)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "questions": {
+            "description": "Full replacement of the question set, in display order (only while the survey is in draft). Omit to keep the current questions.",
+            "items": {
+              "$ref": "#/components/schemas/SurveyQuestionInput-survey.write"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "redirect_url": {
+            "description": "URL the respondent is redirected to after answering. Send an empty string to remove it.",
+            "format": "uri",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "show_results": {
+            "description": "Whether respondents can see the aggregated results page after answering",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Survey.UpdateSurveyInput.jsonld-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "name": {
+            "description": "Survey name (internal)",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "questions": {
+            "description": "Full replacement of the question set, in display order (only while the survey is in draft). Omit to keep the current questions.",
+            "items": {
+              "$ref": "#/components/schemas/SurveyQuestionInput.jsonld-survey.write"
+            },
+            "type": [
+              "array",
+              "null"
+            ]
+          },
+          "redirect_url": {
+            "description": "URL the respondent is redirected to after answering. Send an empty string to remove it.",
+            "format": "uri",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "show_results": {
+            "description": "Whether respondents can see the aggregated results page after answering",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Survey.jsonld-survey.read": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "audience": {
+            "example": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Date & Time resource created",
+            "format": "date-time",
+            "type": "string"
+          },
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale of the public pages of the survey",
+            "example": "es",
+            "type": "string"
+          },
+          "name": {
+            "description": "Survey name",
+            "example": "Newsletter feedback",
+            "type": "string"
+          },
+          "redirect_url": {
+            "description": "Optional URL the respondent is redirected to after answering (instead of the thank-you page)",
+            "format": "uri",
+            "type": "string"
+          },
+          "show_results": {
+            "description": "Whether respondents can see the aggregated results page after answering",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.",
+            "enum": [
+              "draft",
+              "active",
+              "closed"
+            ],
+            "type": "string"
+          },
+          "type": {
+            "description": "Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)",
+            "enum": [
+              "poll",
+              "page"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Date & Time resource updated",
+            "format": "date-time",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Resource UUID",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Survey.jsonld-survey.read_survey.read.detail": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "audience": {
+            "example": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "iri-reference",
+            "type": "string"
+          },
+          "created_at": {
+            "description": "Date & Time resource created",
+            "format": "date-time",
+            "type": "string"
+          },
+          "iri": {
+            "description": "Hydra IRI for this entity (e.g. \"/audiences/01HXXXX...\"). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships.",
+            "type": "string"
+          },
+          "locale": {
+            "description": "Locale of the public pages of the survey",
+            "example": "es",
+            "type": "string"
+          },
+          "name": {
+            "description": "Survey name",
+            "example": "Newsletter feedback",
+            "type": "string"
+          },
+          "public_url": {
+            "description": "Public URL of the multi-question page (only for active `page` surveys; null otherwise)",
+            "format": "uri",
+            "type": "string"
+          },
+          "questions": {
+            "description": "Questions ordered by position",
+            "items": {
+              "properties": {
+                "display": {
+                  "description": "Visual presentation (cosmetic only): smileys renders the 1-5 rating as emoji faces; icons renders rating faces or yes_no thumbs as app icons (emails always fall back to emojis)",
+                  "enum": [
+                    "default",
+                    "smileys",
+                    "icons"
+                  ],
+                  "type": "string"
+                },
+                "options": {
+                  "items": {
+                    "properties": {
+                      "position": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "uuid": {
+                        "format": "uuid",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "position": {
+                  "type": "integer"
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "single_choice",
+                    "multiple_choice",
+                    "yes_no",
+                    "rating",
+                    "nps",
+                    "text"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "redirect_url": {
+            "description": "Optional URL the respondent is redirected to after answering (instead of the thank-you page)",
+            "format": "uri",
+            "type": "string"
+          },
+          "show_results": {
+            "description": "Whether respondents can see the aggregated results page after answering",
+            "type": "boolean"
+          },
+          "status": {
+            "description": "Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.",
+            "enum": [
+              "draft",
+              "active",
+              "closed"
+            ],
+            "type": "string"
+          },
+          "type": {
+            "description": "Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)",
+            "enum": [
+              "poll",
+              "page"
+            ],
+            "type": "string"
+          },
+          "updated_at": {
+            "description": "Date & Time resource updated",
+            "format": "date-time",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "Resource UUID",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SurveyOptionInput-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "text": {
+            "description": "Option text shown to the respondent",
+            "example": "Very satisfied",
+            "maxLength": 255,
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "SurveyOptionInput.jsonld-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "text": {
+            "description": "Option text shown to the respondent",
+            "example": "Very satisfied",
+            "maxLength": 255,
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "type": "object"
+      },
+      "SurveyQuestionInput-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "display": {
+            "default": "smileys",
+            "description": "Visual presentation, purely cosmetic (answers and stats are those of the base type). `rating` and `yes_no` always render as faces/thumbs: `smileys` uses emojis (the default) and `icons` uses app icons. `default` is accepted as a legacy value and resolves to `smileys`. Emails always fall back to emojis (email clients strip SVG) — for that reason `icons` is NOT accepted on poll questions (they are voted inside the email; 400 otherwise).",
+            "enum": [
+              "default",
+              "smileys",
+              "icons"
+            ],
+            "type": "string"
+          },
+          "options": {
+            "description": "Answer options in display order (only for single_choice / multiple_choice / yes_no questions; scale types like rating/nps build their own scale). A yes_no question takes exactly two: first = 👍, second = 👎.",
+            "items": {
+              "$ref": "#/components/schemas/SurveyOptionInput-survey.write"
+            },
+            "type": "array"
+          },
+          "required": {
+            "default": true,
+            "description": "Whether the respondent must answer this question (defaults to true)",
+            "type": "boolean"
+          },
+          "text": {
+            "description": "Question text",
+            "example": "How satisfied are you with our newsletter?",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "type": {
+            "description": "Question type. `single_choice` and `multiple_choice` require `options` (2-10); `yes_no` requires EXACTLY two options — the first renders as 👍 and the second as 👎, with customizable texts; `rating` (1-5 scale), `nps` (Net Promoter Score, 0-10 scale) and `text` (open answer) must not have options.",
+            "enum": [
+              "single_choice",
+              "multiple_choice",
+              "yes_no",
+              "rating",
+              "nps",
+              "text"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "type"
+        ],
+        "type": "object"
+      },
+      "SurveyQuestionInput.jsonld-survey.write": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "display": {
+            "default": "smileys",
+            "description": "Visual presentation, purely cosmetic (answers and stats are those of the base type). `rating` and `yes_no` always render as faces/thumbs: `smileys` uses emojis (the default) and `icons` uses app icons. `default` is accepted as a legacy value and resolves to `smileys`. Emails always fall back to emojis (email clients strip SVG) — for that reason `icons` is NOT accepted on poll questions (they are voted inside the email; 400 otherwise).",
+            "enum": [
+              "default",
+              "smileys",
+              "icons"
+            ],
+            "type": "string"
+          },
+          "options": {
+            "description": "Answer options in display order (only for single_choice / multiple_choice / yes_no questions; scale types like rating/nps build their own scale). A yes_no question takes exactly two: first = 👍, second = 👎.",
+            "items": {
+              "$ref": "#/components/schemas/SurveyOptionInput.jsonld-survey.write"
+            },
+            "type": "array"
+          },
+          "required": {
+            "default": true,
+            "description": "Whether the respondent must answer this question (defaults to true)",
+            "type": "boolean"
+          },
+          "text": {
+            "description": "Question text",
+            "example": "How satisfied are you with our newsletter?",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "type": {
+            "description": "Question type. `single_choice` and `multiple_choice` require `options` (2-10); `yes_no` requires EXACTLY two options — the first renders as 👍 and the second as 👎, with customizable texts; `rating` (1-5 scale), `nps` (Net Promoter Score, 0-10 scale) and `text` (open answer) must not have options.",
+            "enum": [
+              "single_choice",
+              "multiple_choice",
+              "yes_no",
+              "rating",
+              "nps",
+              "text"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "type"
+        ],
+        "type": "object"
+      },
       "SuscriberConsent": {
         "deprecated": false,
         "description": "",
@@ -31187,6 +32350,64 @@
         },
         "required": [
           "title"
+        ],
+        "type": "object"
+      },
+      "Template.CreateTemplateFromBeeSessionInput-template.write_from_bee_session": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "bee_template_id": {
+            "description": "Beefree MCP session/template id (the templateId returned when the API-managed session was created).",
+            "example": "a1b2c3d4-...",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "em_template_id": {
+            "description": "UUID of the existing be_editor template to UPDATE. If omitted, a new template is created.",
+            "example": "0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "uuid",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "title": {
+            "description": "Title for the template (used on create; on update only if provided).",
+            "example": "Newsletter junio",
+            "maxLength": 255,
+            "type": "string"
+          }
+        },
+        "required": [
+          "bee_template_id"
+        ],
+        "type": "object"
+      },
+      "Template.CreateTemplateFromBeeSessionInput.jsonld-template.write_from_bee_session": {
+        "deprecated": false,
+        "description": "",
+        "properties": {
+          "bee_template_id": {
+            "description": "Beefree MCP session/template id (the templateId returned when the API-managed session was created).",
+            "example": "a1b2c3d4-...",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "em_template_id": {
+            "description": "UUID of the existing be_editor template to UPDATE. If omitted, a new template is created.",
+            "example": "0df14405-90ff-4287-b3e4-ef088901ee6f",
+            "format": "uuid",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "title": {
+            "description": "Title for the template (used on create; on update only if provided).",
+            "example": "Newsletter junio",
+            "maxLength": 255,
+            "type": "string"
+          }
+        },
+        "required": [
+          "bee_template_id"
         ],
         "type": "object"
       },
@@ -33656,7 +34877,7 @@
         "type": "object"
       },
       "TriggerType": {
-        "description": "Suscriber status:\n* `trigger.admin.manual` - Manual by an admin\n* `trigger.form.completed` - Form completed\n* `trigger.contact.suscribed` - Contact suscribed\n* `trigger.contact.added.to.group` - Contact added to group\n* `trigger.contact.removed.from.group` - Contact removed to group\n* `trigger.send.a.campaign` - Send a campaign\n* `trigger.click.on.campaign` - Click on campaign\n* `trigger.click.on.campaign.link` - Click on campaign link\n* `trigger.not.click.on.campaign` - Not click on campaign\n* `trigger.open.on.campaign` - Open on campaign\n* `trigger.not.open.on.campaign` - Not open on campaign\n* `trigger.specific.date` - Specific date\n* `trigger.aniversary.date` - Aniversary date\n* `trigger.suscription.date` - Suscription date\n* `trigger.buy.a.product` - Buy a product\n* `trigger.time.since.last.purchase` - Time since last purchase\n* `trigger.abandoned.cart` - Abandoned cart\n* `trigger.payment.reminder` - Payment reminder\n* `trigger.order.processed` - Order processed\n* `trigger.order.paid` - Order paid\n* `trigger.order.shipped` - Order shipped\n* `trigger.order.cancelled` - Order canceled\n* `trigger.order.refunded` - Order refunded\n* `trigger.suscriber.revalidation` - Subscriber revalidation",
+        "description": "Suscriber status:\n* `trigger.admin.manual` - Manual by an admin\n* `trigger.form.completed` - Form completed\n* `trigger.contact.suscribed` - Contact suscribed\n* `trigger.contact.added.to.group` - Contact added to group\n* `trigger.contact.removed.from.group` - Contact removed to group\n* `trigger.send.a.campaign` - Send a campaign\n* `trigger.click.on.campaign` - Click on campaign\n* `trigger.click.on.campaign.link` - Click on campaign link\n* `trigger.not.click.on.campaign` - Not click on campaign\n* `trigger.open.on.campaign` - Open on campaign\n* `trigger.not.open.on.campaign` - Not open on campaign\n* `trigger.specific.date` - Specific date\n* `trigger.aniversary.date` - Aniversary date\n* `trigger.suscription.date` - Suscription date\n* `trigger.buy.a.product` - Buy a product\n* `trigger.time.since.last.purchase` - Time since last purchase\n* `trigger.abandoned.cart` - Abandoned cart\n* `trigger.payment.reminder` - Payment reminder\n* `trigger.order.processed` - Order processed\n* `trigger.order.paid` - Order paid\n* `trigger.order.shipped` - Order shipped\n* `trigger.order.cancelled` - Order canceled\n* `trigger.order.refunded` - Order refunded\n* `trigger.suscriber.revalidation` - Subscriber revalidation\n* `trigger.poll.answered` - Survey poll answered",
         "enum": [
           "trigger.admin.manual",
           "trigger.form.completed",
@@ -33682,7 +34903,8 @@
           "trigger.order.shipped",
           "trigger.order.cancelled",
           "trigger.order.refunded",
-          "trigger.suscriber.revalidation"
+          "trigger.suscriber.revalidation",
+          "trigger.poll.answered"
         ],
         "type": "string"
       },
@@ -39389,6 +40611,686 @@
         "summary": "List audience merge tags",
         "tags": [
           "MergeTag"
+        ]
+      }
+    },
+    "/audiences/{audienceUuid}/surveys": {
+      "get": {
+        "deprecated": false,
+        "description": "Returns the surveys of an audience: quick polls (type `poll`, a single question answered inline from the email) and full surveys (type `page`, a public multi-question page). Filterable by `status` (draft | active | closed), `type` and `name`. Use list_audiences first to get the audienceUuid.",
+        "operationId": "list_surveys",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": true,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "The collection page number",
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "type": "integer"
+            },
+            "style": "form"
+          },
+          {
+            "allowEmptyValue": true,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "The number of items per page",
+            "explode": false,
+            "in": "query",
+            "name": "itemsPerPage",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "maximum": 50,
+              "minimum": 0,
+              "type": "integer"
+            },
+            "style": "form"
+          },
+          {
+            "allowEmptyValue": true,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Filter using a query string ",
+            "example": "search query",
+            "explode": false,
+            "in": "query",
+            "name": "name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "allowEmptyValue": true,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Filter using a query string ",
+            "example": "search query",
+            "explode": false,
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "allowEmptyValue": true,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Filter using a query string ",
+            "example": "search query",
+            "explode": false,
+            "in": "query",
+            "name": "type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Survey-survey.read"
+                  },
+                  "type": "array"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "properties": {
+                    "hydra:member": {
+                      "items": {
+                        "$ref": "#/components/schemas/Survey.jsonld-survey.read"
+                      },
+                      "type": "array"
+                    },
+                    "hydra:search": {
+                      "properties": {
+                        "@type": {
+                          "type": "string"
+                        },
+                        "hydra:mapping": {
+                          "items": {
+                            "properties": {
+                              "@type": {
+                                "type": "string"
+                              },
+                              "property": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "required": {
+                                "type": "boolean"
+                              },
+                              "variable": {
+                                "type": "string"
+                              }
+                            },
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "hydra:template": {
+                          "type": "string"
+                        },
+                        "hydra:variableRepresentation": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "hydra:totalItems": {
+                      "minimum": 0,
+                      "type": "integer"
+                    },
+                    "hydra:view": {
+                      "example": {
+                        "@id": "string",
+                        "hydra:first": "string",
+                        "hydra:last": "string",
+                        "hydra:next": "string",
+                        "hydra:previous": "string",
+                        "type": "string"
+                      },
+                      "properties": {
+                        "@id": {
+                          "format": "iri-reference",
+                          "type": "string"
+                        },
+                        "@type": {
+                          "type": "string"
+                        },
+                        "hydra:first": {
+                          "format": "iri-reference",
+                          "type": "string"
+                        },
+                        "hydra:last": {
+                          "format": "iri-reference",
+                          "type": "string"
+                        },
+                        "hydra:next": {
+                          "format": "iri-reference",
+                          "type": "string"
+                        },
+                        "hydra:previous": {
+                          "format": "iri-reference",
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "required": [
+                    "hydra:member"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Survey collection"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "summary": "List surveys of an audience",
+        "tags": [
+          "Survey"
+        ]
+      },
+      "post": {
+        "deprecated": false,
+        "description": "Creates a survey in draft status for the audience. Type `poll` takes exactly one question votable with one click from the email (`single_choice`, `yes_no`, `rating` or `nps`); type `page` takes any number of questions of any type. Questions can also be added later via the update endpoint. Activate the survey (PUT .../actions/activate) before linking it to a campaign. Requires a STARTER plan or higher.",
+        "operationId": "create_survey",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Survey.CreateSurveyInput-survey.write"
+              }
+            },
+            "application/ld+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Survey.CreateSurveyInput.jsonld-survey.write"
+              }
+            }
+          },
+          "description": "The new Survey resource",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey-survey.read_survey.read.detail"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey.jsonld-survey.read_survey.read.detail"
+                }
+              }
+            },
+            "description": "Survey resource created",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Create a survey (draft)",
+        "tags": [
+          "Survey"
+        ]
+      }
+    },
+    "/audiences/{audienceUuid}/surveys/{uuid}": {
+      "delete": {
+        "deprecated": false,
+        "description": "Deletes the survey and all its answers. Active surveys must be closed first (400). Surveys referenced by segments or automations cannot be deleted until they are unlinked (409 with the list). Campaigns that used the survey keep working but lose their survey stats panel.",
+        "operationId": "delete_survey",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Survey resource deleted"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        },
+        "summary": "Delete a survey",
+        "tags": [
+          "Survey"
+        ]
+      },
+      "get": {
+        "deprecated": false,
+        "description": "Returns a survey with its questions and answer options, status, configuration (show results, redirect URL) and, when the survey is an active `page` survey, the public URL of its multi-question page.",
+        "operationId": "get_survey",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey-survey.read_survey.read.detail"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey.jsonld-survey.read_survey.read.detail"
+                }
+              }
+            },
+            "description": "Survey resource"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        },
+        "summary": "Get a survey",
+        "tags": [
+          "Survey"
+        ]
+      },
+      "put": {
+        "deprecated": false,
+        "description": "Updates the survey name and configuration (show_results, redirect_url) in any status. Sending `questions` REPLACES the whole question set and is only allowed while the survey is in draft (questions are immutable once activated).",
+        "operationId": "update_survey",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Survey.UpdateSurveyInput-survey.write"
+              }
+            },
+            "application/ld+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Survey.UpdateSurveyInput.jsonld-survey.write"
+              }
+            }
+          },
+          "description": "The updated Survey resource",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey-survey.read_survey.read.detail"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey.jsonld-survey.read_survey.read.detail"
+                }
+              }
+            },
+            "description": "Survey resource updated",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Update a survey",
+        "tags": [
+          "Survey"
+        ]
+      }
+    },
+    "/audiences/{audienceUuid}/surveys/{uuid}/actions/activate": {
+      "put": {
+        "deprecated": false,
+        "description": "Activates a draft survey so it can be linked to campaigns and answered. Requirements: at least one question; a poll question needs at least two options; on page surveys every choice question needs at least two options. Once activated, questions become immutable.",
+        "operationId": "survey_activate",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "application/ld+json": {
+                "schema": {}
+              }
+            },
+            "description": "Survey resource updated",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Activate a survey",
+        "tags": [
+          "Survey"
+        ]
+      }
+    },
+    "/audiences/{audienceUuid}/surveys/{uuid}/actions/close": {
+      "put": {
+        "deprecated": false,
+        "description": "Closes an active survey: it stops accepting answers. The email block of already-sent campaigns keeps rendering empty and the public page shows the closed state.",
+        "operationId": "survey_close",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "application/ld+json": {
+                "schema": {}
+              }
+            },
+            "description": "Survey resource updated",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Close a survey",
+        "tags": [
+          "Survey"
+        ]
+      }
+    },
+    "/audiences/{audienceUuid}/surveys/{uuid}/stats": {
+      "get": {
+        "deprecated": false,
+        "description": "Returns the aggregated results of a survey: completed responses (human answers only; bot/scanner votes are excluded), completion rate (page surveys), most voted option (polls), responses grouped by campaign, and per-question aggregates. Individual answers are never exposed: open text questions only carry their count.",
+        "operationId": "get_survey_stats",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "audienceUuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Survey identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey.SurveyStatsOutput-survey.stats"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey.SurveyStatsOutput.jsonld-survey.stats"
+                }
+              }
+            },
+            "description": "Survey resource"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          }
+        },
+        "summary": "Get survey statistics",
+        "tags": [
+          "Survey"
         ]
       }
     },
@@ -48879,6 +50781,61 @@
         ]
       }
     },
+    "/campaigns/survey": {
+      "post": {
+        "deprecated": false,
+        "description": "Creates a survey campaign: an email campaign that carries a survey block — a quick poll answered inline from the email, or the first question of a full survey linking to its public page.\n\n**Required fields**: `title`, `audience`, `sendTo`.\n\n**Linking the survey**: pass `survey` (uuid from list_surveys; must be ACTIVE and belong to the campaign audience) to link it on creation — the survey block template is created automatically when the campaign has no template, and the poll question becomes the default subject. You can also link it later with `PUT /campaigns/{uuid}/actions/select_survey`.\n\n**Sending requirement**: the campaign template must contain the email block of the selected survey (`{{ block.poll.<survey_uuid> }}`); sending is blocked until it does.\n\nRequires a STARTER plan or higher (or an active trial).",
+        "operationId": "create_campaign_survey",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Campaign.CampaignSurveyInput-campaign.write"
+              }
+            },
+            "application/ld+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Campaign.CampaignSurveyInput.jsonld-campaign.write"
+              }
+            }
+          },
+          "description": "The new Campaign resource",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign-campaign.read_campaign.read.detail"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign.jsonld-campaign.read_campaign.read.detail"
+                }
+              }
+            },
+            "description": "Campaign resource created",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Create a survey campaign",
+        "tags": [
+          "Campaign"
+        ]
+      }
+    },
     "/campaigns/test_ab/sender": {
       "post": {
         "deprecated": false,
@@ -49340,6 +51297,79 @@
         ]
       }
     },
+    "/campaigns/{uuid}/actions/select_survey": {
+      "put": {
+        "deprecated": false,
+        "description": "Links a survey to a survey campaign (the \"Survey\" step of the wizard).\n\n**Requirements**: the campaign must be of type `campaign.survey` and editable (not sent/sending); the survey must be ACTIVE and belong to the campaign audience.\n\n**Template handling**: without a template, a preloaded one carrying the survey email block is created; if the template carries the block of another survey, only the survey uuid is replaced (the edited design is kept); an own template WITHOUT the block is never overwritten — the response carries `template_has_survey_block: false` and an actionable `warning` (insert the block or update the template; sending is blocked until the block of the selected survey is present).\n\nThe poll question becomes the subject when the campaign had none.",
+        "operationId": "campaign_select_survey",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Campaign identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Campaign.CampaignSelectSurveyInput-campaign.write"
+              }
+            },
+            "application/ld+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Campaign.CampaignSelectSurveyInput.jsonld-campaign.write"
+              }
+            }
+          },
+          "description": "The updated Campaign resource",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign.CampaignSelectSurveyOutput-campaign.read"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign.CampaignSelectSurveyOutput.jsonld-campaign.read"
+                }
+              }
+            },
+            "description": "Campaign resource updated",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Select the survey of a survey campaign",
+        "tags": [
+          "Campaign"
+        ]
+      }
+    },
     "/campaigns/{uuid}/actions/send_now": {
       "put": {
         "deprecated": false,
@@ -49473,6 +51503,59 @@
           }
         },
         "summary": "Send a test email for a campaign",
+        "tags": [
+          "Campaign"
+        ]
+      }
+    },
+    "/campaigns/{uuid}/actions/unschedule": {
+      "put": {
+        "deprecated": false,
+        "description": "Cancels the scheduled delivery of a campaign and returns it to draft status.\n\n**Requirements**:\n- Campaign must be in `campaign.status.scheduled` status\n\n**After cancelling**:\n- Status changes back to `campaign.status.draft`\n- The campaign will NOT be sent at the previously scheduled time\n- You can edit it, send it now or schedule it again",
+        "operationId": "campaign_unschedule",
+        "parameters": [
+          {
+            "allowEmptyValue": false,
+            "allowReserved": false,
+            "deprecated": false,
+            "description": "Campaign identifier",
+            "explode": false,
+            "in": "path",
+            "name": "uuid",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              },
+              "application/ld+json": {
+                "schema": {}
+              }
+            },
+            "description": "Campaign resource updated",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Resource not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Cancel a scheduled campaign",
         "tags": [
           "Campaign"
         ]
@@ -51075,8 +53158,8 @@
     "/members/search": {
       "get": {
         "deprecated": false,
-        "description": "Searches for a member by email and returns all audiences they belong to.\n\n**Filter**: `email` (partial match)\n\nReturns a list of member records, one for each audience the contact is subscribed to.",
-        "operationId": "search_member_by_email",
+        "description": "Searches for a member and returns all audiences they belong to.\n\n**Filter**: `email` (partial match)\n\nReturns a list of member records, one for each audience the contact is subscribed to.",
+        "operationId": "search_member",
         "parameters": [
           {
             "allowEmptyValue": false,
@@ -51324,7 +53407,7 @@
             "description": "Forbidden"
           }
         },
-        "summary": "Search member by email",
+        "summary": "Search member",
         "tags": [
           "Member"
         ]
@@ -56854,6 +58937,61 @@
         ]
       }
     },
+    "/templates/actions/from_bee_session": {
+      "post": {
+        "deprecated": false,
+        "description": "Persists the current content of a Beefree API-managed MCP session as a new `be_editor` template.\n\nPass the `bee_template_id` (the Beefree session/template id). The server fetches the full JSON from Beefree, derives the HTML and simple_json, and creates the template.\n\nReturns the template — use its IRI `/templates/{uuid}` as the `template` of a campaign or automation step.",
+        "operationId": "create_template_from_bee_session",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template.CreateTemplateFromBeeSessionInput-template.write_from_bee_session"
+              }
+            },
+            "application/ld+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template.CreateTemplateFromBeeSessionInput.jsonld-template.write_from_bee_session"
+              }
+            }
+          },
+          "description": "The new Template resource",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template-template.read"
+                }
+              },
+              "application/ld+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template.jsonld-template.read"
+                }
+              }
+            },
+            "description": "Template resource created",
+            "links": {}
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "summary": "Create a template from a Beefree MCP session",
+        "tags": [
+          "Template"
+        ]
+      }
+    },
     "/templates/{uuid}": {
       "delete": {
         "deprecated": false,
@@ -59111,6 +61249,12 @@
       "name": "Subscription Forms",
       "tags": [
         "SuscriptionForm"
+      ]
+    },
+    {
+      "name": "Surveys",
+      "tags": [
+        "Survey"
       ]
     },
     {
