@@ -1074,6 +1074,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/audiences/{audienceUuid}/surveys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List surveys of an audience
+         * @description Returns the surveys of an audience: quick polls (type `poll`, a single question answered inline from the email) and full surveys (type `page`, a public multi-question page). Filterable by `status` (draft | active | closed), `type` and `name`. Use list_audiences first to get the audienceUuid.
+         */
+        get: operations["list_surveys"];
+        put?: never;
+        /**
+         * Create a survey (draft)
+         * @description Creates a survey in draft status for the audience. Type `poll` takes exactly one question votable with one click from the email (`single_choice`, `yes_no`, `rating` or `nps`); type `page` takes any number of questions of any type. Questions can also be added later via the update endpoint. Activate the survey (PUT .../actions/activate) before linking it to a campaign. Requires a STARTER plan or higher.
+         */
+        post: operations["create_survey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audiences/{audienceUuid}/surveys/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a survey
+         * @description Returns a survey with its questions and answer options, status, configuration (show results, redirect URL) and, when the survey is an active `page` survey, the public URL of its multi-question page.
+         */
+        get: operations["get_survey"];
+        /**
+         * Update a survey
+         * @description Updates the survey name and configuration (show_results, redirect_url) in any status. Sending `questions` REPLACES the whole question set and is only allowed while the survey is in draft (questions are immutable once activated).
+         */
+        put: operations["update_survey"];
+        post?: never;
+        /**
+         * Delete a survey
+         * @description Deletes the survey and all its answers. Active surveys must be closed first (400). Surveys referenced by segments or automations cannot be deleted until they are unlinked (409 with the list). Campaigns that used the survey keep working but lose their survey stats panel.
+         */
+        delete: operations["delete_survey"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audiences/{audienceUuid}/surveys/{uuid}/actions/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Activate a survey
+         * @description Activates a draft survey so it can be linked to campaigns and answered. Requirements: at least one question; a poll question needs at least two options; on page surveys every choice question needs at least two options. Once activated, questions become immutable.
+         */
+        put: operations["survey_activate"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audiences/{audienceUuid}/surveys/{uuid}/actions/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Close a survey
+         * @description Closes an active survey: it stops accepting answers. The email block of already-sent campaigns keeps rendering empty and the public page shows the closed state.
+         */
+        put: operations["survey_close"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audiences/{audienceUuid}/surveys/{uuid}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get survey statistics
+         * @description Returns the aggregated results of a survey: completed responses (human answers only; bot/scanner votes are excluded), completion rate (page surveys), most voted option (polls), responses grouped by campaign, and per-question aggregates. Individual answers are never exposed: open text questions only carry their count.
+         */
+        get: operations["get_survey_stats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/audiences/{audienceUuid}/suscription_forms": {
         parameters: {
             query?: never;
@@ -3576,6 +3688,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/campaigns/survey": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a survey campaign
+         * @description Creates a survey campaign: an email campaign that carries a survey block — a quick poll answered inline from the email, or the first question of a full survey linking to its public page.
+         *
+         *     **Required fields**: `title`, `audience`, `sendTo`.
+         *
+         *     **Linking the survey**: pass `survey` (uuid from list_surveys; must be ACTIVE and belong to the campaign audience) to link it on creation — the survey block template is created automatically when the campaign has no template, and the poll question becomes the default subject. You can also link it later with `PUT /campaigns/{uuid}/actions/select_survey`.
+         *
+         *     **Sending requirement**: the campaign template must contain the email block of the selected survey (`{{ block.poll.<survey_uuid> }}`); sending is blocked until it does.
+         *
+         *     Requires a STARTER plan or higher (or an active trial).
+         */
+        post: operations["create_campaign_survey"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/campaigns/test_ab/sender": {
         parameters: {
             query?: never;
@@ -3829,6 +3969,32 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/campaigns/{uuid}/actions/select_survey": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Select the survey of a survey campaign
+         * @description Links a survey to a survey campaign (the "Survey" step of the wizard).
+         *
+         *     **Requirements**: the campaign must be of type `campaign.survey` and editable (not sent/sending); the survey must be ACTIVE and belong to the campaign audience.
+         *
+         *     **Template handling**: without a template, a preloaded one carrying the survey email block is created; if the template carries the block of another survey, only the survey uuid is replaced (the edited design is kept); an own template WITHOUT the block is never overwritten — the response carries `template_has_survey_block: false` and an actionable `warning` (insert the block or update the template; sending is blocked until the block of the selected survey is present).
+         *
+         *     The poll question becomes the subject when the campaign had none.
+         */
+        put: operations["campaign_select_survey"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/campaigns/{uuid}/actions/send_now": {
         parameters: {
             query?: never;
@@ -3884,6 +4050,34 @@ export interface paths {
          *     **Note**: Test emails do not include subscriber merge tags (they will show as placeholders).
          */
         put: operations["campaign_send_test"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/campaigns/{uuid}/actions/unschedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Cancel a scheduled campaign
+         * @description Cancels the scheduled delivery of a campaign and returns it to draft status.
+         *
+         *     **Requirements**:
+         *     - Campaign must be in `campaign.status.scheduled` status
+         *
+         *     **After cancelling**:
+         *     - Status changes back to `campaign.status.draft`
+         *     - The campaign will NOT be sent at the previously scheduled time
+         *     - You can edit it, send it now or schedule it again
+         */
+        put: operations["campaign_unschedule"];
         post?: never;
         delete?: never;
         options?: never;
@@ -4288,14 +4482,14 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Search member by email
-         * @description Searches for a member by email and returns all audiences they belong to.
+         * Search member
+         * @description Searches for a member and returns all audiences they belong to.
          *
          *     **Filter**: `email` (partial match)
          *
          *     Returns a list of member records, one for each audience the contact is subscribed to.
          */
-        get: operations["search_member_by_email"];
+        get: operations["search_member"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5236,6 +5430,30 @@ export interface paths {
          *     - `{{ text.list.company.name }}` - Company name
          */
         post: operations["create_template"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/templates/actions/from_bee_session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create a template from a Beefree MCP session
+         * @description Persists the current content of a Beefree API-managed MCP session as a new `be_editor` template.
+         *
+         *     Pass the `bee_template_id` (the Beefree session/template id). The server fetches the full JSON from Beefree, derives the HTML and simple_json, and creates the template.
+         *
+         *     Returns the template — use its IRI `/templates/{uuid}` as the `template` of a campaign or automation step.
+         */
+        post: operations["create_template_from_bee_session"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9549,6 +9767,11 @@ export interface components {
             started_at?: string;
             status?: components["schemas"]["CampaignStatus"];
             /**
+             * Format: uuid
+             * @description Uuid of the survey linked to this survey campaign (null for other campaign types or when no survey is selected yet). Use get_survey with the campaign audience for details.
+             */
+            survey?: string | null;
+            /**
              * Format: iri-reference
              * @description Template
              * @example /templates/0df14405-90ff-4287-b3e4-ef088901ee6f
@@ -9730,6 +9953,52 @@ export interface components {
              */
             title: string;
         };
+        "Campaign.CampaignSelectSurveyInput-campaign.write": {
+            /**
+             * Format: uuid
+             * @description Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.
+             */
+            survey: string;
+        };
+        "Campaign.CampaignSelectSurveyInput.jsonld-campaign.write": {
+            /**
+             * Format: uuid
+             * @description Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.
+             */
+            survey: string;
+        };
+        /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
+        "Campaign.CampaignSelectSurveyOutput-campaign.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: uuid
+             * @description Uuid of the linked survey
+             */
+            survey?: string;
+            /** @description Whether the campaign template now carries the survey email block ({{ block.poll.<uuid> }}) */
+            template_has_survey_block?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+            /** @description Actionable warning when the template was left untouched (own template without the survey block) */
+            warning?: string | null;
+        };
+        /** @description Email campaign response. SMS campaigns are exposed separately under /sms_campaigns. */
+        "Campaign.CampaignSelectSurveyOutput.jsonld-campaign.read": {
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: uuid
+             * @description Uuid of the linked survey
+             */
+            survey?: string;
+            /** @description Whether the campaign template now carries the survey email block ({{ block.poll.<uuid> }}) */
+            template_has_survey_block?: boolean;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+            /** @description Actionable warning when the template was left untouched (own template without the survey block) */
+            warning?: string | null;
+        };
         "Campaign.CampaignSendInput-campaign.write_schedule": {
             /** @description Send a confirmation email when the campaign is sent? */
             campaign_confirmation_email?: boolean;
@@ -9791,6 +10060,102 @@ export interface components {
              * @example 0
              */
             test_index?: number;
+        };
+        "Campaign.CampaignSurveyInput-campaign.write": {
+            /**
+             * Format: iri-reference
+             * @description Audience IRI
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience: string;
+            /** @description Campaign configuration - included in ALL campaign types. */
+            campaign_config: components["schemas"]["CampaignConfig-campaign.write"] | null;
+            /**
+             * @description Email configuration - included in ALL campaign types
+             *     Note: The fields inside emailConfig have their own group restrictions.
+             */
+            email_config: components["schemas"]["EmailConfig-campaign.write"] | null;
+            /** @description Groups IRIs (required when sendTo is send_to_groups) */
+            groups?: string[];
+            /**
+             * Format: iri-reference
+             * @description List segment IRI (required when sendTo is send_to_segment)
+             * @example /audiences/{uuid}/segments/{uuid}
+             */
+            list_segment?: string;
+            /**
+             * @description Who to send the campaign to
+             * @enum {string}
+             */
+            send_to: "send_to_all" | "send_to_groups" | "send_to_segment";
+            /**
+             * Format: uuid
+             * @description Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.
+             */
+            survey?: string | null;
+            /**
+             * Format: iri-reference
+             * @description Template IRI
+             * @example /templates/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            template?: string;
+            /** @description Template HTML content */
+            template_html?: string;
+            /** @description Simple JSON structure for BeeEditor templates */
+            template_simple_json_code?: Record<string, never>;
+            /**
+             * @description Campaign title
+             * @example My awesome campaign
+             */
+            title: string;
+        };
+        "Campaign.CampaignSurveyInput.jsonld-campaign.write": {
+            /**
+             * Format: iri-reference
+             * @description Audience IRI
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience: string;
+            /** @description Campaign configuration - included in ALL campaign types. */
+            campaign_config: components["schemas"]["CampaignConfig.jsonld-campaign.write"] | null;
+            /**
+             * @description Email configuration - included in ALL campaign types
+             *     Note: The fields inside emailConfig have their own group restrictions.
+             */
+            email_config: components["schemas"]["EmailConfig.jsonld-campaign.write"] | null;
+            /** @description Groups IRIs (required when sendTo is send_to_groups) */
+            groups?: string[];
+            /**
+             * Format: iri-reference
+             * @description List segment IRI (required when sendTo is send_to_segment)
+             * @example /audiences/{uuid}/segments/{uuid}
+             */
+            list_segment?: string;
+            /**
+             * @description Who to send the campaign to
+             * @enum {string}
+             */
+            send_to: "send_to_all" | "send_to_groups" | "send_to_segment";
+            /**
+             * Format: uuid
+             * @description Uuid of the survey to link (from list_surveys). Must be ACTIVE and belong to the campaign audience.
+             */
+            survey?: string | null;
+            /**
+             * Format: iri-reference
+             * @description Template IRI
+             * @example /templates/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            template?: string;
+            /** @description Template HTML content */
+            template_html?: string;
+            /** @description Simple JSON structure for BeeEditor templates */
+            template_simple_json_code?: Record<string, never>;
+            /**
+             * @description Campaign title
+             * @example My awesome campaign
+             */
+            title: string;
         };
         "Campaign.CampaignTestABSenderInput-campaign.write.test_ab_sender": {
             /**
@@ -10319,6 +10684,11 @@ export interface components {
              */
             started_at?: string;
             status?: components["schemas"]["CampaignStatus"];
+            /**
+             * Format: uuid
+             * @description Uuid of the survey linked to this survey campaign (null for other campaign types or when no survey is selected yet). Use get_survey with the campaign audience for details.
+             */
+            survey?: string | null;
             /**
              * Format: iri-reference
              * @description Template
@@ -11407,9 +11777,10 @@ export interface components {
          *     * `campaign.test.ab` - A/B Test campaign
          *     * `campaign.automation` - Automation campaign
          *     * `campaign.revalidation` - Revalidation campaign
+         *     * `campaign.survey` - Survey campaign
          * @enum {string}
          */
-        CampaignType: "campaign.regular" | "campaign.test.ab" | "campaign.automation" | "campaign.revalidation";
+        CampaignType: "campaign.regular" | "campaign.test.ab" | "campaign.automation" | "campaign.revalidation" | "campaign.survey";
         "Category-automation_trigger.write": Record<string, never>;
         "Category-category.create": {
             /**
@@ -21116,6 +21487,456 @@ export interface components {
             /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
             uuid?: string;
         };
+        "Survey-survey.read": {
+            /**
+             * Format: iri-reference
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience?: string;
+            /**
+             * Format: date-time
+             * @description Date & Time resource created
+             */
+            created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Locale of the public pages of the survey
+             * @example es
+             */
+            locale?: string;
+            /**
+             * @description Survey name
+             * @example Newsletter feedback
+             */
+            name?: string;
+            /**
+             * Format: uri
+             * @description Optional URL the respondent is redirected to after answering (instead of the thank-you page)
+             */
+            redirect_url?: string;
+            /** @description Whether respondents can see the aggregated results page after answering */
+            show_results?: boolean;
+            /**
+             * @description Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.
+             * @enum {string}
+             */
+            status?: "draft" | "active" | "closed";
+            /**
+             * @description Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)
+             * @enum {string}
+             */
+            type?: "poll" | "page";
+            /**
+             * Format: date-time
+             * @description Date & Time resource updated
+             */
+            updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Resource UUID
+             */
+            uuid?: string;
+        };
+        "Survey-survey.read_survey.read.detail": {
+            /**
+             * Format: iri-reference
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience?: string;
+            /**
+             * Format: date-time
+             * @description Date & Time resource created
+             */
+            created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Locale of the public pages of the survey
+             * @example es
+             */
+            locale?: string;
+            /**
+             * @description Survey name
+             * @example Newsletter feedback
+             */
+            name?: string;
+            /**
+             * Format: uri
+             * @description Public URL of the multi-question page (only for active `page` surveys; null otherwise)
+             */
+            public_url?: string;
+            /** @description Questions ordered by position */
+            questions?: {
+                /**
+                 * @description Visual presentation (cosmetic only): smileys renders the 1-5 rating as emoji faces; icons renders rating faces or yes_no thumbs as app icons (emails always fall back to emojis)
+                 * @enum {string}
+                 */
+                display?: "default" | "smileys" | "icons";
+                options?: {
+                    position?: number;
+                    text?: string;
+                    /** Format: uuid */
+                    uuid?: string;
+                }[];
+                position?: number;
+                required?: boolean;
+                text?: string;
+                /** @enum {string} */
+                type?: "single_choice" | "multiple_choice" | "yes_no" | "rating" | "nps" | "text";
+            }[];
+            /**
+             * Format: uri
+             * @description Optional URL the respondent is redirected to after answering (instead of the thank-you page)
+             */
+            redirect_url?: string;
+            /** @description Whether respondents can see the aggregated results page after answering */
+            show_results?: boolean;
+            /**
+             * @description Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.
+             * @enum {string}
+             */
+            status?: "draft" | "active" | "closed";
+            /**
+             * @description Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)
+             * @enum {string}
+             */
+            type?: "poll" | "page";
+            /**
+             * Format: date-time
+             * @description Date & Time resource updated
+             */
+            updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Resource UUID
+             */
+            uuid?: string;
+        };
+        "Survey.CreateSurveyInput-survey.write": {
+            /**
+             * @description Locale of the public pages of the survey (defaults to the app locale when the app has a single language)
+             * @example es_ES
+             */
+            locale?: string;
+            /**
+             * @description Survey name (internal)
+             * @example Newsletter feedback
+             */
+            name: string;
+            /** @description Questions in display order. A poll takes exactly one question votable with one click from the email (single_choice, yes_no, rating or nps); a page survey takes any number of questions of any type. */
+            questions?: components["schemas"]["SurveyQuestionInput-survey.write"][];
+            /**
+             * @description Survey type: `poll` (exactly one question voted inline from the email: single_choice, yes_no, rating or nps) or `page` (public multi-question page linked from the email)
+             * @enum {string}
+             */
+            type: "poll" | "page";
+        };
+        "Survey.CreateSurveyInput.jsonld-survey.write": {
+            /**
+             * @description Locale of the public pages of the survey (defaults to the app locale when the app has a single language)
+             * @example es_ES
+             */
+            locale?: string;
+            /**
+             * @description Survey name (internal)
+             * @example Newsletter feedback
+             */
+            name: string;
+            /** @description Questions in display order. A poll takes exactly one question votable with one click from the email (single_choice, yes_no, rating or nps); a page survey takes any number of questions of any type. */
+            questions?: components["schemas"]["SurveyQuestionInput.jsonld-survey.write"][];
+            /**
+             * @description Survey type: `poll` (exactly one question voted inline from the email: single_choice, yes_no, rating or nps) or `page` (public multi-question page linked from the email)
+             * @enum {string}
+             */
+            type: "poll" | "page";
+        };
+        "Survey.SurveyStatsOutput-survey.stats": {
+            /** @description Completion rate in percent (only for `page` surveys with at least one started response) */
+            completion_rate?: number | null;
+            /** @description Completed responses linked to an identified contact */
+            identified_responses?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description Date & Time of the last completed response
+             */
+            last_response_at?: string | null;
+            /** @description Most voted option of the poll ({text, percent}; null without votes or for `page` surveys) */
+            poll_winner?: {
+                percent?: number;
+                text?: string;
+            } | null;
+            /** @description Aggregates per question, ordered by position. Choice questions (single_choice / multiple_choice / yes_no) carry total_votes and options[{text, votes, percent}] — in yes_no the first option is the 👍 answer and the second the 👎 one; rating questions carry average (1 decimal, null without answers), distribution (1..5) and total_ratings; nps questions carry nps_score (-100..100, null without answers), detractors (0-6), passives (7-8), promoters (9-10), average, distribution (0..10) and total_ratings; text questions carry total_texts only (individual answers are not exposed). */
+            questions?: Record<string, never>[];
+            /** @description Completed responses grouped by the campaign that brought them (campaign null for answers outside a campaign) */
+            responses_by_campaign?: {
+                campaign_title?: string | null;
+                /** Format: uuid */
+                campaign_uuid?: string | null;
+                responses?: number;
+            }[];
+            /** @description Completed responses in the last 7 days */
+            responses_last_seven_days?: number;
+            /** @description Responses started but not completed (only for `page` surveys; null for polls) */
+            started_not_completed?: number | null;
+            /** @description Completed human responses */
+            total_responses?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        "Survey.SurveyStatsOutput.jsonld-survey.stats": {
+            /** @description Completion rate in percent (only for `page` surveys with at least one started response) */
+            completion_rate?: number | null;
+            /** @description Completed responses linked to an identified contact */
+            identified_responses?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description Date & Time of the last completed response
+             */
+            last_response_at?: string | null;
+            /** @description Most voted option of the poll ({text, percent}; null without votes or for `page` surveys) */
+            poll_winner?: {
+                percent?: number;
+                text?: string;
+            } | null;
+            /** @description Aggregates per question, ordered by position. Choice questions (single_choice / multiple_choice / yes_no) carry total_votes and options[{text, votes, percent}] — in yes_no the first option is the 👍 answer and the second the 👎 one; rating questions carry average (1 decimal, null without answers), distribution (1..5) and total_ratings; nps questions carry nps_score (-100..100, null without answers), detractors (0-6), passives (7-8), promoters (9-10), average, distribution (0..10) and total_ratings; text questions carry total_texts only (individual answers are not exposed). */
+            questions?: Record<string, never>[];
+            /** @description Completed responses grouped by the campaign that brought them (campaign null for answers outside a campaign) */
+            responses_by_campaign?: {
+                campaign_title?: string | null;
+                /** Format: uuid */
+                campaign_uuid?: string | null;
+                responses?: number;
+            }[];
+            /** @description Completed responses in the last 7 days */
+            responses_last_seven_days?: number;
+            /** @description Responses started but not completed (only for `page` surveys; null for polls) */
+            started_not_completed?: number | null;
+            /** @description Completed human responses */
+            total_responses?: number;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        "Survey.UpdateSurveyInput-survey.write": {
+            /** @description Survey name (internal) */
+            name?: string;
+            /** @description Full replacement of the question set, in display order (only while the survey is in draft). Omit to keep the current questions. */
+            questions?: components["schemas"]["SurveyQuestionInput-survey.write"][] | null;
+            /**
+             * Format: uri
+             * @description URL the respondent is redirected to after answering. Send an empty string to remove it.
+             */
+            redirect_url?: string;
+            /** @description Whether respondents can see the aggregated results page after answering */
+            show_results?: boolean;
+        };
+        "Survey.UpdateSurveyInput.jsonld-survey.write": {
+            /** @description Survey name (internal) */
+            name?: string;
+            /** @description Full replacement of the question set, in display order (only while the survey is in draft). Omit to keep the current questions. */
+            questions?: components["schemas"]["SurveyQuestionInput.jsonld-survey.write"][] | null;
+            /**
+             * Format: uri
+             * @description URL the respondent is redirected to after answering. Send an empty string to remove it.
+             */
+            redirect_url?: string;
+            /** @description Whether respondents can see the aggregated results page after answering */
+            show_results?: boolean;
+        };
+        "Survey.jsonld-survey.read": {
+            /**
+             * Format: iri-reference
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience?: string;
+            /**
+             * Format: date-time
+             * @description Date & Time resource created
+             */
+            created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Locale of the public pages of the survey
+             * @example es
+             */
+            locale?: string;
+            /**
+             * @description Survey name
+             * @example Newsletter feedback
+             */
+            name?: string;
+            /**
+             * Format: uri
+             * @description Optional URL the respondent is redirected to after answering (instead of the thank-you page)
+             */
+            redirect_url?: string;
+            /** @description Whether respondents can see the aggregated results page after answering */
+            show_results?: boolean;
+            /**
+             * @description Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.
+             * @enum {string}
+             */
+            status?: "draft" | "active" | "closed";
+            /**
+             * @description Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)
+             * @enum {string}
+             */
+            type?: "poll" | "page";
+            /**
+             * Format: date-time
+             * @description Date & Time resource updated
+             */
+            updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Resource UUID
+             */
+            uuid?: string;
+        };
+        "Survey.jsonld-survey.read_survey.read.detail": {
+            /**
+             * Format: iri-reference
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience?: string;
+            /**
+             * Format: date-time
+             * @description Date & Time resource created
+             */
+            created_at?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Locale of the public pages of the survey
+             * @example es
+             */
+            locale?: string;
+            /**
+             * @description Survey name
+             * @example Newsletter feedback
+             */
+            name?: string;
+            /**
+             * Format: uri
+             * @description Public URL of the multi-question page (only for active `page` surveys; null otherwise)
+             */
+            public_url?: string;
+            /** @description Questions ordered by position */
+            questions?: {
+                /**
+                 * @description Visual presentation (cosmetic only): smileys renders the 1-5 rating as emoji faces; icons renders rating faces or yes_no thumbs as app icons (emails always fall back to emojis)
+                 * @enum {string}
+                 */
+                display?: "default" | "smileys" | "icons";
+                options?: {
+                    position?: number;
+                    text?: string;
+                    /** Format: uuid */
+                    uuid?: string;
+                }[];
+                position?: number;
+                required?: boolean;
+                text?: string;
+                /** @enum {string} */
+                type?: "single_choice" | "multiple_choice" | "yes_no" | "rating" | "nps" | "text";
+            }[];
+            /**
+             * Format: uri
+             * @description Optional URL the respondent is redirected to after answering (instead of the thank-you page)
+             */
+            redirect_url?: string;
+            /** @description Whether respondents can see the aggregated results page after answering */
+            show_results?: boolean;
+            /**
+             * @description Survey status. Only active surveys can be linked to campaigns; questions are immutable once the survey leaves draft.
+             * @enum {string}
+             */
+            status?: "draft" | "active" | "closed";
+            /**
+             * @description Survey type: `poll` (single question voted inline from the email) or `page` (public multi-question page linked from the email)
+             * @enum {string}
+             */
+            type?: "poll" | "page";
+            /**
+             * Format: date-time
+             * @description Date & Time resource updated
+             */
+            updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Resource UUID
+             */
+            uuid?: string;
+        };
+        "SurveyOptionInput-survey.write": {
+            /**
+             * @description Option text shown to the respondent
+             * @example Very satisfied
+             */
+            text: string;
+        };
+        "SurveyOptionInput.jsonld-survey.write": {
+            /**
+             * @description Option text shown to the respondent
+             * @example Very satisfied
+             */
+            text: string;
+        };
+        "SurveyQuestionInput-survey.write": {
+            /**
+             * @description Visual presentation, purely cosmetic (answers and stats are those of the base type). `rating` and `yes_no` always render as faces/thumbs: `smileys` uses emojis (the default) and `icons` uses app icons. `default` is accepted as a legacy value and resolves to `smileys`. Emails always fall back to emojis (email clients strip SVG) — for that reason `icons` is NOT accepted on poll questions (they are voted inside the email; 400 otherwise).
+             * @default smileys
+             * @enum {string}
+             */
+            display: "default" | "smileys" | "icons";
+            /** @description Answer options in display order (only for single_choice / multiple_choice / yes_no questions; scale types like rating/nps build their own scale). A yes_no question takes exactly two: first = 👍, second = 👎. */
+            options?: components["schemas"]["SurveyOptionInput-survey.write"][];
+            /**
+             * @description Whether the respondent must answer this question (defaults to true)
+             * @default true
+             */
+            required: boolean;
+            /**
+             * @description Question text
+             * @example How satisfied are you with our newsletter?
+             */
+            text: string;
+            /**
+             * @description Question type. `single_choice` and `multiple_choice` require `options` (2-10); `yes_no` requires EXACTLY two options — the first renders as 👍 and the second as 👎, with customizable texts; `rating` (1-5 scale), `nps` (Net Promoter Score, 0-10 scale) and `text` (open answer) must not have options.
+             * @enum {string}
+             */
+            type: "single_choice" | "multiple_choice" | "yes_no" | "rating" | "nps" | "text";
+        };
+        "SurveyQuestionInput.jsonld-survey.write": {
+            /**
+             * @description Visual presentation, purely cosmetic (answers and stats are those of the base type). `rating` and `yes_no` always render as faces/thumbs: `smileys` uses emojis (the default) and `icons` uses app icons. `default` is accepted as a legacy value and resolves to `smileys`. Emails always fall back to emojis (email clients strip SVG) — for that reason `icons` is NOT accepted on poll questions (they are voted inside the email; 400 otherwise).
+             * @default smileys
+             * @enum {string}
+             */
+            display: "default" | "smileys" | "icons";
+            /** @description Answer options in display order (only for single_choice / multiple_choice / yes_no questions; scale types like rating/nps build their own scale). A yes_no question takes exactly two: first = 👍, second = 👎. */
+            options?: components["schemas"]["SurveyOptionInput.jsonld-survey.write"][];
+            /**
+             * @description Whether the respondent must answer this question (defaults to true)
+             * @default true
+             */
+            required: boolean;
+            /**
+             * @description Question text
+             * @example How satisfied are you with our newsletter?
+             */
+            text: string;
+            /**
+             * @description Question type. `single_choice` and `multiple_choice` require `options` (2-10); `yes_no` requires EXACTLY two options — the first renders as 👍 and the second as 👎, with customizable texts; `rating` (1-5 scale), `nps` (Net Promoter Score, 0-10 scale) and `text` (open answer) must not have options.
+             * @enum {string}
+             */
+            type: "single_choice" | "multiple_choice" | "yes_no" | "rating" | "nps" | "text";
+        };
         SuscriberConsent: {
             /**
              * Format: date-time
@@ -21938,6 +22759,42 @@ export interface components {
              * @example My awesome template
              */
             title: string;
+        };
+        "Template.CreateTemplateFromBeeSessionInput-template.write_from_bee_session": {
+            /**
+             * @description Beefree MCP session/template id (the templateId returned when the API-managed session was created).
+             * @example a1b2c3d4-...
+             */
+            bee_template_id: string;
+            /**
+             * Format: uuid
+             * @description UUID of the existing be_editor template to UPDATE. If omitted, a new template is created.
+             * @example 0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            em_template_id?: string;
+            /**
+             * @description Title for the template (used on create; on update only if provided).
+             * @example Newsletter junio
+             */
+            title?: string;
+        };
+        "Template.CreateTemplateFromBeeSessionInput.jsonld-template.write_from_bee_session": {
+            /**
+             * @description Beefree MCP session/template id (the templateId returned when the API-managed session was created).
+             * @example a1b2c3d4-...
+             */
+            bee_template_id: string;
+            /**
+             * Format: uuid
+             * @description UUID of the existing be_editor template to UPDATE. If omitted, a new template is created.
+             * @example 0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            em_template_id?: string;
+            /**
+             * @description Title for the template (used on create; on update only if provided).
+             * @example Newsletter junio
+             */
+            title?: string;
         };
         "Template.TemplateSendTestInput-template.write_send_test": {
             /**
@@ -23206,9 +24063,10 @@ export interface components {
          *     * `trigger.order.cancelled` - Order canceled
          *     * `trigger.order.refunded` - Order refunded
          *     * `trigger.suscriber.revalidation` - Subscriber revalidation
+         *     * `trigger.poll.answered` - Survey poll answered
          * @enum {string}
          */
-        TriggerType: "trigger.admin.manual" | "trigger.form.completed" | "trigger.contact.suscribed" | "trigger.contact.added.to.group" | "trigger.contact.removed.from.group" | "trigger.send.a.campaign" | "trigger.click.on.campaign" | "trigger.click.on.campaign.link" | "trigger.not.click.on.campaign" | "trigger.open.on.campaign" | "trigger.not.open.on.campaign" | "trigger.specific.date" | "trigger.aniversary.date" | "trigger.suscription.date" | "trigger.custom.api" | "trigger.buy.a.product" | "trigger.time.since.last.purchase" | "trigger.abandoned.cart" | "trigger.payment.reminder" | "trigger.order.processed" | "trigger.order.paid" | "trigger.order.shipped" | "trigger.order.cancelled" | "trigger.order.refunded" | "trigger.suscriber.revalidation";
+        TriggerType: "trigger.admin.manual" | "trigger.form.completed" | "trigger.contact.suscribed" | "trigger.contact.added.to.group" | "trigger.contact.removed.from.group" | "trigger.send.a.campaign" | "trigger.click.on.campaign" | "trigger.click.on.campaign.link" | "trigger.not.click.on.campaign" | "trigger.open.on.campaign" | "trigger.not.open.on.campaign" | "trigger.specific.date" | "trigger.aniversary.date" | "trigger.suscription.date" | "trigger.custom.api" | "trigger.buy.a.product" | "trigger.time.since.last.purchase" | "trigger.abandoned.cart" | "trigger.payment.reminder" | "trigger.order.processed" | "trigger.order.paid" | "trigger.order.shipped" | "trigger.order.cancelled" | "trigger.order.refunded" | "trigger.suscriber.revalidation" | "trigger.poll.answered";
         "UnsubscribeAction-automation_step.read": Record<string, never>;
         "UnsubscribeAction-automation_step.write": Record<string, never>;
         "UnsubscribeAction.jsonld-automation_step.read": {
@@ -26471,6 +27329,430 @@ export interface operations {
             };
             /** @description Forbidden */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_surveys: {
+        parameters: {
+            query?: {
+                /** @description The collection page number */
+                page?: number;
+                /** @description The number of items per page */
+                itemsPerPage?: number;
+                /**
+                 * @description Filter using a query string
+                 * @example search query
+                 */
+                name?: string;
+                /**
+                 * @description Filter using a query string
+                 * @example search query
+                 */
+                status?: string;
+                /**
+                 * @description Filter using a query string
+                 * @example search query
+                 */
+                type?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Survey collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Survey-survey.read"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["Survey.jsonld-survey.read"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_survey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The new Survey resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Survey.CreateSurveyInput-survey.write"];
+                "application/ld+json": components["schemas"]["Survey.CreateSurveyInput.jsonld-survey.write"];
+            };
+        };
+        responses: {
+            /** @description Survey resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Survey-survey.read_survey.read.detail"];
+                    "application/ld+json": components["schemas"]["Survey.jsonld-survey.read_survey.read.detail"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_survey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+                /** @description Survey identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Survey resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Survey-survey.read_survey.read.detail"];
+                    "application/ld+json": components["schemas"]["Survey.jsonld-survey.read_survey.read.detail"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    update_survey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+                /** @description Survey identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated Survey resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Survey.UpdateSurveyInput-survey.write"];
+                "application/ld+json": components["schemas"]["Survey.UpdateSurveyInput.jsonld-survey.write"];
+            };
+        };
+        responses: {
+            /** @description Survey resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Survey-survey.read_survey.read.detail"];
+                    "application/ld+json": components["schemas"]["Survey.jsonld-survey.read_survey.read.detail"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    delete_survey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+                /** @description Survey identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Survey resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    survey_activate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+                /** @description Survey identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Survey resource updated */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "application/ld+json": unknown;
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    survey_close: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+                /** @description Survey identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Survey resource updated */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "application/ld+json": unknown;
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_survey_stats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Survey identifier */
+                audienceUuid: string;
+                /** @description Survey identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Survey resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Survey.SurveyStatsOutput-survey.stats"];
+                    "application/ld+json": components["schemas"]["Survey.SurveyStatsOutput.jsonld-survey.stats"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -32399,6 +33681,54 @@ export interface operations {
             };
         };
     };
+    create_campaign_survey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new Campaign resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Campaign.CampaignSurveyInput-campaign.write"];
+                "application/ld+json": components["schemas"]["Campaign.CampaignSurveyInput.jsonld-campaign.write"];
+            };
+        };
+        responses: {
+            /** @description Campaign resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Campaign-campaign.read_campaign.read.detail"];
+                    "application/ld+json": components["schemas"]["Campaign.jsonld-campaign.read_campaign.read.detail"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     create_campaign_test_ab_sender: {
         parameters: {
             query?: never;
@@ -32783,6 +34113,64 @@ export interface operations {
             };
         };
     };
+    campaign_select_survey: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Campaign identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated Campaign resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Campaign.CampaignSelectSurveyInput-campaign.write"];
+                "application/ld+json": components["schemas"]["Campaign.CampaignSelectSurveyInput.jsonld-campaign.write"];
+            };
+        };
+        responses: {
+            /** @description Campaign resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Campaign.CampaignSelectSurveyOutput-campaign.read"];
+                    "application/ld+json": components["schemas"]["Campaign.CampaignSelectSurveyOutput.jsonld-campaign.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     campaign_send_now: {
         parameters: {
             query?: never;
@@ -32858,6 +34246,58 @@ export interface operations {
                 "application/ld+json": components["schemas"]["Campaign.CampaignSendTestInput.jsonld-campaign.write_send_test"];
             };
         };
+        responses: {
+            /** @description Campaign resource updated */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "application/ld+json": unknown;
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    campaign_unschedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Campaign identifier */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Campaign resource updated */
             204: {
@@ -33937,7 +35377,7 @@ export interface operations {
             };
         };
     };
-    search_member_by_email: {
+    search_member: {
         parameters: {
             query?: {
                 /** @description Email address to search for (partial match) */
@@ -37408,6 +38848,54 @@ export interface operations {
             content: {
                 "application/json": components["schemas"]["Template-template.write"];
                 "application/ld+json": components["schemas"]["Template.jsonld-template.write"];
+            };
+        };
+        responses: {
+            /** @description Template resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Template-template.read"];
+                    "application/ld+json": components["schemas"]["Template.jsonld-template.read"];
+                };
+            };
+            /** @description Invalid input */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unprocessable entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    create_template_from_bee_session: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new Template resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Template.CreateTemplateFromBeeSessionInput-template.write_from_bee_session"];
+                "application/ld+json": components["schemas"]["Template.CreateTemplateFromBeeSessionInput.jsonld-template.write_from_bee_session"];
             };
         };
         responses: {

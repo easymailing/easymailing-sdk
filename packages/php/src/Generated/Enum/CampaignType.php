@@ -13,4 +13,5 @@ enum CampaignType: string
     case CampaignTestAb = 'campaign.test.ab';
     case CampaignAutomation = 'campaign.automation';
     case CampaignRevalidation = 'campaign.revalidation';
+    case CampaignSurvey = 'campaign.survey';
 }
