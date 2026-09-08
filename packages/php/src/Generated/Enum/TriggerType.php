@@ -34,4 +34,5 @@ enum TriggerType: string
     case TriggerOrderCancelled = 'trigger.order.cancelled';
     case TriggerOrderRefunded = 'trigger.order.refunded';
     case TriggerSuscriberRevalidation = 'trigger.suscriber.revalidation';
+    case TriggerPollAnswered = 'trigger.poll.answered';
 }
