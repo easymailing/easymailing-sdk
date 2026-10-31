@@ -78,6 +78,16 @@ final class CampaignsResource extends AbstractResource
     }
 
     /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignSelectSurveyInput_campaign_write $body
+     */
+    public function selectSurvey(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignSelectSurveyInput_campaign_write $body): \Easymailing\Sdk\Generated\Dto\Campaign_CampaignSelectSurveyOutput_campaign_read
+    {
+        $result = $this->client->request('PUT', $this->resolvePath('/campaigns/{uuid}/actions/select_survey', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/campaigns/{uuid}/actions/select_survey');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\Campaign_CampaignSelectSurveyOutput_campaign_read::fromArray($data);
+    }
+
+    /**
      * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignSendInput_campaign_write_send $body
      * @return array<string, mixed>
      */
@@ -100,13 +110,33 @@ final class CampaignsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignRevalidationInput_campaign_write $body
+     * @return array<string, mixed>
      */
-    public function createRevalidation(array|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignRevalidationInput_campaign_write $body): \Easymailing\Sdk\Generated\Dto\Campaign_campaign_read
+    public function unschedule(string $uuid): array
+    {
+        $result = $this->client->request('PUT', $this->resolvePath('/campaigns/{uuid}/actions/unschedule', ['uuid' => $uuid]), pathTemplate: '/campaigns/{uuid}/actions/unschedule');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return $data;
+    }
+
+    /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignRevalidationInput_campaign_write_create_campaign_revalidation $body
+     */
+    public function createRevalidation(array|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignRevalidationInput_campaign_write_create_campaign_revalidation $body): \Easymailing\Sdk\Generated\Dto\Campaign_campaign_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/campaigns/revalidation', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/campaigns/revalidation');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Campaign_campaign_read::fromArray($data);
+    }
+
+    /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignSurveyInput_campaign_write_create_campaign_survey $body
+     */
+    public function createSurvey(array|\Easymailing\Sdk\Generated\Dto\Campaign_CampaignSurveyInput_campaign_write_create_campaign_survey $body): \Easymailing\Sdk\Generated\Dto\Campaign_campaign_read_campaign_read_detail
+    {
+        $result = $this->client->request('POST', $this->resolvePath('/campaigns/survey', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/campaigns/survey');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\Campaign_campaign_read_campaign_read_detail::fromArray($data);
     }
 
     /**

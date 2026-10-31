@@ -25,9 +25,9 @@ final class AudiencesResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Audience_audience_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Audience_audience_write_create_audience $body
      */
-    public function create(array|\Easymailing\Sdk\Generated\Dto\Audience_audience_write $body): \Easymailing\Sdk\Generated\Dto\Audience_audience_read
+    public function create(array|\Easymailing\Sdk\Generated\Dto\Audience_audience_write_create_audience $body): \Easymailing\Sdk\Generated\Dto\Audience_audience_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/audiences', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences');
         $data = is_array($result['data']) ? $result['data'] : [];

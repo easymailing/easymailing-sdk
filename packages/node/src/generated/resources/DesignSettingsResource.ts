@@ -21,7 +21,7 @@ export class DesignSettingsResource {
     return toPage(result);
   }
 
-  async create(body: components["schemas"]["DesignSetting-design_setting.create"]): Promise<components["schemas"]["DesignSetting-design_setting.read"]> {
+  async create(body: components["schemas"]["DesignSetting-design_setting.create.create_design_setting"]): Promise<components["schemas"]["DesignSetting-design_setting.read"]> {
     const result = await this.client.request<components["schemas"]["DesignSetting-design_setting.read"]>({
       method: "POST",
       path: pathWithParams("/design_settings", {  }),
@@ -40,7 +40,7 @@ export class DesignSettingsResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["DesignSetting-design_setting.write"]): Promise<components["schemas"]["DesignSetting-design_setting.read"]> {
+  async update(uuid: string, body: components["schemas"]["DesignSetting-design_setting.write.update_design_setting"]): Promise<components["schemas"]["DesignSetting-design_setting.read"]> {
     const result = await this.client.request<components["schemas"]["DesignSetting-design_setting.read"]>({
       method: "PUT",
       path: pathWithParams("/design_settings/{uuid}", { uuid: uuid }),

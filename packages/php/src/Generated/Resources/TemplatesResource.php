@@ -42,9 +42,9 @@ final class TemplatesResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Template_template_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Template_template_write_update_template $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Template_template_write $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Template_template_write_update_template $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -54,6 +54,16 @@ final class TemplatesResource extends AbstractResource
     public function delete(string $uuid): void
     {
         $this->client->request('DELETE', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), pathTemplate: '/templates/{uuid}');
+    }
+
+    /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Template_CreateTemplateFromBeeSessionInput_template_write_from_bee_session $body
+     */
+    public function fromBeeSession(array|\Easymailing\Sdk\Generated\Dto\Template_CreateTemplateFromBeeSessionInput_template_write_from_bee_session $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
+    {
+        $result = $this->client->request('POST', $this->resolvePath('/templates/actions/from_bee_session', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates/actions/from_bee_session');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\Template_template_read::fromArray($data);
     }
 
     public function regenerateSimpleJson(string $uuid): \Easymailing\Sdk\Generated\Dto\Template_template_read

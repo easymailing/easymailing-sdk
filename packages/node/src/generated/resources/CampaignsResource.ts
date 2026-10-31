@@ -79,6 +79,16 @@ export class CampaignsResource {
     return result.data;
   }
 
+  async selectSurvey(uuid: string, body: components["schemas"]["Campaign.CampaignSelectSurveyInput-campaign.write"]): Promise<components["schemas"]["Campaign.CampaignSelectSurveyOutput-campaign.read"]> {
+    const result = await this.client.request<components["schemas"]["Campaign.CampaignSelectSurveyOutput-campaign.read"]>({
+      method: "PUT",
+      path: pathWithParams("/campaigns/{uuid}/actions/select_survey", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}/actions/select_survey",
+      body,
+    });
+    return result.data;
+  }
+
   async sendNow(uuid: string, body: components["schemas"]["Campaign.CampaignSendInput-campaign.write_send"]): Promise<unknown> {
     const result = await this.client.request<unknown>({
       method: "PUT",
@@ -99,11 +109,30 @@ export class CampaignsResource {
     return result.data;
   }
 
-  async createRevalidation(body: components["schemas"]["Campaign.CampaignRevalidationInput-campaign.write"]): Promise<components["schemas"]["Campaign-campaign.read"]> {
+  async unschedule(uuid: string): Promise<unknown> {
+    const result = await this.client.request<unknown>({
+      method: "PUT",
+      path: pathWithParams("/campaigns/{uuid}/actions/unschedule", { uuid: uuid }),
+      pathTemplate: "/campaigns/{uuid}/actions/unschedule",
+    });
+    return result.data;
+  }
+
+  async createRevalidation(body: components["schemas"]["Campaign.CampaignRevalidationInput-campaign.write.create_campaign_revalidation"]): Promise<components["schemas"]["Campaign-campaign.read"]> {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/revalidation", {  }),
       pathTemplate: "/campaigns/revalidation",
+      body,
+    });
+    return result.data;
+  }
+
+  async createSurvey(body: components["schemas"]["Campaign.CampaignSurveyInput-campaign.write.create_campaign_survey"]): Promise<components["schemas"]["Campaign-campaign.read_campaign.read.detail"]> {
+    const result = await this.client.request<components["schemas"]["Campaign-campaign.read_campaign.read.detail"]>({
+      method: "POST",
+      path: pathWithParams("/campaigns/survey", {  }),
+      pathTemplate: "/campaigns/survey",
       body,
     });
     return result.data;

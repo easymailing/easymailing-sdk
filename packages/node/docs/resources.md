@@ -4,7 +4,7 @@
 
 This file lists every generated public SDK resource and method. It is generated from `packages/contract/openapi.json` and `packages/contract/sdk-map.yml`.
 
-Generated resources expose 50 resource groups and 289 non-deprecated API operations.
+Generated resources expose 59 resource groups and 370 non-deprecated API operations.
 
 Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
@@ -30,26 +30,33 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | [audiences.members.activities](#audiences.members.activities) | `em.audiences("audienceUuid").members("memberUuid").activities` | 1 | `/audiences/{audienceUuid}/members/{memberUuid}/activities` |
 | [audiences.mergeTags](#audiences.mergeTags) | `em.audiences("audienceUuid").mergeTags` | 1 | `/audiences/{audienceUuid}/merge_tags` |
 | [audiences.subscriptionForms](#audiences.subscriptionForms) | `em.audiences("audienceUuid").subscriptionForms` | 12 | `/audiences/{audienceUuid}/suscription_forms` |
+| [audiences.surveys](#audiences.surveys) | `em.audiences("audienceUuid").surveys` | 8 | `/audiences/{audienceUuid}/surveys` |
 | [automations](#automations) | `em.automations` | 7 | `/automations` |
 | [automations.automationQueues](#automations.automationQueues) | `em.automations("automationUuid").automationQueues` | 3 | `/automations/{automationUuid}/automation_queues` |
 | [automations.automationSteps](#automations.automationSteps) | `em.automations("automationUuid").automationSteps` | 30 | `/automations/{automationUuid}/automation_steps` |
 | [automations.triggers](#automations.triggers) | `em.automations("automationUuid").triggers` | 55 | `/automations/{automationUuid}/automation_triggers` |
 | [batchOperations](#batchOperations) | `em.batchOperations` | 6 | `/batch_operations` |
-| [campaigns](#campaigns) | `em.campaigns` | 13 | `/campaigns` |
+| [campaigns](#campaigns) | `em.campaigns` | 16 | `/campaigns` |
+| [companies](#companies) | `em.companies` | 5 | `/companies` |
+| [companyAttributes](#companyAttributes) | `em.companyAttributes` | 6 | `/company_attributes` |
+| [companyIndustries](#companyIndustries) | `em.companyIndustries` | 1 | `/company_industries` |
+| [contactAttributes](#contactAttributes) | `em.contactAttributes` | 6 | `/contact_attributes` |
+| [contacts](#contacts) | `em.contacts` | 5 | `/contacts` |
+| [contacts.audienceMemberships](#contacts.audienceMemberships) | `em.contacts("contactUuid").audienceMemberships` | 4 | `/contacts/{contactUuid}/audience_memberships` |
+| [contactTags](#contactTags) | `em.contactTags` | 1 | `/contact_tags` |
 | [dataManagers](#dataManagers) | `em.dataManagers` | 5 | `/data_managers` |
 | [designSettings](#designSettings) | `em.designSettings` | 6 | `/design_settings` |
 | [invoices](#invoices) | `em.invoices` | 2 | `/invoices` |
-| [listSegmentConditions](#listSegmentConditions) | `em.listSegmentConditions` | 1 | `/list_segment_conditions` |
 | [masterTemplates](#masterTemplates) | `em.masterTemplates` | 3 | `/master_templates` |
-| [memberCampaignDeliveredEvents](#memberCampaignDeliveredEvents) | `em.memberCampaignDeliveredEvents` | 1 | `/member_campaign_delivered_events` |
 | [members](#members) | `em.members` | 1 | `/members` |
-| [memberSmsBouncedEvents](#memberSmsBouncedEvents) | `em.memberSmsBouncedEvents` | 1 | `/member_sms_bounced_events` |
-| [memberSmsClickedEvents](#memberSmsClickedEvents) | `em.memberSmsClickedEvents` | 1 | `/member_sms_clicked_events` |
-| [memberSmsDeliveredEvents](#memberSmsDeliveredEvents) | `em.memberSmsDeliveredEvents` | 1 | `/member_sms_delivered_events` |
-| [memberSmsRepliedEvents](#memberSmsRepliedEvents) | `em.memberSmsRepliedEvents` | 1 | `/member_sms_replied_events` |
-| [memberSmsSubscribedEvents](#memberSmsSubscribedEvents) | `em.memberSmsSubscribedEvents` | 1 | `/member_sms_subscribed_events` |
-| [memberSmsUnsubscribedEvents](#memberSmsUnsubscribedEvents) | `em.memberSmsUnsubscribedEvents` | 1 | `/member_sms_unsubscribed_events` |
 | [mySubscription](#mySubscription) | `em.mySubscription` | 1 | `/my_suscription` |
+| [notes](#notes) | `em.notes` | 5 | `/notes` |
+| [opportunities](#opportunities) | `em.opportunities` | 11 | `/opportunities` |
+| [opportunityAttributes](#opportunityAttributes) | `em.opportunityAttributes` | 6 | `/opportunity_attributes` |
+| [pipelines](#pipelines) | `em.pipelines` | 10 | `/pipelines` |
+| [pipelines.lossReasons](#pipelines.lossReasons) | `em.pipelines("pipelineUuid").lossReasons` | 4 | `/pipelines/{pipelineUuid}/loss_reasons` |
+| [pipelines.stages](#pipelines.stages) | `em.pipelines("pipelineUuid").stages` | 3 | `/pipelines/{pipelineUuid}/stages` |
+| [pipelineTemplates](#pipelineTemplates) | `em.pipelineTemplates` | 1 | `/pipeline_templates` |
 | [senderDomains](#senderDomains) | `em.senderDomains` | 6 | `/sender_domains` |
 | [senders](#senders) | `em.senders` | 5 | `/senders` |
 | [smsCampaigns](#smsCampaigns) | `em.smsCampaigns` | 9 | `/sms_campaigns` |
@@ -61,7 +68,9 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | [stores.products](#stores.products) | `em.stores("storeResourceId").products` | 5 | `/stores/{storeResourceId}/products` |
 | [stores.products.variants](#stores.products.variants) | `em.stores("storeResourceId").products("productResourceId").variants` | 5 | `/stores/{storeResourceId}/products/{productResourceId}/variants` |
 | [support](#support) | `em.support` | 2 | `/support` |
-| [templates](#templates) | `em.templates` | 7 | `/templates` |
+| [taskAssignees](#taskAssignees) | `em.taskAssignees` | 1 | `/task_assignees` |
+| [tasks](#tasks) | `em.tasks` | 8 | `/tasks` |
+| [templates](#templates) | `em.templates` | 8 | `/templates` |
 | [templatesSchema](#templatesSchema) | `em.templatesSchema` | 1 | `/templates_schema` |
 | [themeIndustries](#themeIndustries) | `em.themeIndustries` | 1 | `/theme_industries` |
 | [themes](#themes) | `em.themes` | 3 | `/themes` |
@@ -87,12 +96,12 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
 - Access: `em.audiences`
 - API path: `/audiences`
-- Child resources: `conditionFields`, `groups`, `listFields`, `listSegments`, `members`, `mergeTags`, `subscriptionForms`
+- Child resources: `conditionFields`, `groups`, `listFields`, `listSegments`, `members`, `mergeTags`, `subscriptionForms`, `surveys`
 
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
 | `list` | `em.audiences.list(query)` | `GET` | `/audiences` | page?: int, itemsPerPage?: int | - | `Page<Audience-audience.read>` | `list_audiences` |
-| `create` | `em.audiences.create(body)` | `POST` | `/audiences` | - | `Audience-audience.write` | `Audience-audience.read` | `create_audience` |
+| `create` | `em.audiences.create(body)` | `POST` | `/audiences` | - | `Audience-audience.write.create_audience` | `Audience-audience.read` | `create_audience` |
 | `get` | `em.audiences.get("uuid")` | `GET` | `/audiences/{uuid}` | - | - | `Audience-audience.read` | `get_audience` |
 | `update` | `em.audiences.update("uuid", body)` | `PUT` | `/audiences/{uuid}` | - | `Audience-audience.write` | `Audience-audience.read` | `update_audience` |
 
@@ -116,7 +125,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `list` | `em.audiences("audienceUuid").groups.list(query)` | `GET` | `/audiences/{audienceUuid}/groups` | page?: int, itemsPerPage?: int, title?: string, audience?: string | - | `Page<Group-group.read>` | `list_audience_groups` |
 | `create` | `em.audiences("audienceUuid").groups.create(body)` | `POST` | `/audiences/{audienceUuid}/groups` | - | `Group-group.write` | `Group-group.read` | `create_audience_group` |
 | `get` | `em.audiences("audienceUuid").groups.get("uuid")` | `GET` | `/audiences/{audienceUuid}/groups/{uuid}` | - | - | `Group-group.read` | `get_audience_group` |
-| `update` | `em.audiences("audienceUuid").groups.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/groups/{uuid}` | - | `Group-group.write` | `Group-group.read` | `update_audience_group` |
+| `update` | `em.audiences("audienceUuid").groups.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/groups/{uuid}` | - | `Group-group.write.update_audience_group` | `Group-group.read` | `update_audience_group` |
 | `delete` | `em.audiences("audienceUuid").groups.delete("uuid")` | `DELETE` | `/audiences/{audienceUuid}/groups/{uuid}` | - | - | `void` | `delete_audience_group` |
 | `addFromConditions` | `em.audiences("audienceUuid").groups.addFromConditions("uuid")` | `POST` | `/audiences/{audienceUuid}/groups/{uuid}/actions/add_from_conditions` | - | - | `Group.AsyncTaskResource` | `async_task_group_add_from_conditions` |
 | `clear` | `em.audiences("audienceUuid").groups.clear("uuid")` | `POST` | `/audiences/{audienceUuid}/groups/{uuid}/actions/clear` | - | - | `Group.AsyncTaskResource` | `async_task_group_clear` |
@@ -135,11 +144,11 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `get` | `em.audiences("audienceUuid").listFields.get("uuid")` | `GET` | `/audiences/{audienceUuid}/list_fields/{uuid}` | - | - | `ListField-list_field.read` | `get_audience_custom_field` |
 | `delete` | `em.audiences("audienceUuid").listFields.delete("uuid")` | `DELETE` | `/audiences/{audienceUuid}/list_fields/{uuid}` | - | - | `void` | `delete_custom_field` |
 | `createMultiselect` | `em.audiences("audienceUuid").listFields.createMultiselect(body)` | `POST` | `/audiences/{audienceUuid}/list_fields/multiselect` | - | `ListField.CustomFieldMultiselect-list_field.write` | `ListField-list_field.read` | `create_custom_field_multiselect` |
-| `createSelect` | `em.audiences("audienceUuid").listFields.createSelect(body)` | `POST` | `/audiences/{audienceUuid}/list_fields/select` | - | `ListField.CustomFieldSelect-list_field.write` | `ListField-list_field.read` | `create_custom_field_select` |
-| `createSimple` | `em.audiences("audienceUuid").listFields.createSimple(body)` | `POST` | `/audiences/{audienceUuid}/list_fields/simple` | - | `ListField.CustomFieldSimple-list_field.write` | `ListField-list_field.read` | `create_custom_field_simple` |
+| `createSelect` | `em.audiences("audienceUuid").listFields.createSelect(body)` | `POST` | `/audiences/{audienceUuid}/list_fields/select` | - | `ListField.CustomFieldSelect-list_field.write.create_custom_field_select` | `ListField-list_field.read` | `create_custom_field_select` |
+| `createSimple` | `em.audiences("audienceUuid").listFields.createSimple(body)` | `POST` | `/audiences/{audienceUuid}/list_fields/simple` | - | `ListField.CustomFieldSimple-list_field.write.create_custom_field_simple` | `ListField-list_field.read` | `create_custom_field_simple` |
 | `updateMultiselect` | `em.audiences("audienceUuid").listFields.updateMultiselect("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_fields/{uuid}/multiselect` | - | `ListField.CustomFieldMultiselect-list_field.write` | `ListField-list_field.read` | `update_custom_field_multiselect` |
-| `updateSelect` | `em.audiences("audienceUuid").listFields.updateSelect("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_fields/{uuid}/select` | - | `ListField.CustomFieldSelect-list_field.write` | `ListField-list_field.read` | `update_custom_field_select` |
-| `updateSimple` | `em.audiences("audienceUuid").listFields.updateSimple("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_fields/{uuid}/simple` | - | `ListField.CustomFieldSimple-list_field.write` | `ListField-list_field.read` | `update_custom_field_simple` |
+| `updateSelect` | `em.audiences("audienceUuid").listFields.updateSelect("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_fields/{uuid}/select` | - | `ListField.CustomFieldSelect-list_field.write.update_custom_field_select` | `ListField-list_field.read` | `update_custom_field_select` |
+| `updateSimple` | `em.audiences("audienceUuid").listFields.updateSimple("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_fields/{uuid}/simple` | - | `ListField.CustomFieldSimple-list_field.write.update_custom_field_simple` | `ListField-list_field.read` | `update_custom_field_simple` |
 
 ### <a id="audiences.listSegments"></a>`audiences.listSegments`
 
@@ -151,7 +160,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `list` | `em.audiences("audienceUuid").listSegments.list(query)` | `GET` | `/audiences/{audienceUuid}/list_segments` | page?: int, itemsPerPage?: int, name?: string, description?: string, audience?: string | - | `Page<ListSegment-list_segment.read>` | `list_audience_segments` |
 | `create` | `em.audiences("audienceUuid").listSegments.create(body)` | `POST` | `/audiences/{audienceUuid}/list_segments` | - | `ListSegment-list_segment.write` | `ListSegment-list_segment.read` | `create_audience_segment` |
 | `get` | `em.audiences("audienceUuid").listSegments.get("uuid")` | `GET` | `/audiences/{audienceUuid}/list_segments/{uuid}` | - | - | `ListSegment-list_segment.read` | `get_audience_segment` |
-| `update` | `em.audiences("audienceUuid").listSegments.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_segments/{uuid}` | - | `ListSegment-list_segment.write` | `ListSegment-list_segment.read` | `update_audience_segment` |
+| `update` | `em.audiences("audienceUuid").listSegments.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/list_segments/{uuid}` | - | `ListSegment-list_segment.write.update_audience_segment` | `ListSegment-list_segment.read` | `update_audience_segment` |
 | `delete` | `em.audiences("audienceUuid").listSegments.delete("uuid")` | `DELETE` | `/audiences/{audienceUuid}/list_segments/{uuid}` | - | - | `void` | `delete_audience_segment` |
 | `addToGroup` | `em.audiences("audienceUuid").listSegments.addToGroup("uuid")` | `POST` | `/audiences/{audienceUuid}/list_segments/{uuid}/actions/add_to_group` | - | - | `ListSegment.AsyncTaskResource` | `async_task_segment_add_to_group` |
 | `deleteContacts` | `em.audiences("audienceUuid").listSegments.deleteContacts("uuid")` | `POST` | `/audiences/{audienceUuid}/list_segments/{uuid}/actions/delete_contacts` | - | - | `ListSegment.AsyncTaskResource` | `async_task_segment_delete_contacts` |
@@ -167,14 +176,14 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
-| `list` | `em.audiences("audienceUuid").members.list(query)` | `GET` | `/audiences/{audienceUuid}/members` | page?: int, itemsPerPage?: int, email?: string, status?: string, phone?: string, sms_status?: string, email_opt_in_source?: string, sms_opt_in_source?: string, source?: string, groups?: string, suscriptionForm?: string | - | `Page<Member-member.read>` | `list_audience_members` |
-| `create` | `em.audiences("audienceUuid").members.create(body, query)` | `POST` | `/audiences/{audienceUuid}/members` | disableDoubleOptIn?: bool, disableWelcomeEmail?: bool, disableSmsDoubleOptIn?: bool | `Member-member.write` | `Member-member.read` | `create_audience_member` |
+| `list` | `em.audiences("audienceUuid").members.list(query)` | `GET` | `/audiences/{audienceUuid}/members` | page?: int, itemsPerPage?: int, email?: string, status?: string, phone?: string, sms_status?: string, email_opt_in_source?: string, sms_opt_in_source?: string, source?: string, groups?: string, suscription_form?: string | - | `Page<Member-member.read>` | `list_audience_members` |
+| `create` | `em.audiences("audienceUuid").members.create(body, query)` | `POST` | `/audiences/{audienceUuid}/members` | disable_double_opt_in?: bool, disable_welcome_email?: bool, disable_sms_double_opt_in?: bool | `Member-member.write` | `Member-member.read` | `create_audience_member` |
 | `get` | `em.audiences("audienceUuid").members.get("uuid")` | `GET` | `/audiences/{audienceUuid}/members/{uuid}` | - | - | `Member-member.read` | `get_audience_member` |
-| `update` | `em.audiences("audienceUuid").members.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}` | - | `Member-member.write` | `Member-member.read` | `update_audience_member` |
+| `update` | `em.audiences("audienceUuid").members.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}` | - | `Member-member.write.update_audience_member` | `Member-member.read` | `update_audience_member` |
 | `delete` | `em.audiences("audienceUuid").members.delete("uuid")` | `DELETE` | `/audiences/{audienceUuid}/members/{uuid}` | - | - | `void` | `delete_audience_member` |
 | `addToGroup` | `em.audiences("audienceUuid").members.addToGroup("uuid", "groupUuid")` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}/actions/add_to_group/{groupUuid}` | - | - | `Member-member.read` | `member_add_from_group` |
 | `removeFromGroup` | `em.audiences("audienceUuid").members.removeFromGroup("uuid", "groupUuid")` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}/actions/remove_from_group/{groupUuid}` | - | - | `Member-member.read` | `member_remove_from_group` |
-| `subscribe` | `em.audiences("audienceUuid").members.subscribe("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}/actions/subscribe` | - | `Member-member.action` | `Member-member.read` | `member_subscribe` |
+| `subscribe` | `em.audiences("audienceUuid").members.subscribe("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}/actions/subscribe` | - | `Member-member.action.member_subscribe` | `Member-member.read` | `member_subscribe` |
 | `unsubscribe` | `em.audiences("audienceUuid").members.unsubscribe("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/members/{uuid}/actions/unsubscribe` | - | `Member-member.action` | `Member-member.read` | `member_unsubscribe` |
 
 ### <a id="audiences.members.activities"></a>`audiences.members.activities`
@@ -215,6 +224,22 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `updateEmbedded` | `em.audiences("audienceUuid").subscriptionForms.updateEmbedded("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/suscription_forms/{uuid}/embedded` | - | `SuscriptionForm.UpdateEmbeddedFormDto-suscription_form.write` | `SuscriptionForm-suscription_form.read` | `update_embedded_form` |
 | `updatePopup` | `em.audiences("audienceUuid").subscriptionForms.updatePopup("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/suscription_forms/{uuid}/popup` | - | `SuscriptionForm.UpdatePopupFormDto-suscription_form.write` | `SuscriptionForm-suscription_form.read` | `update_popup_form` |
 
+### <a id="audiences.surveys"></a>`audiences.surveys`
+
+- Access: `em.audiences("audienceUuid").surveys`
+- API path: `/audiences/{audienceUuid}/surveys`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.audiences("audienceUuid").surveys.list(query)` | `GET` | `/audiences/{audienceUuid}/surveys` | page?: int, itemsPerPage?: int, name?: string, status?: string, type?: string | - | `Page<Survey-survey.read>` | `list_surveys` |
+| `create` | `em.audiences("audienceUuid").surveys.create(body)` | `POST` | `/audiences/{audienceUuid}/surveys` | - | `Survey.CreateSurveyInput-survey.write.create_survey` | `Survey-survey.read_survey.read.detail` | `create_survey` |
+| `get` | `em.audiences("audienceUuid").surveys.get("uuid")` | `GET` | `/audiences/{audienceUuid}/surveys/{uuid}` | - | - | `Survey-survey.read_survey.read.detail` | `get_survey` |
+| `update` | `em.audiences("audienceUuid").surveys.update("uuid", body)` | `PUT` | `/audiences/{audienceUuid}/surveys/{uuid}` | - | `Survey.UpdateSurveyInput-survey.write.update_survey` | `Survey-survey.read_survey.read.detail` | `update_survey` |
+| `delete` | `em.audiences("audienceUuid").surveys.delete("uuid")` | `DELETE` | `/audiences/{audienceUuid}/surveys/{uuid}` | - | - | `void` | `delete_survey` |
+| `activate` | `em.audiences("audienceUuid").surveys.activate("uuid")` | `PUT` | `/audiences/{audienceUuid}/surveys/{uuid}/actions/activate` | - | - | `array` | `survey_activate` |
+| `close` | `em.audiences("audienceUuid").surveys.close("uuid")` | `PUT` | `/audiences/{audienceUuid}/surveys/{uuid}/actions/close` | - | - | `array` | `survey_close` |
+| `getStats` | `em.audiences("audienceUuid").surveys.getStats("uuid")` | `GET` | `/audiences/{audienceUuid}/surveys/{uuid}/stats` | - | - | `Survey.SurveyStatsOutput-survey.stats` | `get_survey_stats` |
+
 ### <a id="automations"></a>`automations`
 
 - Access: `em.automations`
@@ -224,7 +249,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
 | `list` | `em.automations.list(query)` | `GET` | `/automations` | page?: int, itemsPerPage?: int, title?: string, audience?: string | - | `Page<Automation-automation.read>` | `list_automations` |
-| `create` | `em.automations.create(body)` | `POST` | `/automations` | - | `Automation-automation.write` | `Automation-automation.read` | `create_automation` |
+| `create` | `em.automations.create(body)` | `POST` | `/automations` | - | `Automation-automation.write.create_automation` | `Automation-automation.read` | `create_automation` |
 | `get` | `em.automations.get("uuid")` | `GET` | `/automations/{uuid}` | - | - | `Automation-automation.read_automation.read.detail` | `get_automation` |
 | `update` | `em.automations.update("uuid", body)` | `PUT` | `/automations/{uuid}` | - | `Automation-automation.write` | `Automation-automation.read` | `update_automation` |
 | `delete` | `em.automations.delete("uuid")` | `DELETE` | `/automations/{uuid}` | - | - | `void` | `delete_automation` |
@@ -265,20 +290,20 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `createUnsubscribe` | `em.automations("automationUuid").automationSteps.createUnsubscribe(body)` | `POST` | `/automations/{automationUuid}/automation_steps/unsubscribe` | - | `AutomationStep.AutomationStepUnsubscribe-automation_step.write` | `AutomationStep.AutomationStepUnsubscribeResource-automation_step.read` | `create_step_unsubscribe` |
 | `createUpdateCustomField` | `em.automations("automationUuid").automationSteps.createUpdateCustomField(body)` | `POST` | `/automations/{automationUuid}/automation_steps/update_custom_field` | - | `AutomationStep.AutomationStepUpdateCustomField-automation_step.write` | `AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read` | `create_step_update_custom_field` |
 | `createUpdateScore` | `em.automations("automationUuid").automationSteps.createUpdateScore(body)` | `POST` | `/automations/{automationUuid}/automation_steps/update_score` | - | `AutomationStep.AutomationStepUpdateScore-automation_step.write` | `AutomationStep.AutomationStepUpdateScoreResource-automation_step.read` | `create_step_update_score` |
-| `updateAddToGroup` | `em.automations("automationUuid").automationSteps.updateAddToGroup("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/add_to_group` | - | `AutomationStep.AutomationStepAddToGroup-automation_step.write` | `AutomationStep.AutomationStepAddToGroupResource-automation_step.read` | `update_step_add_to_group` |
-| `updateCondition` | `em.automations("automationUuid").automationSteps.updateCondition("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/condition` | - | `AutomationStep.AutomationStepCondition-automation_step.write` | `AutomationStep.AutomationStepConditionResource-automation_step.read` | `update_step_condition` |
-| `updateDelay` | `em.automations("automationUuid").automationSteps.updateDelay("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/delay` | - | `AutomationStep.AutomationStepDelay-automation_step.write` | `AutomationStep.AutomationStepDelayResource-automation_step.read` | `update_step_delay` |
-| `updateMoveToStep` | `em.automations("automationUuid").automationSteps.updateMoveToStep("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/move_to_step` | - | `AutomationStep.AutomationStepMoveToStep-automation_step.write` | `AutomationStep.AutomationStepMoveToStepResource-automation_step.read` | `update_step_move_to_step` |
+| `updateAddToGroup` | `em.automations("automationUuid").automationSteps.updateAddToGroup("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/add_to_group` | - | `AutomationStep.AutomationStepAddToGroup-automation_step.write.update_step_add_to_group` | `AutomationStep.AutomationStepAddToGroupResource-automation_step.read` | `update_step_add_to_group` |
+| `updateCondition` | `em.automations("automationUuid").automationSteps.updateCondition("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/condition` | - | `AutomationStep.AutomationStepCondition-automation_step.write.update_step_condition` | `AutomationStep.AutomationStepConditionResource-automation_step.read` | `update_step_condition` |
+| `updateDelay` | `em.automations("automationUuid").automationSteps.updateDelay("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/delay` | - | `AutomationStep.AutomationStepDelay-automation_step.write.update_step_delay` | `AutomationStep.AutomationStepDelayResource-automation_step.read` | `update_step_delay` |
+| `updateMoveToStep` | `em.automations("automationUuid").automationSteps.updateMoveToStep("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/move_to_step` | - | `AutomationStep.AutomationStepMoveToStep-automation_step.write.update_step_move_to_step` | `AutomationStep.AutomationStepMoveToStepResource-automation_step.read` | `update_step_move_to_step` |
 | `updatePosition` | `em.automations("automationUuid").automationSteps.updatePosition("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/position` | - | `AutomationStep.AutomationStepPosition-automation_step.write` | `AutomationStep-automation_step.read` | `move_step_position` |
-| `updateRemoveFromGroup` | `em.automations("automationUuid").automationSteps.updateRemoveFromGroup("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group` | - | `AutomationStep.AutomationStepRemoveFromGroup-automation_step.write` | `AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read` | `update_step_remove_from_group` |
-| `updateSendCampaign` | `em.automations("automationUuid").automationSteps.updateSendCampaign("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_campaign` | - | `AutomationStep.AutomationStepSendCampaign-automation_step.write` | `AutomationStep.AutomationStepSendCampaignResource-automation_step.read` | `update_step_send_campaign` |
-| `updateSendNotification` | `em.automations("automationUuid").automationSteps.updateSendNotification("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_notification` | - | `AutomationStep.AutomationStepSendNotification-automation_step.write` | `AutomationStep.AutomationStepSendNotificationResource-automation_step.read` | `update_step_send_notification` |
+| `updateRemoveFromGroup` | `em.automations("automationUuid").automationSteps.updateRemoveFromGroup("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group` | - | `AutomationStep.AutomationStepRemoveFromGroup-automation_step.write.update_step_remove_from_group` | `AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read` | `update_step_remove_from_group` |
+| `updateSendCampaign` | `em.automations("automationUuid").automationSteps.updateSendCampaign("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_campaign` | - | `AutomationStep.AutomationStepSendCampaign-automation_step.write.update_step_send_campaign` | `AutomationStep.AutomationStepSendCampaignResource-automation_step.read` | `update_step_send_campaign` |
+| `updateSendNotification` | `em.automations("automationUuid").automationSteps.updateSendNotification("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_notification` | - | `AutomationStep.AutomationStepSendNotification-automation_step.write.update_step_send_notification` | `AutomationStep.AutomationStepSendNotificationResource-automation_step.read` | `update_step_send_notification` |
 | `updateSendSms` | `em.automations("automationUuid").automationSteps.updateSendSms("uuid")` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_sms` | - | - | `AutomationStep.AutomationStepSendSmsResource-automation_step.read` | `update_step_send_sms` |
-| `updateSendWebhook` | `em.automations("automationUuid").automationSteps.updateSendWebhook("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_webhook` | - | `AutomationStep.AutomationStepSendWebhook-automation_step.write` | `AutomationStep.AutomationStepSendWebhookResource-automation_step.read` | `update_step_send_webhook` |
-| `updateTriggerAutomation` | `em.automations("automationUuid").automationSteps.updateTriggerAutomation("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation` | - | `AutomationStep.AutomationStepTriggerAutomation-automation_step.write` | `AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read` | `update_step_trigger_automation` |
-| `updateUnsubscribe` | `em.automations("automationUuid").automationSteps.updateUnsubscribe("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe` | - | `AutomationStep.AutomationStepUnsubscribe-automation_step.write` | `AutomationStep.AutomationStepUnsubscribeResource-automation_step.read` | `update_step_unsubscribe` |
-| `updateUpdateCustomField` | `em.automations("automationUuid").automationSteps.updateUpdateCustomField("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field` | - | `AutomationStep.AutomationStepUpdateCustomField-automation_step.write` | `AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read` | `update_step_update_custom_field` |
-| `updateUpdateScore` | `em.automations("automationUuid").automationSteps.updateUpdateScore("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/update_score` | - | `AutomationStep.AutomationStepUpdateScore-automation_step.write` | `AutomationStep.AutomationStepUpdateScoreResource-automation_step.read` | `update_step_update_score` |
+| `updateSendWebhook` | `em.automations("automationUuid").automationSteps.updateSendWebhook("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/send_webhook` | - | `AutomationStep.AutomationStepSendWebhook-automation_step.write.update_step_send_webhook` | `AutomationStep.AutomationStepSendWebhookResource-automation_step.read` | `update_step_send_webhook` |
+| `updateTriggerAutomation` | `em.automations("automationUuid").automationSteps.updateTriggerAutomation("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation` | - | `AutomationStep.AutomationStepTriggerAutomation-automation_step.write.update_step_trigger_automation` | `AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read` | `update_step_trigger_automation` |
+| `updateUnsubscribe` | `em.automations("automationUuid").automationSteps.updateUnsubscribe("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe` | - | `AutomationStep.AutomationStepUnsubscribe-automation_step.write.update_step_unsubscribe` | `AutomationStep.AutomationStepUnsubscribeResource-automation_step.read` | `update_step_unsubscribe` |
+| `updateUpdateCustomField` | `em.automations("automationUuid").automationSteps.updateUpdateCustomField("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field` | - | `AutomationStep.AutomationStepUpdateCustomField-automation_step.write.update_step_update_custom_field` | `AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read` | `update_step_update_custom_field` |
+| `updateUpdateScore` | `em.automations("automationUuid").automationSteps.updateUpdateScore("uuid", body)` | `PUT` | `/automations/{automationUuid}/automation_steps/{uuid}/update_score` | - | `AutomationStep.AutomationStepUpdateScore-automation_step.write.update_step_update_score` | `AutomationStep.AutomationStepUpdateScoreResource-automation_step.read` | `update_step_update_score` |
 
 ### <a id="automations.triggers"></a>`automations.triggers`
 
@@ -371,12 +396,100 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `delete` | `em.campaigns.delete("uuid")` | `DELETE` | `/campaigns/{uuid}` | - | - | `void` | `delete_campaign` |
 | `duplicate` | `em.campaigns.duplicate("uuid", body)` | `POST` | `/campaigns/{uuid}/actions/duplicate` | - | `Campaign.CampaignDuplicateInput-campaign.write_duplicate` | `Campaign-campaign.read` | `duplicate_campaign` |
 | `schedule` | `em.campaigns.schedule("uuid", body)` | `PUT` | `/campaigns/{uuid}/actions/schedule` | - | `Campaign.CampaignSendInput-campaign.write_schedule` | `array` | `campaign_schedule` |
+| `selectSurvey` | `em.campaigns.selectSurvey("uuid", body)` | `PUT` | `/campaigns/{uuid}/actions/select_survey` | - | `Campaign.CampaignSelectSurveyInput-campaign.write` | `Campaign.CampaignSelectSurveyOutput-campaign.read` | `campaign_select_survey` |
 | `sendNow` | `em.campaigns.sendNow("uuid", body)` | `PUT` | `/campaigns/{uuid}/actions/send_now` | - | `Campaign.CampaignSendInput-campaign.write_send` | `array` | `campaign_send_now` |
 | `sendTest` | `em.campaigns.sendTest("uuid", body)` | `PUT` | `/campaigns/{uuid}/actions/send_test` | - | `Campaign.CampaignSendTestInput-campaign.write_send_test` | `array` | `campaign_send_test` |
-| `createRevalidation` | `em.campaigns.createRevalidation(body)` | `POST` | `/campaigns/revalidation` | - | `Campaign.CampaignRevalidationInput-campaign.write` | `Campaign-campaign.read` | `create_campaign_revalidation` |
+| `unschedule` | `em.campaigns.unschedule("uuid")` | `PUT` | `/campaigns/{uuid}/actions/unschedule` | - | - | `array` | `campaign_unschedule` |
+| `createRevalidation` | `em.campaigns.createRevalidation(body)` | `POST` | `/campaigns/revalidation` | - | `Campaign.CampaignRevalidationInput-campaign.write.create_campaign_revalidation` | `Campaign-campaign.read` | `create_campaign_revalidation` |
+| `createSurvey` | `em.campaigns.createSurvey(body)` | `POST` | `/campaigns/survey` | - | `Campaign.CampaignSurveyInput-campaign.write.create_campaign_survey` | `Campaign-campaign.read_campaign.read.detail` | `create_campaign_survey` |
 | `createTestAbSender` | `em.campaigns.createTestAbSender(body)` | `POST` | `/campaigns/test_ab/sender` | - | `Campaign.CampaignTestABSenderInput-campaign.write.test_ab_sender` | `Campaign-campaign.read` | `create_campaign_test_ab_sender` |
 | `createTestAbSubject` | `em.campaigns.createTestAbSubject(body)` | `POST` | `/campaigns/test_ab/subject` | - | `Campaign.CampaignTestABSubjectInput-campaign.write.test_ab_subject` | `Campaign-campaign.read` | `create_campaign_test_ab_subject` |
 | `createTestAbTemplate` | `em.campaigns.createTestAbTemplate(body)` | `POST` | `/campaigns/test_ab/template` | - | `Campaign.CampaignTestABTemplateInput-campaign.write.test_ab_template` | `Campaign-campaign.read` | `create_campaign_test_ab_template` |
+
+### <a id="companies"></a>`companies`
+
+- Access: `em.companies`
+- API path: `/companies`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.companies.list(query)` | `GET` | `/companies` | page?: int, itemsPerPage?: int, name?: string, domain?: string, owner?: string, country_code?: string, city?: string, company_type?: string, industry?: string, record_source?: string, order[name]?: string | - | `Page<Company-company.list>` | `list_companies` |
+| `create` | `em.companies.create(body)` | `POST` | `/companies` | - | `Company.CompanyCreateInput` | `Company-company.list_company.detail` | `create_company` |
+| `get` | `em.companies.get("uuid")` | `GET` | `/companies/{uuid}` | - | - | `Company-company.list_company.detail` | `get_company` |
+| `update` | `em.companies.update("uuid", body)` | `PUT` | `/companies/{uuid}` | - | `Company.CompanyUpdateInput` | `Company-company.list_company.detail` | `update_company` |
+| `delete` | `em.companies.delete("uuid")` | `DELETE` | `/companies/{uuid}` | - | - | `void` | `delete_company` |
+
+### <a id="companyAttributes"></a>`companyAttributes`
+
+- Access: `em.companyAttributes`
+- API path: `/company_attributes`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.companyAttributes.list(query)` | `GET` | `/company_attributes` | - | - | `Page<CompanyAttribute-company_attribute.read>` | `list_company_attributes` |
+| `create` | `em.companyAttributes.create(body)` | `POST` | `/company_attributes` | - | `CompanyAttribute.CompanyAttributeCreateInput` | `CompanyAttribute-company_attribute.read` | `create_company_attribute` |
+| `get` | `em.companyAttributes.get("uuid")` | `GET` | `/company_attributes/{uuid}` | - | - | `CompanyAttribute-company_attribute.read` | `get_company_attribute` |
+| `update` | `em.companyAttributes.update("uuid", body)` | `PUT` | `/company_attributes/{uuid}` | - | `CompanyAttribute.CompanyAttributeUpdateInput` | `CompanyAttribute-company_attribute.read` | `update_company_attribute` |
+| `archive` | `em.companyAttributes.archive("uuid", body)` | `PUT` | `/company_attributes/{uuid}/actions/archive` | - | `CompanyAttribute.CompanyAttributeVersionInput` | `CompanyAttribute-company_attribute.read` | `archive_company_attribute` |
+| `restore` | `em.companyAttributes.restore("uuid", body)` | `PUT` | `/company_attributes/{uuid}/actions/restore` | - | `CompanyAttribute.CompanyAttributeVersionInput` | `CompanyAttribute-company_attribute.read` | `restore_company_attribute` |
+
+### <a id="companyIndustries"></a>`companyIndustries`
+
+- Access: `em.companyIndustries`
+- API path: `/company_industries`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.companyIndustries.list(query)` | `GET` | `/company_industries` | - | - | `Page<CompanyIndustry-company_industry.read>` | `list_company_industries` |
+
+### <a id="contactAttributes"></a>`contactAttributes`
+
+- Access: `em.contactAttributes`
+- API path: `/contact_attributes`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.contactAttributes.list(query)` | `GET` | `/contact_attributes` | - | - | `Page<ContactAttribute-contact_attribute.read>` | `list_contact_attributes` |
+| `create` | `em.contactAttributes.create(body)` | `POST` | `/contact_attributes` | - | `ContactAttribute.ContactAttributeCreateInput` | `ContactAttribute-contact_attribute.read` | `create_contact_attribute` |
+| `get` | `em.contactAttributes.get("uuid")` | `GET` | `/contact_attributes/{uuid}` | - | - | `ContactAttribute-contact_attribute.read` | `get_contact_attribute` |
+| `update` | `em.contactAttributes.update("uuid", body)` | `PUT` | `/contact_attributes/{uuid}` | - | `ContactAttribute.ContactAttributeUpdateInput` | `ContactAttribute-contact_attribute.read` | `update_contact_attribute` |
+| `archive` | `em.contactAttributes.archive("uuid", body)` | `PUT` | `/contact_attributes/{uuid}/actions/archive` | - | `ContactAttribute.ContactAttributeVersionInput` | `ContactAttribute-contact_attribute.read` | `archive_contact_attribute` |
+| `restore` | `em.contactAttributes.restore("uuid", body)` | `PUT` | `/contact_attributes/{uuid}/actions/restore` | - | `ContactAttribute.ContactAttributeVersionInput` | `ContactAttribute-contact_attribute.read` | `restore_contact_attribute` |
+
+### <a id="contacts"></a>`contacts`
+
+- Access: `em.contacts`
+- API path: `/contacts`
+- Child resources: `audienceMemberships`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.contacts.list(query)` | `GET` | `/contacts` | page?: int, itemsPerPage?: int, search?: string, company?: string, exclude_company?: string | - | `Page<Contact-contact.read>` | `list_contacts` |
+| `create` | `em.contacts.create(body)` | `POST` | `/contacts` | - | `Contact.ContactCreateInput` | `Contact-contact.read` | `create_contact` |
+| `get` | `em.contacts.get("uuid")` | `GET` | `/contacts/{uuid}` | - | - | `Contact-contact.read` | `get_contact` |
+| `update` | `em.contacts.update("uuid", body)` | `PUT` | `/contacts/{uuid}` | - | `Contact.ContactUpdateInput` | `Contact-contact.read` | `update_contact` |
+| `delete` | `em.contacts.delete("uuid")` | `DELETE` | `/contacts/{uuid}` | - | - | `void` | `delete_contact` |
+
+### <a id="contacts.audienceMemberships"></a>`contacts.audienceMemberships`
+
+- Access: `em.contacts("contactUuid").audienceMemberships`
+- API path: `/contacts/{contactUuid}/audience_memberships`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.contacts("contactUuid").audienceMemberships.list(query)` | `GET` | `/contacts/{contactUuid}/audience_memberships` | - | - | `Page<ContactAudienceMembership-contact_audience_membership.read>` | `list_contact_audience_memberships` |
+| `update` | `em.contacts("contactUuid").audienceMemberships.update("audienceUuid", body, query)` | `PUT` | `/contacts/{contactUuid}/audience_memberships/{audienceUuid}` | disable_double_opt_in?: bool, disable_welcome_email?: bool, disable_sms_double_opt_in?: bool | `ContactAudienceMembership.ContactMembershipChannelsInput` | `ContactAudienceMembership-contact_audience_membership.read` | `subscribe_contact_to_audience` |
+| `delete` | `em.contacts("contactUuid").audienceMemberships.delete("audienceUuid")` | `DELETE` | `/contacts/{contactUuid}/audience_memberships/{audienceUuid}` | - | - | `void` | `delete_contact_audience_membership` |
+| `unsubscribe` | `em.contacts("contactUuid").audienceMemberships.unsubscribe("audienceUuid", body)` | `PUT` | `/contacts/{contactUuid}/audience_memberships/{audienceUuid}/actions/unsubscribe` | - | `ContactAudienceMembership.ContactMembershipChannelsInput.unsubscribe_contact_from_audience` | `ContactAudienceMembership-contact_audience_membership.read` | `unsubscribe_contact_from_audience` |
+
+### <a id="contactTags"></a>`contactTags`
+
+- Access: `em.contactTags`
+- API path: `/contact_tags`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.contactTags.list(query)` | `GET` | `/contact_tags` | search?: string, page?: int, itemsPerPage?: int | - | `Page<ContactTag-contact_tag.read>` | `list_contact_tags` |
 
 ### <a id="dataManagers"></a>`dataManagers`
 
@@ -399,9 +512,9 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
 | `list` | `em.designSettings.list(query)` | `GET` | `/design_settings` | page?: int, itemsPerPage?: int | - | `Page<DesignSetting-design_setting.read>` | `list_design_settings` |
-| `create` | `em.designSettings.create(body)` | `POST` | `/design_settings` | - | `DesignSetting-design_setting.create` | `DesignSetting-design_setting.read` | `create_design_setting` |
+| `create` | `em.designSettings.create(body)` | `POST` | `/design_settings` | - | `DesignSetting-design_setting.create.create_design_setting` | `DesignSetting-design_setting.read` | `create_design_setting` |
 | `get` | `em.designSettings.get("uuid")` | `GET` | `/design_settings/{uuid}` | - | - | `DesignSetting-design_setting.read` | `get_design_setting` |
-| `update` | `em.designSettings.update("uuid", body)` | `PUT` | `/design_settings/{uuid}` | - | `DesignSetting-design_setting.write` | `DesignSetting-design_setting.read` | `update_design_setting` |
+| `update` | `em.designSettings.update("uuid", body)` | `PUT` | `/design_settings/{uuid}` | - | `DesignSetting-design_setting.write.update_design_setting` | `DesignSetting-design_setting.read` | `update_design_setting` |
 | `delete` | `em.designSettings.delete("uuid")` | `DELETE` | `/design_settings/{uuid}` | - | - | `void` | `delete_design_setting` |
 | `createFromUrl` | `em.designSettings.createFromUrl(body)` | `POST` | `/design_settings/from_url` | - | `DesignSetting.CreateFromUrlInput-design_setting.from_url` | `DesignSetting-design_setting.read` | `create_design_setting_from_url` |
 
@@ -415,15 +528,6 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `list` | `em.invoices.list(query)` | `GET` | `/invoices` | page?: int, itemsPerPage?: int | - | `Page<Invoice-invoice.read>` | `list_invoices` |
 | `get` | `em.invoices.get("uuid")` | `GET` | `/invoices/{uuid}` | - | - | `Invoice-invoice.read` | `get_invoice` |
 
-### <a id="listSegmentConditions"></a>`listSegmentConditions`
-
-- Access: `em.listSegmentConditions`
-- API path: `/list_segment_conditions`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.listSegmentConditions.get()` | `GET` | `/list_segment_conditions` | - | - | `ListSegmentCondition` | `api_list_segment_conditions_get` |
-
 ### <a id="masterTemplates"></a>`masterTemplates`
 
 - Access: `em.masterTemplates`
@@ -435,15 +539,6 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `get` | `em.masterTemplates.get("uuid")` | `GET` | `/master_templates/{uuid}` | - | - | `MasterTemplate-master_template.read` | `get_master_template` |
 | `createTemplate` | `em.masterTemplates.createTemplate("uuid", body)` | `POST` | `/master_templates/{uuid}/actions/create_template` | - | `MasterTemplate.CreateTemplateFromMasterInput-master_template.write` | `MasterTemplate.TemplateResource-template.read` | `create_template_from_master` |
 
-### <a id="memberCampaignDeliveredEvents"></a>`memberCampaignDeliveredEvents`
-
-- Access: `em.memberCampaignDeliveredEvents`
-- API path: `/member_campaign_delivered_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberCampaignDeliveredEvents.get()` | `GET` | `/member_campaign_delivered_events` | - | - | `MemberCampaignDeliveredEvent` | `api_member_campaign_delivered_events_get` |
-
 ### <a id="members"></a>`members`
 
 - Access: `em.members`
@@ -451,61 +546,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
-| `search` | `em.members.search(query)` | `GET` | `/members/search` | email?: string, status?: string, phone?: string, sms_status?: string, email_opt_in_source?: string, sms_opt_in_source?: string, source?: string, groups?: string, suscriptionForm?: string | - | `Page<Member-member.read>` | `search_member_by_email` |
-
-### <a id="memberSmsBouncedEvents"></a>`memberSmsBouncedEvents`
-
-- Access: `em.memberSmsBouncedEvents`
-- API path: `/member_sms_bounced_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberSmsBouncedEvents.get()` | `GET` | `/member_sms_bounced_events` | - | - | `MemberSmsBouncedEvent` | `api_member_sms_bounced_events_get` |
-
-### <a id="memberSmsClickedEvents"></a>`memberSmsClickedEvents`
-
-- Access: `em.memberSmsClickedEvents`
-- API path: `/member_sms_clicked_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberSmsClickedEvents.get()` | `GET` | `/member_sms_clicked_events` | - | - | `MemberSmsClickedEvent` | `api_member_sms_clicked_events_get` |
-
-### <a id="memberSmsDeliveredEvents"></a>`memberSmsDeliveredEvents`
-
-- Access: `em.memberSmsDeliveredEvents`
-- API path: `/member_sms_delivered_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberSmsDeliveredEvents.get()` | `GET` | `/member_sms_delivered_events` | - | - | `MemberSmsDeliveredEvent` | `api_member_sms_delivered_events_get` |
-
-### <a id="memberSmsRepliedEvents"></a>`memberSmsRepliedEvents`
-
-- Access: `em.memberSmsRepliedEvents`
-- API path: `/member_sms_replied_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberSmsRepliedEvents.get()` | `GET` | `/member_sms_replied_events` | - | - | `MemberSmsRepliedEvent` | `api_member_sms_replied_events_get` |
-
-### <a id="memberSmsSubscribedEvents"></a>`memberSmsSubscribedEvents`
-
-- Access: `em.memberSmsSubscribedEvents`
-- API path: `/member_sms_subscribed_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberSmsSubscribedEvents.get()` | `GET` | `/member_sms_subscribed_events` | - | - | `MemberSmsSubscribedEvent` | `api_member_sms_subscribed_events_get` |
-
-### <a id="memberSmsUnsubscribedEvents"></a>`memberSmsUnsubscribedEvents`
-
-- Access: `em.memberSmsUnsubscribedEvents`
-- API path: `/member_sms_unsubscribed_events`
-
-| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
-|---|---|---|---|---|---|---|---|
-| `get` | `em.memberSmsUnsubscribedEvents.get()` | `GET` | `/member_sms_unsubscribed_events` | - | - | `MemberSmsUnsubscribedEvent` | `api_member_sms_unsubscribed_events_get` |
+| `search` | `em.members.search(query)` | `GET` | `/members/search` | email?: string, status?: string, phone?: string, sms_status?: string, email_opt_in_source?: string, sms_opt_in_source?: string, source?: string, groups?: string, suscription_form?: string | - | `Page<Member-member.read>` | `search_member` |
 
 ### <a id="mySubscription"></a>`mySubscription`
 
@@ -515,6 +556,103 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
 | `get` | `em.mySubscription.get()` | `GET` | `/my_suscription` | - | - | `MySuscription-my_suscription.read` | `api_my_suscription_get` |
+
+### <a id="notes"></a>`notes`
+
+- Access: `em.notes`
+- API path: `/notes`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.notes.list(query)` | `GET` | `/notes` | contact?: string, company?: string, opportunity?: string, itemsPerPage?: int, cursor[gt]?: string, cursor[lt]?: string | - | `Page<Note-note.read>` | `list_notes` |
+| `create` | `em.notes.create(body)` | `POST` | `/notes` | - | `Note.NoteCreateInput` | `Note-note.read` | `create_note` |
+| `get` | `em.notes.get("uuid")` | `GET` | `/notes/{uuid}` | - | - | `Note-note.read` | `get_note` |
+| `update` | `em.notes.update("uuid", body)` | `PUT` | `/notes/{uuid}` | - | `Note.NoteUpdateInput` | `Note-note.read` | `update_note` |
+| `delete` | `em.notes.delete("uuid", query)` | `DELETE` | `/notes/{uuid}` | expected_version?: int | - | `void` | `delete_note` |
+
+### <a id="opportunities"></a>`opportunities`
+
+- Access: `em.opportunities`
+- API path: `/opportunities`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.opportunities.list(query)` | `GET` | `/opportunities` | page?: int, itemsPerPage?: int, search?: string, pipeline?: string, stage?: string, status?: string, owner?: string, company?: string, contact?: string, order[updated_at]?: string | - | `Page<Opportunity-opportunity.list>` | `list_opportunities` |
+| `create` | `em.opportunities.create(body)` | `POST` | `/opportunities` | - | `Opportunity.OpportunityCreateInput` | `Opportunity-opportunity.list_opportunity.detail` | `create_opportunity` |
+| `get` | `em.opportunities.get("uuid")` | `GET` | `/opportunities/{uuid}` | - | - | `Opportunity-opportunity.list_opportunity.detail` | `get_opportunity` |
+| `update` | `em.opportunities.update("uuid", body)` | `PUT` | `/opportunities/{uuid}` | - | `Opportunity.OpportunityUpdateInput` | `Opportunity-opportunity.list_opportunity.detail` | `update_opportunity` |
+| `delete` | `em.opportunities.delete("uuid")` | `DELETE` | `/opportunities/{uuid}` | - | - | `void` | `delete_opportunity` |
+| `lose` | `em.opportunities.lose("uuid", body)` | `PUT` | `/opportunities/{uuid}/actions/lose` | - | `Opportunity.OpportunityLoseInput` | `Opportunity-opportunity.list_opportunity.detail` | `lose_opportunity` |
+| `movePipeline` | `em.opportunities.movePipeline("uuid", body)` | `PUT` | `/opportunities/{uuid}/actions/move_pipeline` | - | `Opportunity.OpportunityPipelineMoveInput` | `Opportunity-opportunity.list_opportunity.detail` | `move_opportunity_pipeline` |
+| `moveStage` | `em.opportunities.moveStage("uuid", body)` | `PUT` | `/opportunities/{uuid}/actions/move_stage` | - | `Opportunity.OpportunityStageMoveInput` | `Opportunity-opportunity.list_opportunity.detail` | `move_opportunity_stage` |
+| `reopen` | `em.opportunities.reopen("uuid", body)` | `PUT` | `/opportunities/{uuid}/actions/reopen` | - | `Opportunity.OpportunityReopenInput` | `Opportunity-opportunity.list_opportunity.detail` | `reopen_opportunity` |
+| `win` | `em.opportunities.win("uuid", body)` | `PUT` | `/opportunities/{uuid}/actions/win` | - | `Opportunity.OpportunityWinInput` | `Opportunity-opportunity.list_opportunity.detail` | `win_opportunity` |
+| `getPipelineMovePreview` | `em.opportunities.getPipelineMovePreview("uuid", query)` | `GET` | `/opportunities/{uuid}/pipeline_move_preview` | pipeline: string | - | `Opportunity.OpportunityMovePreviewOutput-opportunity_move_preview.read` | `preview_opportunity_pipeline_move` |
+
+### <a id="opportunityAttributes"></a>`opportunityAttributes`
+
+- Access: `em.opportunityAttributes`
+- API path: `/opportunity_attributes`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.opportunityAttributes.list(query)` | `GET` | `/opportunity_attributes` | - | - | `Page<OpportunityAttribute-opportunity_attribute.read>` | `list_opportunity_attributes` |
+| `create` | `em.opportunityAttributes.create(body)` | `POST` | `/opportunity_attributes` | - | `OpportunityAttribute.OpportunityAttributeCreateInput` | `OpportunityAttribute-opportunity_attribute.read` | `create_opportunity_attribute` |
+| `get` | `em.opportunityAttributes.get("uuid")` | `GET` | `/opportunity_attributes/{uuid}` | - | - | `OpportunityAttribute-opportunity_attribute.read` | `get_opportunity_attribute` |
+| `update` | `em.opportunityAttributes.update("uuid", body)` | `PUT` | `/opportunity_attributes/{uuid}` | - | `OpportunityAttribute.OpportunityAttributeUpdateInput` | `OpportunityAttribute-opportunity_attribute.read` | `update_opportunity_attribute` |
+| `archive` | `em.opportunityAttributes.archive("uuid", body)` | `PUT` | `/opportunity_attributes/{uuid}/actions/archive` | - | `OpportunityAttribute.OpportunityAttributeVersionInput` | `OpportunityAttribute-opportunity_attribute.read` | `archive_opportunity_attribute` |
+| `restore` | `em.opportunityAttributes.restore("uuid", body)` | `PUT` | `/opportunity_attributes/{uuid}/actions/restore` | - | `OpportunityAttribute.OpportunityAttributeVersionInput` | `OpportunityAttribute-opportunity_attribute.read` | `restore_opportunity_attribute` |
+
+### <a id="pipelines"></a>`pipelines`
+
+- Access: `em.pipelines`
+- API path: `/pipelines`
+- Child resources: `lossReasons`, `stages`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.pipelines.list(query)` | `GET` | `/pipelines` | - | - | `Page<Pipeline-pipeline.list>` | `list_pipelines` |
+| `create` | `em.pipelines.create(body)` | `POST` | `/pipelines` | - | `Pipeline.PipelineCreateInput` | `Pipeline-pipeline.list_pipeline.detail` | `create_pipeline` |
+| `get` | `em.pipelines.get("uuid")` | `GET` | `/pipelines/{uuid}` | - | - | `Pipeline-pipeline.list_pipeline.detail` | `get_pipeline` |
+| `update` | `em.pipelines.update("uuid", body)` | `PUT` | `/pipelines/{uuid}` | - | `Pipeline.PipelineUpdateInput` | `Pipeline-pipeline.list_pipeline.detail` | `update_pipeline` |
+| `delete` | `em.pipelines.delete("uuid", query)` | `DELETE` | `/pipelines/{uuid}` | replacement_default?: string | - | `void` | `delete_pipeline` |
+| `fromTemplate` | `em.pipelines.fromTemplate(body)` | `POST` | `/pipelines/actions/from_template` | - | `Pipeline.PipelineFromTemplateInput` | `Pipeline-pipeline.list_pipeline.detail` | `create_pipeline_from_template` |
+| `makeDefault` | `em.pipelines.makeDefault("uuid")` | `PUT` | `/pipelines/{uuid}/actions/make_default` | - | - | `Pipeline-pipeline.list_pipeline.detail` | `set_default_pipeline` |
+| `reorderLossReasons` | `em.pipelines.reorderLossReasons("uuid", body)` | `PUT` | `/pipelines/{uuid}/actions/reorder_loss_reasons` | - | `Pipeline.PipelineLossReasonsOrderInput` | `Pipeline-pipeline.list_pipeline.detail` | `reorder_pipeline_loss_reasons` |
+| `reorderStages` | `em.pipelines.reorderStages("uuid", body)` | `PUT` | `/pipelines/{uuid}/actions/reorder_stages` | - | `Pipeline.PipelineStagesOrderInput` | `Pipeline-pipeline.list_pipeline.detail` | `reorder_pipeline_stages` |
+| `setInitialStage` | `em.pipelines.setInitialStage("uuid", body)` | `PUT` | `/pipelines/{uuid}/actions/set_initial_stage` | - | `Pipeline.PipelineInitialStageInput` | `Pipeline-pipeline.list_pipeline.detail` | `set_pipeline_initial_stage` |
+
+### <a id="pipelines.lossReasons"></a>`pipelines.lossReasons`
+
+- Access: `em.pipelines("pipelineUuid").lossReasons`
+- API path: `/pipelines/{pipelineUuid}/loss_reasons`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `create` | `em.pipelines("pipelineUuid").lossReasons.create(body)` | `POST` | `/pipelines/{pipelineUuid}/loss_reasons` | - | `Pipeline.PipelineLossReasonCreateInput` | `Pipeline-pipeline.list_pipeline.detail` | `create_pipeline_loss_reason` |
+| `update` | `em.pipelines("pipelineUuid").lossReasons.update("uuid", body)` | `PUT` | `/pipelines/{pipelineUuid}/loss_reasons/{uuid}` | - | `Pipeline.PipelineLossReasonUpdateInput` | `Pipeline-pipeline.list_pipeline.detail` | `update_pipeline_loss_reason` |
+| `archive` | `em.pipelines("pipelineUuid").lossReasons.archive("uuid")` | `PUT` | `/pipelines/{pipelineUuid}/loss_reasons/{uuid}/actions/archive` | - | - | `Pipeline-pipeline.list_pipeline.detail` | `archive_pipeline_loss_reason` |
+| `restore` | `em.pipelines("pipelineUuid").lossReasons.restore("uuid")` | `PUT` | `/pipelines/{pipelineUuid}/loss_reasons/{uuid}/actions/restore` | - | - | `Pipeline-pipeline.list_pipeline.detail` | `restore_pipeline_loss_reason` |
+
+### <a id="pipelines.stages"></a>`pipelines.stages`
+
+- Access: `em.pipelines("pipelineUuid").stages`
+- API path: `/pipelines/{pipelineUuid}/stages`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `create` | `em.pipelines("pipelineUuid").stages.create(body)` | `POST` | `/pipelines/{pipelineUuid}/stages` | - | `Pipeline.PipelineStageCreateInput` | `Pipeline-pipeline.list_pipeline.detail` | `create_pipeline_stage` |
+| `update` | `em.pipelines("pipelineUuid").stages.update("uuid", body)` | `PUT` | `/pipelines/{pipelineUuid}/stages/{uuid}` | - | `Pipeline.PipelineStageUpdateInput` | `Pipeline-pipeline.list_pipeline.detail` | `update_pipeline_stage` |
+| `delete` | `em.pipelines("pipelineUuid").stages.delete("uuid")` | `DELETE` | `/pipelines/{pipelineUuid}/stages/{uuid}` | - | - | `void` | `delete_pipeline_stage` |
+
+### <a id="pipelineTemplates"></a>`pipelineTemplates`
+
+- Access: `em.pipelineTemplates`
+- API path: `/pipeline_templates`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.pipelineTemplates.list(query)` | `GET` | `/pipeline_templates` | - | - | `Page<PipelineTemplate-pipeline_template.read>` | `list_pipeline_templates` |
 
 ### <a id="senderDomains"></a>`senderDomains`
 
@@ -607,7 +745,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
 | `list` | `em.stores("storeResourceId").customers.list(query)` | `GET` | `/stores/{storeResourceId}/customers` | page?: int, itemsPerPage?: int, email?: string, company?: string, firstname?: string, lastname?: string, phone?: string | - | `Page<Customer-customer.read>` | `list_store_customers` |
-| `create` | `em.stores("storeResourceId").customers.create(body, query)` | `POST` | `/stores/{storeResourceId}/customers` | disableDoubleOptIn?: bool, disableWelcomeEmail?: bool, disableSmsDoubleOptIn?: bool | `Customer-customer.create` | `Customer-customer.read` | `create_store_customer` |
+| `create` | `em.stores("storeResourceId").customers.create(body, query)` | `POST` | `/stores/{storeResourceId}/customers` | disable_double_opt_in?: bool, disable_welcome_email?: bool, disable_sms_double_opt_in?: bool | `Customer-customer.create` | `Customer-customer.read` | `create_store_customer` |
 | `get` | `em.stores("storeResourceId").customers.get("resourceId")` | `GET` | `/stores/{storeResourceId}/customers/{resourceId}` | - | - | `Customer-customer.read` | `get_store_customer` |
 | `update` | `em.stores("storeResourceId").customers.update("resourceId", body)` | `PUT` | `/stores/{storeResourceId}/customers/{resourceId}` | - | `Customer-customer.update` | `Customer-customer.read` | `update_store_customer` |
 | `delete` | `em.stores("storeResourceId").customers.delete("resourceId", query)` | `DELETE` | `/stores/{storeResourceId}/customers/{resourceId}` | unsubscribe?: bool | - | `void` | `delete_store_customer` |
@@ -668,6 +806,31 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `listTickets` | `em.support.listTickets(query)` | `GET` | `/support/tickets` | page?: int, itemsPerPage?: int | - | `Page<SupportTicket-support_ticket.read>` | `list_support_tickets` |
 | `createTickets` | `em.support.createTickets(body)` | `POST` | `/support/tickets` | - | `SupportTicket.SupportTicketInput` | `SupportTicket-support_ticket.read` | `create_support_ticket` |
 
+### <a id="taskAssignees"></a>`taskAssignees`
+
+- Access: `em.taskAssignees`
+- API path: `/task_assignees`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.taskAssignees.list(query)` | `GET` | `/task_assignees` | - | - | `Page<TaskAssignee-task_assignee.read>` | `list_task_assignees` |
+
+### <a id="tasks"></a>`tasks`
+
+- Access: `em.tasks`
+- API path: `/tasks`
+
+| Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
+|---|---|---|---|---|---|---|---|
+| `list` | `em.tasks.list(query)` | `GET` | `/tasks` | itemsPerPage?: int, cursor[gt]?: string, cursor[lt]?: string, assignee?: string, include_completed?: bool, priority?: string, type?: string, due_from?: string, due_to?: string, contact?: string, company?: string, opportunity?: string, sort?: string | - | `Page<Task-task.read>` | `list_tasks` |
+| `create` | `em.tasks.create(body)` | `POST` | `/tasks` | - | `Task.TaskCreateInput` | `Task-task.read` | `create_task` |
+| `get` | `em.tasks.get("uuid")` | `GET` | `/tasks/{uuid}` | - | - | `Task-task.read` | `get_task` |
+| `update` | `em.tasks.update("uuid", body)` | `PUT` | `/tasks/{uuid}` | - | `Task.TaskUpdateInput` | `Task-task.read` | `update_task` |
+| `delete` | `em.tasks.delete("uuid", query)` | `DELETE` | `/tasks/{uuid}` | expected_version?: int | - | `void` | `delete_task` |
+| `assign` | `em.tasks.assign("uuid", body)` | `PUT` | `/tasks/{uuid}/actions/assign` | - | `Task.TaskAssignInput` | `Task-task.read` | `assign_task` |
+| `complete` | `em.tasks.complete("uuid", body)` | `PUT` | `/tasks/{uuid}/actions/complete` | - | `Task.TaskVersionInput` | `Task-task.read` | `complete_task` |
+| `reopen` | `em.tasks.reopen("uuid", body)` | `PUT` | `/tasks/{uuid}/actions/reopen` | - | `Task.TaskReopenInput` | `Task-task.read` | `reopen_task` |
+
 ### <a id="templates"></a>`templates`
 
 - Access: `em.templates`
@@ -678,8 +841,9 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 | `list` | `em.templates.list(query)` | `GET` | `/templates` | page?: int, itemsPerPage?: int, title?: string, type?: string | - | `Page<Template-template.read>` | `list_templates` |
 | `create` | `em.templates.create(body)` | `POST` | `/templates` | - | `Template-template.write` | `Template-template.read` | `create_template` |
 | `get` | `em.templates.get("uuid")` | `GET` | `/templates/{uuid}` | - | - | `Template-template.read_template.read.detail` | `get_template` |
-| `update` | `em.templates.update("uuid", body)` | `PUT` | `/templates/{uuid}` | - | `Template-template.write` | `Template-template.read` | `update_template` |
+| `update` | `em.templates.update("uuid", body)` | `PUT` | `/templates/{uuid}` | - | `Template-template.write.update_template` | `Template-template.read` | `update_template` |
 | `delete` | `em.templates.delete("uuid")` | `DELETE` | `/templates/{uuid}` | - | - | `void` | `delete_template` |
+| `fromBeeSession` | `em.templates.fromBeeSession(body)` | `POST` | `/templates/actions/from_bee_session` | - | `Template.CreateTemplateFromBeeSessionInput-template.write_from_bee_session` | `Template-template.read` | `create_template_from_bee_session` |
 | `regenerateSimpleJson` | `em.templates.regenerateSimpleJson("uuid")` | `POST` | `/templates/{uuid}/actions/regenerate_simple_json` | - | - | `Template-template.read` | `regenerate_template_simple_json` |
 | `sendTest` | `em.templates.sendTest("uuid", body)` | `PUT` | `/templates/{uuid}/actions/send_test` | - | `Template.TemplateSendTestInput-template.write_send_test` | `array` | `template_send_test` |
 
@@ -708,7 +872,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
-| `list` | `em.themes.list(query)` | `GET` | `/themes` | page?: int, itemsPerPage?: int, title?: string, types?: string, industries?: string, requiresPro?: bool, isNew?: bool, order[created_at]?: string | - | `Page<Theme-theme.read>` | `list_themes` |
+| `list` | `em.themes.list(query)` | `GET` | `/themes` | page?: int, itemsPerPage?: int, title?: string, types?: string, industries?: string, requires_pro?: bool, is_new?: bool, order[created_at]?: string | - | `Page<Theme-theme.read>` | `list_themes` |
 | `get` | `em.themes.get("uuid")` | `GET` | `/themes/{uuid}` | - | - | `Theme-theme.read` | `get_theme` |
 | `createTemplate` | `em.themes.createTemplate("uuid", body)` | `POST` | `/themes/{uuid}/actions/create_template` | - | `Theme.CreateTemplateFromThemeInput-theme.write` | `Theme.TemplateResource-template.read` | `create_template_from_theme` |
 
@@ -755,7 +919,7 @@ Deprecated OpenAPI operations are intentionally omitted from the SDK.
 
 | Method | Call | HTTP | Path | Query Params | Body | Returns | Operation ID |
 |---|---|---|---|---|---|---|---|
-| `list` | `em.webhookConfigs("webhookUuid").webhookEvents.list(query)` | `GET` | `/webhooks/{webhookUuid}/webhook_events` | page?: int, itemsPerPage?: int, eventType?: string | - | `Page<WebhookEvent-webhook_event.read>` | `list_webhook_events` |
+| `list` | `em.webhookConfigs("webhookUuid").webhookEvents.list(query)` | `GET` | `/webhooks/{webhookUuid}/webhook_events` | page?: int, itemsPerPage?: int, event_type?: string | - | `Page<WebhookEvent-webhook_event.read>` | `list_webhook_events` |
 | `get` | `em.webhookConfigs("webhookUuid").webhookEvents.get("uuid")` | `GET` | `/webhooks/{webhookUuid}/webhook_events/{uuid}` | - | - | `WebhookEvent-webhook_event.read` | `get_webhook_event` |
 
 ### <a id="webhookConfigs.webhookRequests"></a>`webhookConfigs.webhookRequests`

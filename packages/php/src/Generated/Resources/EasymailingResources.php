@@ -13,26 +13,31 @@ trait EasymailingResources
     public readonly AutomationsResource $automations;
     public readonly BatchOperationsResource $batchOperations;
     public readonly CampaignsResource $campaigns;
+    public readonly CompaniesResource $companies;
+    public readonly CompanyAttributesResource $companyAttributes;
+    public readonly CompanyIndustriesResource $companyIndustries;
+    public readonly ContactAttributesResource $contactAttributes;
+    public readonly ContactsResource $contacts;
+    public readonly ContactTagsResource $contactTags;
     public readonly DataManagersResource $dataManagers;
     public readonly DesignSettingsResource $designSettings;
     public readonly InvoicesResource $invoices;
-    public readonly ListSegmentConditionsResource $listSegmentConditions;
     public readonly MasterTemplatesResource $masterTemplates;
-    public readonly MemberCampaignDeliveredEventsResource $memberCampaignDeliveredEvents;
     public readonly MembersResource $members;
-    public readonly MemberSmsBouncedEventsResource $memberSmsBouncedEvents;
-    public readonly MemberSmsClickedEventsResource $memberSmsClickedEvents;
-    public readonly MemberSmsDeliveredEventsResource $memberSmsDeliveredEvents;
-    public readonly MemberSmsRepliedEventsResource $memberSmsRepliedEvents;
-    public readonly MemberSmsSubscribedEventsResource $memberSmsSubscribedEvents;
-    public readonly MemberSmsUnsubscribedEventsResource $memberSmsUnsubscribedEvents;
     public readonly MySubscriptionResource $mySubscription;
+    public readonly NotesResource $notes;
+    public readonly OpportunitiesResource $opportunities;
+    public readonly OpportunityAttributesResource $opportunityAttributes;
+    public readonly PipelinesResource $pipelines;
+    public readonly PipelineTemplatesResource $pipelineTemplates;
     public readonly SenderDomainsResource $senderDomains;
     public readonly SendersResource $senders;
     public readonly SmsCampaignsResource $smsCampaigns;
     public readonly SmsSendersResource $smsSenders;
     public readonly StoresResource $stores;
     public readonly SupportResource $support;
+    public readonly TaskAssigneesResource $taskAssignees;
+    public readonly TasksResource $tasks;
     public readonly TemplatesResource $templates;
     public readonly TemplatesSchemaResource $templatesSchema;
     public readonly ThemeIndustriesResource $themeIndustries;
@@ -54,33 +59,39 @@ trait EasymailingResources
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->campaigns = new CampaignsResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->companies = new CompaniesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->companyAttributes = new CompanyAttributesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->companyIndustries = new CompanyIndustriesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->contactAttributes = new ContactAttributesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->contacts = new ContactsResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->contactTags = new ContactTagsResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->dataManagers = new DataManagersResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->designSettings = new DesignSettingsResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->invoices = new InvoicesResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->listSegmentConditions = new ListSegmentConditionsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->masterTemplates = new MasterTemplatesResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberCampaignDeliveredEvents = new MemberCampaignDeliveredEventsResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->members = new MembersResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberSmsBouncedEvents = new MemberSmsBouncedEventsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberSmsClickedEvents = new MemberSmsClickedEventsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberSmsDeliveredEvents = new MemberSmsDeliveredEventsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberSmsRepliedEvents = new MemberSmsRepliedEventsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberSmsSubscribedEvents = new MemberSmsSubscribedEventsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
-        $this->memberSmsUnsubscribedEvents = new MemberSmsUnsubscribedEventsResource($this);
-        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->mySubscription = new MySubscriptionResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->notes = new NotesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->opportunities = new OpportunitiesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->opportunityAttributes = new OpportunityAttributesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->pipelines = new PipelinesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->pipelineTemplates = new PipelineTemplatesResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->senderDomains = new SenderDomainsResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
@@ -93,6 +104,10 @@ trait EasymailingResources
         $this->stores = new StoresResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->support = new SupportResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->taskAssignees = new TaskAssigneesResource($this);
+        /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
+        $this->tasks = new TasksResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
         $this->templates = new TemplatesResource($this);
         /** @phpstan-ignore-next-line property.readOnlyAssignNotInConstructor */
@@ -117,6 +132,16 @@ trait EasymailingResources
     public function automations(string $automationUuid): AutomationsScopedResource
     {
         return new AutomationsScopedResource($this, $automationUuid);
+    }
+
+    public function contacts(string $contactUuid): ContactsScopedResource
+    {
+        return new ContactsScopedResource($this, $contactUuid);
+    }
+
+    public function pipelines(string $pipelineUuid): PipelinesScopedResource
+    {
+        return new PipelinesScopedResource($this, $pipelineUuid);
     }
 
     public function stores(string $storeResourceId): StoresScopedResource

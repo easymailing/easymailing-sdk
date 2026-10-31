@@ -8,6 +8,7 @@ import { createAudiencesListSegmentsResource, type AudiencesListSegmentsResource
 import { createAudiencesMembersResource, type AudiencesMembersResource } from "./AudiencesMembersResource.js";
 import { createAudiencesMergeTagsResource, type AudiencesMergeTagsResource } from "./AudiencesMergeTagsResource.js";
 import { createAudiencesSubscriptionFormsResource, type AudiencesSubscriptionFormsResource } from "./AudiencesSubscriptionFormsResource.js";
+import { createAudiencesSurveysResource, type AudiencesSurveysResource } from "./AudiencesSurveysResource.js";
 
 export class AudiencesScopedResource {
   public readonly conditionFields: AudiencesConditionFieldsResource;
@@ -17,6 +18,7 @@ export class AudiencesScopedResource {
   public readonly members: AudiencesMembersResource;
   public readonly mergeTags: AudiencesMergeTagsResource;
   public readonly subscriptionForms: AudiencesSubscriptionFormsResource;
+  public readonly surveys: AudiencesSurveysResource;
 
   constructor(private readonly client: Easymailing, private readonly audienceUuid: string) {
     this.conditionFields = createAudiencesConditionFieldsResource(client, { audienceUuid: audienceUuid });
@@ -26,5 +28,6 @@ export class AudiencesScopedResource {
     this.members = createAudiencesMembersResource(client, { audienceUuid: audienceUuid });
     this.mergeTags = createAudiencesMergeTagsResource(client, { audienceUuid: audienceUuid });
     this.subscriptionForms = createAudiencesSubscriptionFormsResource(client, { audienceUuid: audienceUuid });
+    this.surveys = createAudiencesSurveysResource(client, { audienceUuid: audienceUuid });
   }
 }

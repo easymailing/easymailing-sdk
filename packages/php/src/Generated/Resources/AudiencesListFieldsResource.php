@@ -50,9 +50,9 @@ final class AudiencesListFieldsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write_create_custom_field_select $body
      */
-    public function createSelect(array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
+    public function createSelect(array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write_create_custom_field_select $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/list_fields/select', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_fields/select');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -60,9 +60,9 @@ final class AudiencesListFieldsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write_create_custom_field_simple $body
      */
-    public function createSimple(array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
+    public function createSimple(array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write_create_custom_field_simple $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/list_fields/simple', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_fields/simple');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -80,9 +80,9 @@ final class AudiencesListFieldsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write_update_custom_field_select $body
      */
-    public function updateSelect(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
+    public function updateSelect(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSelect_list_field_write_update_custom_field_select $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/list_fields/{uuid}/select', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_fields/{uuid}/select');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -90,9 +90,9 @@ final class AudiencesListFieldsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write_update_custom_field_simple $body
      */
-    public function updateSimple(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
+    public function updateSimple(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListField_CustomFieldSimple_list_field_write_update_custom_field_simple $body): \Easymailing\Sdk\Generated\Dto\ListField_list_field_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/list_fields/{uuid}/simple', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_fields/{uuid}/simple');
         $data = is_array($result['data']) ? $result['data'] : [];

@@ -22,7 +22,7 @@ export class AudiencesCollectionResource {
     return toPage(result);
   }
 
-  async create(body: components["schemas"]["Audience-audience.write"]): Promise<components["schemas"]["Audience-audience.read"]> {
+  async create(body: components["schemas"]["Audience-audience.write.create_audience"]): Promise<components["schemas"]["Audience-audience.read"]> {
     const result = await this.client.request<components["schemas"]["Audience-audience.read"]>({
       method: "POST",
       path: pathWithParams("/audiences", {  }),

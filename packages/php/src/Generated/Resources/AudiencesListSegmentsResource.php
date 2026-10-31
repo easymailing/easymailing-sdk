@@ -45,9 +45,9 @@ final class AudiencesListSegmentsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write_update_audience_segment $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write $body): \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write_update_audience_segment $body): \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/list_segments/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_segments/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];

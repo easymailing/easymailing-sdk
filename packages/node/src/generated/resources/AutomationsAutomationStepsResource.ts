@@ -169,7 +169,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateAddToGroup(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepAddToGroup-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepAddToGroupResource-automation_step.read"]> {
+  async updateAddToGroup(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepAddToGroup-automation_step.write.update_step_add_to_group"]): Promise<components["schemas"]["AutomationStep.AutomationStepAddToGroupResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepAddToGroupResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/add_to_group", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -179,7 +179,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateCondition(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepCondition-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepConditionResource-automation_step.read"]> {
+  async updateCondition(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepCondition-automation_step.write.update_step_condition"]): Promise<components["schemas"]["AutomationStep.AutomationStepConditionResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepConditionResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/condition", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -189,7 +189,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateDelay(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepDelay-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepDelayResource-automation_step.read"]> {
+  async updateDelay(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepDelay-automation_step.write.update_step_delay"]): Promise<components["schemas"]["AutomationStep.AutomationStepDelayResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepDelayResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/delay", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -199,7 +199,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateMoveToStep(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepMoveToStep-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepMoveToStepResource-automation_step.read"]> {
+  async updateMoveToStep(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepMoveToStep-automation_step.write.update_step_move_to_step"]): Promise<components["schemas"]["AutomationStep.AutomationStepMoveToStepResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepMoveToStepResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/move_to_step", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -219,7 +219,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateRemoveFromGroup(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepRemoveFromGroup-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read"]> {
+  async updateRemoveFromGroup(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepRemoveFromGroup-automation_step.write.update_step_remove_from_group"]): Promise<components["schemas"]["AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepRemoveFromGroupResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/remove_from_group", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -229,7 +229,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateSendCampaign(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepSendCampaign-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepSendCampaignResource-automation_step.read"]> {
+  async updateSendCampaign(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepSendCampaign-automation_step.write.update_step_send_campaign"]): Promise<components["schemas"]["AutomationStep.AutomationStepSendCampaignResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendCampaignResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_campaign", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -239,7 +239,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateSendNotification(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepSendNotification-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepSendNotificationResource-automation_step.read"]> {
+  async updateSendNotification(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepSendNotification-automation_step.write.update_step_send_notification"]): Promise<components["schemas"]["AutomationStep.AutomationStepSendNotificationResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendNotificationResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_notification", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -258,7 +258,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateSendWebhook(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepSendWebhook-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepSendWebhookResource-automation_step.read"]> {
+  async updateSendWebhook(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepSendWebhook-automation_step.write.update_step_send_webhook"]): Promise<components["schemas"]["AutomationStep.AutomationStepSendWebhookResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepSendWebhookResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/send_webhook", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -268,7 +268,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateTriggerAutomation(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepTriggerAutomation-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read"]> {
+  async updateTriggerAutomation(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepTriggerAutomation-automation_step.write.update_step_trigger_automation"]): Promise<components["schemas"]["AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepTriggerAutomationResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/trigger_automation", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -278,7 +278,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateUnsubscribe(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepUnsubscribe-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepUnsubscribeResource-automation_step.read"]> {
+  async updateUnsubscribe(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepUnsubscribe-automation_step.write.update_step_unsubscribe"]): Promise<components["schemas"]["AutomationStep.AutomationStepUnsubscribeResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUnsubscribeResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/unsubscribe", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -288,7 +288,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateUpdateCustomField(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepUpdateCustomField-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read"]> {
+  async updateUpdateCustomField(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepUpdateCustomField-automation_step.write.update_step_update_custom_field"]): Promise<components["schemas"]["AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUpdateCustomFieldResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/update_custom_field", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),
@@ -298,7 +298,7 @@ export class AutomationsAutomationStepsResource {
     return result.data;
   }
 
-  async updateUpdateScore(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepUpdateScore-automation_step.write"]): Promise<components["schemas"]["AutomationStep.AutomationStepUpdateScoreResource-automation_step.read"]> {
+  async updateUpdateScore(uuid: string, body: components["schemas"]["AutomationStep.AutomationStepUpdateScore-automation_step.write.update_step_update_score"]): Promise<components["schemas"]["AutomationStep.AutomationStepUpdateScoreResource-automation_step.read"]> {
     const result = await this.client.request<components["schemas"]["AutomationStep.AutomationStepUpdateScoreResource-automation_step.read"]>({
       method: "PUT",
       path: pathWithParams("/automations/{automationUuid}/automation_steps/{uuid}/update_score", { automationUuid: this.boundParams["automationUuid"]!, uuid: uuid }),

@@ -40,7 +40,7 @@ export class TemplatesResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["Template-template.write"]): Promise<components["schemas"]["Template-template.read"]> {
+  async update(uuid: string, body: components["schemas"]["Template-template.write.update_template"]): Promise<components["schemas"]["Template-template.read"]> {
     const result = await this.client.request<components["schemas"]["Template-template.read"]>({
       method: "PUT",
       path: pathWithParams("/templates/{uuid}", { uuid: uuid }),
@@ -57,6 +57,16 @@ export class TemplatesResource {
       pathTemplate: "/templates/{uuid}",
     });
     return;
+  }
+
+  async fromBeeSession(body: components["schemas"]["Template.CreateTemplateFromBeeSessionInput-template.write_from_bee_session"]): Promise<components["schemas"]["Template-template.read"]> {
+    const result = await this.client.request<components["schemas"]["Template-template.read"]>({
+      method: "POST",
+      path: pathWithParams("/templates/actions/from_bee_session", {  }),
+      pathTemplate: "/templates/actions/from_bee_session",
+      body,
+    });
+    return result.data;
   }
 
   async regenerateSimpleJson(uuid: string): Promise<components["schemas"]["Template-template.read"]> {
