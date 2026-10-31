@@ -12,6 +12,7 @@ final class Member_jsonld_member_read
     public function __construct(
         public readonly ?string $audience = null,
         public readonly ?string $client_ip = null,
+        public readonly ?string $contact = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         /** @var list<CustomField_jsonld_member_read>|null */
         public readonly ?array $custom_fields = null,
@@ -49,6 +50,7 @@ final class Member_jsonld_member_read
         return new self(
             audience: $data['audience'] ?? null,
             client_ip: $data['client_ip'] ?? null,
+            contact: $data['contact'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             custom_fields: isset($data['custom_fields']) ? array_map(fn($x) => CustomField_jsonld_member_read::fromArray($x), $data['custom_fields']) : null,
             email: $data['email'] ?? null,
@@ -84,6 +86,7 @@ final class Member_jsonld_member_read
         return [
             'audience' => $this->audience,
             'client_ip' => $this->client_ip,
+            'contact' => $this->contact,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'custom_fields' => $this->custom_fields !== null ? array_map(fn($x) => $x->toArray(), $this->custom_fields) : null,
             'email' => $this->email,
@@ -118,6 +121,7 @@ final class Member_jsonld_member_read
         return new self(
             audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
             client_ip: array_key_exists('client_ip', $fields) ? $fields['client_ip'] : $this->client_ip,
+            contact: array_key_exists('contact', $fields) ? $fields['contact'] : $this->contact,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             custom_fields: array_key_exists('custom_fields', $fields) ? $fields['custom_fields'] : $this->custom_fields,
             email: array_key_exists('email', $fields) ? $fields['email'] : $this->email,

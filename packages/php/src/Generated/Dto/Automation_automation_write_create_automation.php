@@ -1,0 +1,47 @@
+<?php
+
+// AUTO-GENERATED FROM EASYMAILING OPENAPI. DO NOT EDIT BY HAND.
+// Run `composer generate` to refresh.
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Generated\Dto;
+
+final class Automation_automation_write_create_automation
+{
+    public function __construct(
+        public readonly string $audience,
+        public readonly string $title,
+        public readonly ?string $description = null,
+    ) {
+    }
+
+    /** @param array<string, mixed> $data */
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            audience: $data['audience'],
+            title: $data['title'],
+            description: $data['description'] ?? null,
+        );
+    }
+
+    /** @return array<string, mixed> */
+    public function toArray(): array
+    {
+        return [
+            'audience' => $this->audience,
+            'title' => $this->title,
+            'description' => $this->description,
+        ];
+    }
+
+    public function with(mixed ...$fields): self
+    {
+        return new self(
+            audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
+            title: array_key_exists('title', $fields) ? $fields['title'] : $this->title,
+            description: array_key_exists('description', $fields) ? $fields['description'] : $this->description,
+        );
+    }
+}
