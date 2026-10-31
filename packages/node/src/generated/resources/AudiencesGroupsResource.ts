@@ -40,7 +40,7 @@ export class AudiencesGroupsResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["Group-group.write"]): Promise<components["schemas"]["Group-group.read"]> {
+  async update(uuid: string, body: components["schemas"]["Group-group.write.update_audience_group"]): Promise<components["schemas"]["Group-group.read"]> {
     const result = await this.client.request<components["schemas"]["Group-group.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/groups/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),

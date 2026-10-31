@@ -42,7 +42,7 @@ export class AudiencesMembersCollectionResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["Member-member.write"]): Promise<components["schemas"]["Member-member.read"]> {
+  async update(uuid: string, body: components["schemas"]["Member-member.write.update_audience_member"]): Promise<components["schemas"]["Member-member.read"]> {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
@@ -79,7 +79,7 @@ export class AudiencesMembersCollectionResource {
     return result.data;
   }
 
-  async subscribe(uuid: string, body: components["schemas"]["Member-member.action"]): Promise<components["schemas"]["Member-member.read"]> {
+  async subscribe(uuid: string, body: components["schemas"]["Member-member.action.member_subscribe"]): Promise<components["schemas"]["Member-member.read"]> {
     const result = await this.client.request<components["schemas"]["Member-member.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/members/{uuid}/actions/subscribe", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),

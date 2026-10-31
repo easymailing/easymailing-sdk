@@ -25,9 +25,9 @@ final class AutomationsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Automation_automation_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Automation_automation_write_create_automation $body
      */
-    public function create(array|\Easymailing\Sdk\Generated\Dto\Automation_automation_write $body): \Easymailing\Sdk\Generated\Dto\Automation_automation_read
+    public function create(array|\Easymailing\Sdk\Generated\Dto\Automation_automation_write_create_automation $body): \Easymailing\Sdk\Generated\Dto\Automation_automation_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/automations', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/automations');
         $data = is_array($result['data']) ? $result['data'] : [];

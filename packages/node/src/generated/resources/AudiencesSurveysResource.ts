@@ -21,7 +21,7 @@ export class AudiencesSurveysResource {
     return toPage(result);
   }
 
-  async create(body: components["schemas"]["Survey.CreateSurveyInput-survey.write"]): Promise<components["schemas"]["Survey-survey.read_survey.read.detail"]> {
+  async create(body: components["schemas"]["Survey.CreateSurveyInput-survey.write.create_survey"]): Promise<components["schemas"]["Survey-survey.read_survey.read.detail"]> {
     const result = await this.client.request<components["schemas"]["Survey-survey.read_survey.read.detail"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/surveys", { audienceUuid: this.boundParams["audienceUuid"]! }),
@@ -40,7 +40,7 @@ export class AudiencesSurveysResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["Survey.UpdateSurveyInput-survey.write"]): Promise<components["schemas"]["Survey-survey.read_survey.read.detail"]> {
+  async update(uuid: string, body: components["schemas"]["Survey.UpdateSurveyInput-survey.write.update_survey"]): Promise<components["schemas"]["Survey-survey.read_survey.read.detail"]> {
     const result = await this.client.request<components["schemas"]["Survey-survey.read_survey.read.detail"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/surveys/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),

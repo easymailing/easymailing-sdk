@@ -25,9 +25,9 @@ final class DesignSettingsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_create $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_create_create_design_setting $body
      */
-    public function create(array|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_create $body): \Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_read
+    public function create(array|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_create_create_design_setting $body): \Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/design_settings', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/design_settings');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -42,9 +42,9 @@ final class DesignSettingsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_write_update_design_setting $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_write $body): \Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_read
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_write_update_design_setting $body): \Easymailing\Sdk\Generated\Dto\DesignSetting_design_setting_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/design_settings/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/design_settings/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];

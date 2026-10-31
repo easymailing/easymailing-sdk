@@ -22,7 +22,7 @@ export class AutomationsCollectionResource {
     return toPage(result);
   }
 
-  async create(body: components["schemas"]["Automation-automation.write"]): Promise<components["schemas"]["Automation-automation.read"]> {
+  async create(body: components["schemas"]["Automation-automation.write.create_automation"]): Promise<components["schemas"]["Automation-automation.read"]> {
     const result = await this.client.request<components["schemas"]["Automation-automation.read"]>({
       method: "POST",
       path: pathWithParams("/automations", {  }),

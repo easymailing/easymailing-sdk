@@ -32,7 +32,7 @@ final class StoresCustomersResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Customer_customer_create $body, ?bool $disableDoubleOptIn = null, ?bool $disableWelcomeEmail = null, ?bool $disableSmsDoubleOptIn = null): \Easymailing\Sdk\Generated\Dto\Customer_customer_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/stores/{storeResourceId}/customers', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null]), body: is_array($body) ? $body : $body->toArray(), query: array_filter(['disableDoubleOptIn' => $disableDoubleOptIn, 'disableWelcomeEmail' => $disableWelcomeEmail, 'disableSmsDoubleOptIn' => $disableSmsDoubleOptIn], static fn($value): bool => $value !== null), pathTemplate: '/stores/{storeResourceId}/customers');
+        $result = $this->client->request('POST', $this->resolvePath('/stores/{storeResourceId}/customers', ['storeResourceId' => $this->boundParams['storeResourceId'] ?? null]), body: is_array($body) ? $body : $body->toArray(), query: array_filter(['disable_double_opt_in' => $disableDoubleOptIn, 'disable_welcome_email' => $disableWelcomeEmail, 'disable_sms_double_opt_in' => $disableSmsDoubleOptIn], static fn($value): bool => $value !== null), pathTemplate: '/stores/{storeResourceId}/customers');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Customer_customer_read::fromArray($data);
     }

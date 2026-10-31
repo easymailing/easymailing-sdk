@@ -28,9 +28,9 @@ final class AudiencesSurveysResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Survey_CreateSurveyInput_survey_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Survey_CreateSurveyInput_survey_write_create_survey $body
      */
-    public function create(array|\Easymailing\Sdk\Generated\Dto\Survey_CreateSurveyInput_survey_write $body): \Easymailing\Sdk\Generated\Dto\Survey_survey_read_survey_read_detail
+    public function create(array|\Easymailing\Sdk\Generated\Dto\Survey_CreateSurveyInput_survey_write_create_survey $body): \Easymailing\Sdk\Generated\Dto\Survey_survey_read_survey_read_detail
     {
         $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/surveys', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/surveys');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -45,9 +45,9 @@ final class AudiencesSurveysResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Survey_UpdateSurveyInput_survey_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Survey_UpdateSurveyInput_survey_write_update_survey $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Survey_UpdateSurveyInput_survey_write $body): \Easymailing\Sdk\Generated\Dto\Survey_survey_read_survey_read_detail
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Survey_UpdateSurveyInput_survey_write_update_survey $body): \Easymailing\Sdk\Generated\Dto\Survey_survey_read_survey_read_detail
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/surveys/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/surveys/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];

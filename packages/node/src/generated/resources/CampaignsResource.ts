@@ -118,7 +118,7 @@ export class CampaignsResource {
     return result.data;
   }
 
-  async createRevalidation(body: components["schemas"]["Campaign.CampaignRevalidationInput-campaign.write"]): Promise<components["schemas"]["Campaign-campaign.read"]> {
+  async createRevalidation(body: components["schemas"]["Campaign.CampaignRevalidationInput-campaign.write.create_campaign_revalidation"]): Promise<components["schemas"]["Campaign-campaign.read"]> {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read"]>({
       method: "POST",
       path: pathWithParams("/campaigns/revalidation", {  }),
@@ -128,7 +128,7 @@ export class CampaignsResource {
     return result.data;
   }
 
-  async createSurvey(body: components["schemas"]["Campaign.CampaignSurveyInput-campaign.write"]): Promise<components["schemas"]["Campaign-campaign.read_campaign.read.detail"]> {
+  async createSurvey(body: components["schemas"]["Campaign.CampaignSurveyInput-campaign.write.create_campaign_survey"]): Promise<components["schemas"]["Campaign-campaign.read_campaign.read.detail"]> {
     const result = await this.client.request<components["schemas"]["Campaign-campaign.read_campaign.read.detail"]>({
       method: "POST",
       path: pathWithParams("/campaigns/survey", {  }),

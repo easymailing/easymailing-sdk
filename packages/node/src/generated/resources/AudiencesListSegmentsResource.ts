@@ -40,7 +40,7 @@ export class AudiencesListSegmentsResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["ListSegment-list_segment.write"]): Promise<components["schemas"]["ListSegment-list_segment.read"]> {
+  async update(uuid: string, body: components["schemas"]["ListSegment-list_segment.write.update_audience_segment"]): Promise<components["schemas"]["ListSegment-list_segment.read"]> {
     const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),

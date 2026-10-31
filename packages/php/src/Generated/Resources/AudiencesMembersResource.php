@@ -32,7 +32,7 @@ final class AudiencesMembersResource extends AbstractResource
      */
     public function create(array|\Easymailing\Sdk\Generated\Dto\Member_member_write $body, ?bool $disableDoubleOptIn = null, ?bool $disableWelcomeEmail = null, ?bool $disableSmsDoubleOptIn = null): \Easymailing\Sdk\Generated\Dto\Member_member_read
     {
-        $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/members', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), query: array_filter(['disableDoubleOptIn' => $disableDoubleOptIn, 'disableWelcomeEmail' => $disableWelcomeEmail, 'disableSmsDoubleOptIn' => $disableSmsDoubleOptIn], static fn($value): bool => $value !== null), pathTemplate: '/audiences/{audienceUuid}/members');
+        $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/members', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), query: array_filter(['disable_double_opt_in' => $disableDoubleOptIn, 'disable_welcome_email' => $disableWelcomeEmail, 'disable_sms_double_opt_in' => $disableSmsDoubleOptIn], static fn($value): bool => $value !== null), pathTemplate: '/audiences/{audienceUuid}/members');
         $data = is_array($result['data']) ? $result['data'] : [];
         return \Easymailing\Sdk\Generated\Dto\Member_member_read::fromArray($data);
     }
@@ -45,9 +45,9 @@ final class AudiencesMembersResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Member_member_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Member_member_write_update_audience_member $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Member_member_write $body): \Easymailing\Sdk\Generated\Dto\Member_member_read
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Member_member_write_update_audience_member $body): \Easymailing\Sdk\Generated\Dto\Member_member_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/members/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/members/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
@@ -74,9 +74,9 @@ final class AudiencesMembersResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Member_member_action $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Member_member_action_member_subscribe $body
      */
-    public function subscribe(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Member_member_action $body): \Easymailing\Sdk\Generated\Dto\Member_member_read
+    public function subscribe(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Member_member_action_member_subscribe $body): \Easymailing\Sdk\Generated\Dto\Member_member_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/members/{uuid}/actions/subscribe', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/members/{uuid}/actions/subscribe');
         $data = is_array($result['data']) ? $result['data'] : [];

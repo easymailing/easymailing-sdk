@@ -42,9 +42,9 @@ final class TemplatesResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Template_template_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Template_template_write_update_template $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Template_template_write $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Template_template_write_update_template $body): \Easymailing\Sdk\Generated\Dto\Template_template_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/templates/{uuid}', ['uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/templates/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];

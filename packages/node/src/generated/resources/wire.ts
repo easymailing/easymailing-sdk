@@ -6,26 +6,31 @@ import { createAudiencesResource, type AudiencesResource } from "./AudiencesReso
 import { createAutomationsResource, type AutomationsResource } from "./AutomationsResource.js";
 import { createBatchOperationsResource, type BatchOperationsResource } from "./BatchOperationsResource.js";
 import { createCampaignsResource, type CampaignsResource } from "./CampaignsResource.js";
+import { createCompaniesResource, type CompaniesResource } from "./CompaniesResource.js";
+import { createCompanyAttributesResource, type CompanyAttributesResource } from "./CompanyAttributesResource.js";
+import { createCompanyIndustriesResource, type CompanyIndustriesResource } from "./CompanyIndustriesResource.js";
+import { createContactAttributesResource, type ContactAttributesResource } from "./ContactAttributesResource.js";
+import { createContactsResource, type ContactsResource } from "./ContactsResource.js";
+import { createContactTagsResource, type ContactTagsResource } from "./ContactTagsResource.js";
 import { createDataManagersResource, type DataManagersResource } from "./DataManagersResource.js";
 import { createDesignSettingsResource, type DesignSettingsResource } from "./DesignSettingsResource.js";
 import { createInvoicesResource, type InvoicesResource } from "./InvoicesResource.js";
-import { createListSegmentConditionsResource, type ListSegmentConditionsResource } from "./ListSegmentConditionsResource.js";
 import { createMasterTemplatesResource, type MasterTemplatesResource } from "./MasterTemplatesResource.js";
-import { createMemberCampaignDeliveredEventsResource, type MemberCampaignDeliveredEventsResource } from "./MemberCampaignDeliveredEventsResource.js";
 import { createMembersResource, type MembersResource } from "./MembersResource.js";
-import { createMemberSmsBouncedEventsResource, type MemberSmsBouncedEventsResource } from "./MemberSmsBouncedEventsResource.js";
-import { createMemberSmsClickedEventsResource, type MemberSmsClickedEventsResource } from "./MemberSmsClickedEventsResource.js";
-import { createMemberSmsDeliveredEventsResource, type MemberSmsDeliveredEventsResource } from "./MemberSmsDeliveredEventsResource.js";
-import { createMemberSmsRepliedEventsResource, type MemberSmsRepliedEventsResource } from "./MemberSmsRepliedEventsResource.js";
-import { createMemberSmsSubscribedEventsResource, type MemberSmsSubscribedEventsResource } from "./MemberSmsSubscribedEventsResource.js";
-import { createMemberSmsUnsubscribedEventsResource, type MemberSmsUnsubscribedEventsResource } from "./MemberSmsUnsubscribedEventsResource.js";
 import { createMySubscriptionResource, type MySubscriptionResource } from "./MySubscriptionResource.js";
+import { createNotesResource, type NotesResource } from "./NotesResource.js";
+import { createOpportunitiesResource, type OpportunitiesResource } from "./OpportunitiesResource.js";
+import { createOpportunityAttributesResource, type OpportunityAttributesResource } from "./OpportunityAttributesResource.js";
+import { createPipelinesResource, type PipelinesResource } from "./PipelinesResource.js";
+import { createPipelineTemplatesResource, type PipelineTemplatesResource } from "./PipelineTemplatesResource.js";
 import { createSenderDomainsResource, type SenderDomainsResource } from "./SenderDomainsResource.js";
 import { createSendersResource, type SendersResource } from "./SendersResource.js";
 import { createSmsCampaignsResource, type SmsCampaignsResource } from "./SmsCampaignsResource.js";
 import { createSmsSendersResource, type SmsSendersResource } from "./SmsSendersResource.js";
 import { createStoresResource, type StoresResource } from "./StoresResource.js";
 import { createSupportResource, type SupportResource } from "./SupportResource.js";
+import { createTaskAssigneesResource, type TaskAssigneesResource } from "./TaskAssigneesResource.js";
+import { createTasksResource, type TasksResource } from "./TasksResource.js";
 import { createTemplatesResource, type TemplatesResource } from "./TemplatesResource.js";
 import { createTemplatesSchemaResource, type TemplatesSchemaResource } from "./TemplatesSchemaResource.js";
 import { createThemeIndustriesResource, type ThemeIndustriesResource } from "./ThemeIndustriesResource.js";
@@ -40,26 +45,31 @@ export interface GeneratedResources {
   automations: AutomationsResource;
   batchOperations: BatchOperationsResource;
   campaigns: CampaignsResource;
+  companies: CompaniesResource;
+  companyAttributes: CompanyAttributesResource;
+  companyIndustries: CompanyIndustriesResource;
+  contactAttributes: ContactAttributesResource;
+  contacts: ContactsResource;
+  contactTags: ContactTagsResource;
   dataManagers: DataManagersResource;
   designSettings: DesignSettingsResource;
   invoices: InvoicesResource;
-  listSegmentConditions: ListSegmentConditionsResource;
   masterTemplates: MasterTemplatesResource;
-  memberCampaignDeliveredEvents: MemberCampaignDeliveredEventsResource;
   members: MembersResource;
-  memberSmsBouncedEvents: MemberSmsBouncedEventsResource;
-  memberSmsClickedEvents: MemberSmsClickedEventsResource;
-  memberSmsDeliveredEvents: MemberSmsDeliveredEventsResource;
-  memberSmsRepliedEvents: MemberSmsRepliedEventsResource;
-  memberSmsSubscribedEvents: MemberSmsSubscribedEventsResource;
-  memberSmsUnsubscribedEvents: MemberSmsUnsubscribedEventsResource;
   mySubscription: MySubscriptionResource;
+  notes: NotesResource;
+  opportunities: OpportunitiesResource;
+  opportunityAttributes: OpportunityAttributesResource;
+  pipelines: PipelinesResource;
+  pipelineTemplates: PipelineTemplatesResource;
   senderDomains: SenderDomainsResource;
   senders: SendersResource;
   smsCampaigns: SmsCampaignsResource;
   smsSenders: SmsSendersResource;
   stores: StoresResource;
   support: SupportResource;
+  taskAssignees: TaskAssigneesResource;
+  tasks: TasksResource;
   templates: TemplatesResource;
   templatesSchema: TemplatesSchemaResource;
   themeIndustries: ThemeIndustriesResource;
@@ -76,26 +86,31 @@ export function wireResources(client: Easymailing): GeneratedResources {
     automations: createAutomationsResource(client),
     batchOperations: createBatchOperationsResource(client),
     campaigns: createCampaignsResource(client),
+    companies: createCompaniesResource(client),
+    companyAttributes: createCompanyAttributesResource(client),
+    companyIndustries: createCompanyIndustriesResource(client),
+    contactAttributes: createContactAttributesResource(client),
+    contacts: createContactsResource(client),
+    contactTags: createContactTagsResource(client),
     dataManagers: createDataManagersResource(client),
     designSettings: createDesignSettingsResource(client),
     invoices: createInvoicesResource(client),
-    listSegmentConditions: createListSegmentConditionsResource(client),
     masterTemplates: createMasterTemplatesResource(client),
-    memberCampaignDeliveredEvents: createMemberCampaignDeliveredEventsResource(client),
     members: createMembersResource(client),
-    memberSmsBouncedEvents: createMemberSmsBouncedEventsResource(client),
-    memberSmsClickedEvents: createMemberSmsClickedEventsResource(client),
-    memberSmsDeliveredEvents: createMemberSmsDeliveredEventsResource(client),
-    memberSmsRepliedEvents: createMemberSmsRepliedEventsResource(client),
-    memberSmsSubscribedEvents: createMemberSmsSubscribedEventsResource(client),
-    memberSmsUnsubscribedEvents: createMemberSmsUnsubscribedEventsResource(client),
     mySubscription: createMySubscriptionResource(client),
+    notes: createNotesResource(client),
+    opportunities: createOpportunitiesResource(client),
+    opportunityAttributes: createOpportunityAttributesResource(client),
+    pipelines: createPipelinesResource(client),
+    pipelineTemplates: createPipelineTemplatesResource(client),
     senderDomains: createSenderDomainsResource(client),
     senders: createSendersResource(client),
     smsCampaigns: createSmsCampaignsResource(client),
     smsSenders: createSmsSendersResource(client),
     stores: createStoresResource(client),
     support: createSupportResource(client),
+    taskAssignees: createTaskAssigneesResource(client),
+    tasks: createTasksResource(client),
     templates: createTemplatesResource(client),
     templatesSchema: createTemplatesSchemaResource(client),
     themeIndustries: createThemeIndustriesResource(client),

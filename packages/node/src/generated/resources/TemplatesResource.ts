@@ -40,7 +40,7 @@ export class TemplatesResource {
     return result.data;
   }
 
-  async update(uuid: string, body: components["schemas"]["Template-template.write"]): Promise<components["schemas"]["Template-template.read"]> {
+  async update(uuid: string, body: components["schemas"]["Template-template.write.update_template"]): Promise<components["schemas"]["Template-template.read"]> {
     const result = await this.client.request<components["schemas"]["Template-template.read"]>({
       method: "PUT",
       path: pathWithParams("/templates/{uuid}", { uuid: uuid }),

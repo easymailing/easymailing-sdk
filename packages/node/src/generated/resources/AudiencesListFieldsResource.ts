@@ -49,7 +49,7 @@ export class AudiencesListFieldsResource {
     return result.data;
   }
 
-  async createSelect(body: components["schemas"]["ListField.CustomFieldSelect-list_field.write"]): Promise<components["schemas"]["ListField-list_field.read"]> {
+  async createSelect(body: components["schemas"]["ListField.CustomFieldSelect-list_field.write.create_custom_field_select"]): Promise<components["schemas"]["ListField-list_field.read"]> {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/select", { audienceUuid: this.boundParams["audienceUuid"]! }),
@@ -59,7 +59,7 @@ export class AudiencesListFieldsResource {
     return result.data;
   }
 
-  async createSimple(body: components["schemas"]["ListField.CustomFieldSimple-list_field.write"]): Promise<components["schemas"]["ListField-list_field.read"]> {
+  async createSimple(body: components["schemas"]["ListField.CustomFieldSimple-list_field.write.create_custom_field_simple"]): Promise<components["schemas"]["ListField-list_field.read"]> {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "POST",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/simple", { audienceUuid: this.boundParams["audienceUuid"]! }),
@@ -79,7 +79,7 @@ export class AudiencesListFieldsResource {
     return result.data;
   }
 
-  async updateSelect(uuid: string, body: components["schemas"]["ListField.CustomFieldSelect-list_field.write"]): Promise<components["schemas"]["ListField-list_field.read"]> {
+  async updateSelect(uuid: string, body: components["schemas"]["ListField.CustomFieldSelect-list_field.write.update_custom_field_select"]): Promise<components["schemas"]["ListField-list_field.read"]> {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}/select", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
@@ -89,7 +89,7 @@ export class AudiencesListFieldsResource {
     return result.data;
   }
 
-  async updateSimple(uuid: string, body: components["schemas"]["ListField.CustomFieldSimple-list_field.write"]): Promise<components["schemas"]["ListField-list_field.read"]> {
+  async updateSimple(uuid: string, body: components["schemas"]["ListField.CustomFieldSimple-list_field.write.update_custom_field_simple"]): Promise<components["schemas"]["ListField-list_field.read"]> {
     const result = await this.client.request<components["schemas"]["ListField-list_field.read"]>({
       method: "PUT",
       path: pathWithParams("/audiences/{audienceUuid}/list_fields/{uuid}/simple", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),

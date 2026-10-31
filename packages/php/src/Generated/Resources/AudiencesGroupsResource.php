@@ -45,9 +45,9 @@ final class AudiencesGroupsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Group_group_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Group_group_write_update_audience_group $body
      */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Group_group_write $body): \Easymailing\Sdk\Generated\Dto\Group_group_read
+    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\Group_group_write_update_audience_group $body): \Easymailing\Sdk\Generated\Dto\Group_group_read
     {
         $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/groups/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/groups/{uuid}');
         $data = is_array($result['data']) ? $result['data'] : [];
