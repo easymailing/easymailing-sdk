@@ -1,0 +1,43 @@
+<?php
+
+// AUTO-GENERATED FROM EASYMAILING OPENAPI. DO NOT EDIT BY HAND.
+// Run `composer generate` to refresh.
+
+declare(strict_types=1);
+
+namespace Easymailing\Sdk\Generated\Dto;
+
+final class TextsDto_jsonld_design_setting_write_update_design_setting_texts
+{
+    public function __construct(
+        public readonly ?TextElementDto_jsonld_design_setting_write_update_design_setting_texts_paragraph $paragraph,
+        public readonly ?TextElementDto_jsonld_design_setting_write $list = null,
+    ) {
+    }
+
+    /** @param array<string, mixed> $data */
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            paragraph: isset($data['paragraph']) ? TextElementDto_jsonld_design_setting_write_update_design_setting_texts_paragraph::fromArray($data['paragraph']) : null,
+            list: isset($data['list']) ? TextElementDto_jsonld_design_setting_write::fromArray($data['list']) : null,
+        );
+    }
+
+    /** @return array<string, mixed> */
+    public function toArray(): array
+    {
+        return [
+            'paragraph' => $this->paragraph?->toArray(),
+            'list' => $this->list?->toArray(),
+        ];
+    }
+
+    public function with(mixed ...$fields): self
+    {
+        return new self(
+            paragraph: array_key_exists('paragraph', $fields) ? $fields['paragraph'] : $this->paragraph,
+            list: array_key_exists('list', $fields) ? $fields['list'] : $this->list,
+        );
+    }
+}
