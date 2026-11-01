@@ -11,54 +11,6 @@ export class AudiencesListSegmentsResource {
     protected readonly boundParams: Record<string, string> = {},
   ) {}
 
-  async list(query?: NonNullable<operations["list_audience_segments"]["parameters"]["query"]>): Promise<Page<components["schemas"]["ListSegment-list_segment.read"]>> {
-    const result = await this.client.request<unknown>({
-      method: "GET",
-      path: pathWithParams("/audiences/{audienceUuid}/list_segments", { audienceUuid: this.boundParams["audienceUuid"]! }),
-      pathTemplate: "/audiences/{audienceUuid}/list_segments",
-      query: query as Record<string, string | number | boolean> | undefined,
-    });
-    return toPage(result);
-  }
-
-  async create(body: components["schemas"]["ListSegment-list_segment.write"]): Promise<components["schemas"]["ListSegment-list_segment.read"]> {
-    const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
-      method: "POST",
-      path: pathWithParams("/audiences/{audienceUuid}/list_segments", { audienceUuid: this.boundParams["audienceUuid"]! }),
-      pathTemplate: "/audiences/{audienceUuid}/list_segments",
-      body,
-    });
-    return result.data;
-  }
-
-  async get(uuid: string): Promise<components["schemas"]["ListSegment-list_segment.read"]> {
-    const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
-      method: "GET",
-      path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
-      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}",
-    });
-    return result.data;
-  }
-
-  async update(uuid: string, body: components["schemas"]["ListSegment-list_segment.write.update_audience_segment"]): Promise<components["schemas"]["ListSegment-list_segment.read"]> {
-    const result = await this.client.request<components["schemas"]["ListSegment-list_segment.read"]>({
-      method: "PUT",
-      path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
-      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}",
-      body,
-    });
-    return result.data;
-  }
-
-  async delete(uuid: string): Promise<void> {
-    const result = await this.client.request<unknown>({
-      method: "DELETE",
-      path: pathWithParams("/audiences/{audienceUuid}/list_segments/{uuid}", { audienceUuid: this.boundParams["audienceUuid"]!, uuid: uuid }),
-      pathTemplate: "/audiences/{audienceUuid}/list_segments/{uuid}",
-    });
-    return;
-  }
-
   async addToGroup(uuid: string): Promise<components["schemas"]["ListSegment.AsyncTaskResource"]> {
     const result = await this.client.request<components["schemas"]["ListSegment.AsyncTaskResource"]>({
       method: "POST",

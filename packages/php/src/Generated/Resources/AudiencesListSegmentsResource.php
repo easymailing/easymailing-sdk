@@ -17,48 +17,6 @@ final class AudiencesListSegmentsResource extends AbstractResource
     ) {
     }
 
-    /**
-     * @param array<string, string|int|float|bool>|null $query
-     * @return Page<\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read>
-     */
-    public function list(?array $query = null): Page
-    {
-        $result = $this->client->request('GET', $this->resolvePath('/audiences/{audienceUuid}/list_segments', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), query: $query, pathTemplate: '/audiences/{audienceUuid}/list_segments');
-        return $this->toMappedPage($result, static fn(array $item): \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read => \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read::fromArray($item));
-    }
-
-    /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write $body
-     */
-    public function create(array|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write $body): \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read
-    {
-        $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/list_segments', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_segments');
-        $data = is_array($result['data']) ? $result['data'] : [];
-        return \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read::fromArray($data);
-    }
-
-    public function get(string $uuid): \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read
-    {
-        $result = $this->client->request('GET', $this->resolvePath('/audiences/{audienceUuid}/list_segments/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), pathTemplate: '/audiences/{audienceUuid}/list_segments/{uuid}');
-        $data = is_array($result['data']) ? $result['data'] : [];
-        return \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read::fromArray($data);
-    }
-
-    /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write_update_audience_segment $body
-     */
-    public function update(string $uuid, array|\Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_write_update_audience_segment $body): \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read
-    {
-        $result = $this->client->request('PUT', $this->resolvePath('/audiences/{audienceUuid}/list_segments/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/audiences/{audienceUuid}/list_segments/{uuid}');
-        $data = is_array($result['data']) ? $result['data'] : [];
-        return \Easymailing\Sdk\Generated\Dto\ListSegment_list_segment_read::fromArray($data);
-    }
-
-    public function delete(string $uuid): void
-    {
-        $this->client->request('DELETE', $this->resolvePath('/audiences/{audienceUuid}/list_segments/{uuid}', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), pathTemplate: '/audiences/{audienceUuid}/list_segments/{uuid}');
-    }
-
     public function addToGroup(string $uuid): \Easymailing\Sdk\Generated\Dto\ListSegment_AsyncTaskResource
     {
         $result = $this->client->request('POST', $this->resolvePath('/audiences/{audienceUuid}/list_segments/{uuid}/actions/add_to_group', ['audienceUuid' => $this->boundParams['audienceUuid'] ?? null, 'uuid' => $uuid]), pathTemplate: '/audiences/{audienceUuid}/list_segments/{uuid}/actions/add_to_group');
