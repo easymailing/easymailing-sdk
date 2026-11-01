@@ -22,7 +22,7 @@ export class WebhookConfigsCollectionResource {
     return toPage(result);
   }
 
-  async create(body: components["schemas"]["Webhook-webhook.write"]): Promise<components["schemas"]["Webhook-webhook.read"]> {
+  async create(body: components["schemas"]["Webhook-webhook.write.create_webhook"]): Promise<components["schemas"]["Webhook-webhook.read"]> {
     const result = await this.client.request<components["schemas"]["Webhook-webhook.read"]>({
       method: "POST",
       path: pathWithParams("/webhooks", {  }),

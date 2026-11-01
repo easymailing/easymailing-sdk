@@ -25,9 +25,9 @@ final class WebhookConfigsResource extends AbstractResource
     }
 
     /**
-     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Webhook_webhook_write $body
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\Webhook_webhook_write_create_webhook $body
      */
-    public function create(array|\Easymailing\Sdk\Generated\Dto\Webhook_webhook_write $body): \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read
+    public function create(array|\Easymailing\Sdk\Generated\Dto\Webhook_webhook_write_create_webhook $body): \Easymailing\Sdk\Generated\Dto\Webhook_webhook_read
     {
         $result = $this->client->request('POST', $this->resolvePath('/webhooks', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/webhooks');
         $data = is_array($result['data']) ? $result['data'] : [];

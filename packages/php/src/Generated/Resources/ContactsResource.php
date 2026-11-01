@@ -56,4 +56,41 @@ final class ContactsResource extends AbstractResource
         $this->client->request('DELETE', $this->resolvePath('/contacts/{uuid}', ['uuid' => $uuid]), pathTemplate: '/contacts/{uuid}');
     }
 
+    /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ContactCount_ContactCountInput $body
+     */
+    public function count(array|\Easymailing\Sdk\Generated\Dto\ContactCount_ContactCountInput $body): \Easymailing\Sdk\Generated\Dto\ContactCount_contact_count_read
+    {
+        $result = $this->client->request('POST', $this->resolvePath('/contacts/actions/count', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/contacts/actions/count');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\ContactCount_contact_count_read::fromArray($data);
+    }
+
+    /**
+     * @param array<string, mixed>|\Easymailing\Sdk\Generated\Dto\ContactSearch_ContactSearchInput $body
+     */
+    public function search(array|\Easymailing\Sdk\Generated\Dto\ContactSearch_ContactSearchInput $body): \Easymailing\Sdk\Generated\Dto\ContactSearch_contact_search_read_contact_read
+    {
+        $result = $this->client->request('POST', $this->resolvePath('/contacts/actions/search', []), body: is_array($body) ? $body : $body->toArray(), pathTemplate: '/contacts/actions/search');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\ContactSearch_contact_search_read_contact_read::fromArray($data);
+    }
+
+    public function getEmailOptOut(string $contactUuid): \Easymailing\Sdk\Generated\Dto\ContactEmailOptOut_contact_email_opt_out_read
+    {
+        $result = $this->client->request('GET', $this->resolvePath('/contacts/{contactUuid}/email_opt_out', ['contactUuid' => $contactUuid]), pathTemplate: '/contacts/{contactUuid}/email_opt_out');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return \Easymailing\Sdk\Generated\Dto\ContactEmailOptOut_contact_email_opt_out_read::fromArray($data);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function updateEmailOptOut(string $contactUuid): array
+    {
+        $result = $this->client->request('DELETE', $this->resolvePath('/contacts/{contactUuid}/email_opt_out', ['contactUuid' => $contactUuid]), pathTemplate: '/contacts/{contactUuid}/email_opt_out');
+        $data = is_array($result['data']) ? $result['data'] : [];
+        return $data;
+    }
+
 }

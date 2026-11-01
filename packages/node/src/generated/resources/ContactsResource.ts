@@ -60,6 +60,44 @@ export class ContactsCollectionResource {
     return;
   }
 
+  async count(body: components["schemas"]["ContactCount.ContactCountInput"]): Promise<components["schemas"]["ContactCount-contact_count.read"]> {
+    const result = await this.client.request<components["schemas"]["ContactCount-contact_count.read"]>({
+      method: "POST",
+      path: pathWithParams("/contacts/actions/count", {  }),
+      pathTemplate: "/contacts/actions/count",
+      body,
+    });
+    return result.data;
+  }
+
+  async search(body: components["schemas"]["ContactSearch.ContactSearchInput"]): Promise<components["schemas"]["ContactSearch-contact_search.read_contact.read"]> {
+    const result = await this.client.request<components["schemas"]["ContactSearch-contact_search.read_contact.read"]>({
+      method: "POST",
+      path: pathWithParams("/contacts/actions/search", {  }),
+      pathTemplate: "/contacts/actions/search",
+      body,
+    });
+    return result.data;
+  }
+
+  async getEmailOptOut(contactUuid: string): Promise<components["schemas"]["ContactEmailOptOut-contact_email_opt_out.read"]> {
+    const result = await this.client.request<components["schemas"]["ContactEmailOptOut-contact_email_opt_out.read"]>({
+      method: "GET",
+      path: pathWithParams("/contacts/{contactUuid}/email_opt_out", { contactUuid: contactUuid }),
+      pathTemplate: "/contacts/{contactUuid}/email_opt_out",
+    });
+    return result.data;
+  }
+
+  async updateEmailOptOut(contactUuid: string): Promise<unknown> {
+    const result = await this.client.request<unknown>({
+      method: "DELETE",
+      path: pathWithParams("/contacts/{contactUuid}/email_opt_out", { contactUuid: contactUuid }),
+      pathTemplate: "/contacts/{contactUuid}/email_opt_out",
+    });
+    return result.data;
+  }
+
 }
 
 export type ContactsResource = ContactsCollectionResource & ((contactUuid: string) => ContactsScopedResource);

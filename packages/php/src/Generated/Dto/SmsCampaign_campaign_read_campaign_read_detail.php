@@ -12,6 +12,8 @@ final class SmsCampaign_campaign_read_campaign_read_detail
     public function __construct(
         public readonly ?string $audience = null,
         public readonly ?string $channel = null,
+        /** @var array<string,mixed>|null */
+        public readonly ?array $contact_targeting = null,
         public readonly ?\DateTimeImmutable $created_at = null,
         public readonly ?\DateTimeImmutable $finished_at = null,
         /** @var list<string>|null */
@@ -42,6 +44,7 @@ final class SmsCampaign_campaign_read_campaign_read_detail
         return new self(
             audience: $data['audience'] ?? null,
             channel: $data['channel'] ?? null,
+            contact_targeting: $data['contact_targeting'] ?? null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             finished_at: isset($data['finished_at']) ? new \DateTimeImmutable($data['finished_at']) : null,
             groups: $data['groups'] ?? null,
@@ -70,6 +73,7 @@ final class SmsCampaign_campaign_read_campaign_read_detail
         return [
             'audience' => $this->audience,
             'channel' => $this->channel,
+            'contact_targeting' => $this->contact_targeting,
             'created_at' => $this->created_at?->format(\DateTimeInterface::ATOM),
             'finished_at' => $this->finished_at?->format(\DateTimeInterface::ATOM),
             'groups' => $this->groups,
@@ -97,6 +101,7 @@ final class SmsCampaign_campaign_read_campaign_read_detail
         return new self(
             audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
             channel: array_key_exists('channel', $fields) ? $fields['channel'] : $this->channel,
+            contact_targeting: array_key_exists('contact_targeting', $fields) ? $fields['contact_targeting'] : $this->contact_targeting,
             created_at: array_key_exists('created_at', $fields) ? $fields['created_at'] : $this->created_at,
             finished_at: array_key_exists('finished_at', $fields) ? $fields['finished_at'] : $this->finished_at,
             groups: array_key_exists('groups', $fields) ? $fields['groups'] : $this->groups,
