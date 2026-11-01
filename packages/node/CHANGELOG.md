@@ -1,5 +1,19 @@
 # @easymailing/sdk
 
+## 0.5.0
+
+### Minor Changes
+
+- [#16](https://github.com/easymailing/easymailing-sdk/pull/16) [`31b2750`](https://github.com/easymailing/easymailing-sdk/commit/31b27504efb0384b9edf1a3dac91961130bfdecf) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Add the CRM and Sales resources of the public API: contacts (with audience memberships and tags), companies (with industries), contact and company attributes, opportunities, pipelines (with stages, loss reasons and templates), opportunity attributes, tasks (with assignees) and notes.
+
+  Remove the schema-only resources `ListSegmentConditions`, `MemberCampaignDeliveredEvents` and `MemberSms*Events`: their `get()` always answered 404 because those paths only documented webhook and condition schemas, and the API no longer publishes them.
+
+  Input properties follow the documented `snake_case` names of the public API: `operatorMatch` becomes `operator_match`, `groupUuid` becomes `group_uuid` and `segmentUuid` becomes `segment_uuid`. The API still accepts the former names, but code typed against the previous SDK must use the new ones. Custom field options take `translations` instead of `label`, and `automation_trigger` is required when starting an automation through the API, as the API already demanded.
+
+- [#18](https://github.com/easymailing/easymailing-sdk/pull/18) [`f79dbd2`](https://github.com/easymailing/easymailing-sdk/commit/f79dbd2651bdb6380aec64412d0f0fce35396543) Thanks [@h3llr4iser](https://github.com/h3llr4iser)! - Add the customer relationship and contact segment resources of the public API: CRM emails (with attachments, inline images and access grants), email drafts, sends and batches, composing helpers, opt-outs, email sequences (with versions, enrollments, activity and assets), meetings, booking pages (with calendars, fields, offers, images, email designs and sharing), record files and activity, plus contact segments, the contact filter catalog and contact queries (`count_contacts` and `search_contacts`).
+
+  Webhooks gain a `scope` (`marketing` by default, or `crm`); a `crm` webhook has no audience, so `audience` is now `null` in its responses. Support ticket comments report `author_id` as the Easymailing user id of the requester, or `null` for the support team, once the support portal tickets are enabled.
+
 ## 0.4.1
 
 ### Patch Changes
