@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.7.0-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.6.1-alpha.0...v0.7.0-alpha.0) (2026-11-01)
+
+
+### Features
+
+* **sdk:** CRM and Sales resources from the public API ([31b2750](https://github.com/easymailing/easymailing-sdk/commit/31b27504efb0384b9edf1a3dac91961130bfdecf))
+* **sdk:** customer relationship and contact segment resources ([f79dbd2](https://github.com/easymailing/easymailing-sdk/commit/f79dbd2651bdb6380aec64412d0f0fce35396543))
+
+
+### Bug Fixes
+
+* **contract:** track search_member operation rename in sdk-map ([3b9ebf6](https://github.com/easymailing/easymailing-sdk/commit/3b9ebf66d49004a00fe236d6d8f3b892ceedd14f))
+
 ## [0.6.1-alpha.0](https://github.com/easymailing/easymailing-sdk/compare/v0.6.0-alpha.0...v0.6.1-alpha.0) (2026-05-28)
 
 
