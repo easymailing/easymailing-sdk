@@ -28,4 +28,14 @@ enum WebhookEventType: string
     case MemberSmsBounced = 'member_sms_bounced';
     case MemberSmsClicked = 'member_sms_clicked';
     case MemberSmsReplied = 'member_sms_replied';
+    case CrmContactCreated = 'crm_contact_created';
+    case CrmContactUpdated = 'crm_contact_updated';
+    case CrmContactDeleted = 'crm_contact_deleted';
+    case CrmCompanyCreated = 'crm_company_created';
+    case CrmCompanyUpdated = 'crm_company_updated';
+    case CrmCompanyDeleted = 'crm_company_deleted';
+    case CrmOpportunityCreated = 'crm_opportunity_created';
+    case CrmOpportunityUpdated = 'crm_opportunity_updated';
+    case CrmOpportunityDeleted = 'crm_opportunity_deleted';
+    case CrmOpportunityStageChanged = 'crm_opportunity_stage_changed';
 }
