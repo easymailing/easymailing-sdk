@@ -67461,6 +67461,11 @@ export interface components {
              */
             priority?: "low" | "normal" | "high" | "urgent";
             /**
+             * @description Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.
+             * @example K7QM-3XRP
+             */
+            reference?: string | null;
+            /**
              * @description Ticket status
              * @example open
              * @enum {string}
@@ -67525,6 +67530,11 @@ export interface components {
              * @enum {string}
              */
             priority?: "low" | "normal" | "high" | "urgent";
+            /**
+             * @description Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.
+             * @example K7QM-3XRP
+             */
+            reference?: string | null;
             /**
              * @description Ticket status
              * @example open
