@@ -73548,6 +73548,15 @@
             "example": "normal",
             "type": "string"
           },
+          "reference": {
+            "description": "Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.",
+            "example": "K7QM-3XRP",
+            "pattern": "^[0-9A-Z]{4}-[0-9A-Z]{4}$",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "status": {
             "description": "Ticket status",
             "enum": [
@@ -73674,6 +73683,15 @@
             ],
             "example": "normal",
             "type": "string"
+          },
+          "reference": {
+            "description": "Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.",
+            "example": "K7QM-3XRP",
+            "pattern": "^[0-9A-Z]{4}-[0-9A-Z]{4}$",
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "status": {
             "description": "Ticket status",
