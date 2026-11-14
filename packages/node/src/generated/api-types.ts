@@ -22,7 +22,7 @@ export interface paths {
          *     **When not to use:** It is read-only: to add something to the timeline, create a note with `create_note` or a task with `create_task`; the activity is written by the action itself. To read the full text of a note, use `get_note` or `list_notes`; for tasks, `list_tasks`. To read one member's subscription history in an audience, use `list_member_activities`, which is empty in accounts that already use the new Customer App. There is no combined timeline of the whole account: you must name the record.
          *
          *     **Filters:** Exactly one of `contact`, `company` or `opportunity` is required, with the UUID of the record. A UUID that is not valid, does not exist or belongs to a record the user cannot see gives `404`.
-         *     `category[]` and `type[]` keep only those categories and types; `occurred_from` and `occurred_to` keep a range of days in the time zone of the account. The order is fixed (most recent `occurred_at` first); there is no `order` parameter and no text search. A company or an opportunity only has `crm` rows, so another category gives an empty list.
+         *     `category[]` and `type[]` keep only those categories and types; `occurred_from` and `occurred_to` keep a range of days in the time zone of the account. The order is fixed (most recent `occurred_at` first); there is no `order` parameter and no text search. A company or an opportunity only has `crm` rows and the `automation` rows of the workflows it went through, so another category gives an empty list.
          *     Visibility is decided row by row: a task or note row is hidden to a user without `crm.tasks_notes.read` or who cannot see that task, and an email or meeting row is hidden to a user who cannot read that mailbox or calendar. Hidden rows are not removed: they come back with `availability` `unavailable` (or `deleted` when the email or meeting was deleted for good), no `data` and an anonymous actor, so the list never leaks their content. Rows from a Google mailbox or calendar that was disconnected are not returned at all.
          *     Pagination: activity is paged with `itemsPerPage` (default 25, maximum 50) and an opaque `cursor[gt]`: to read the next page, call again with the same record and the same filters and the `cursor[gt]` of the `hydra:next` link of the previous response. The cursor only works for the same user, record and filters. The response gives the total number of rows in `hydra:totalItems`, counted when the first page is read (hidden rows count; rows written afterwards do not change it); keep following `hydra:next` until a page comes back empty.
          *
@@ -5264,7 +5264,7 @@ export interface paths {
          *
          *     **When not to use:** To add a person, use `create_contact`; that operation can also link the person to a company. Before creating, check that the company does not exist: search by domain with `list_companies`, because a domain can belong to only one company. To change an existing company, use `update_company`.
          *
-         *     **Side effects:** The company appears in the CRM with a `created` entry in its activity, attributed to the person who owns the token, with the note "via Maia" when Maia made the call. It is not linked to any contact: link a contact to it with `update_contact`. Nothing is sent and no automation or webhook fires (CRM webhook events do not exist yet).
+         *     **Side effects:** The company appears in the CRM with a `created` entry in its activity, attributed to the person who owns the token, with the note "via Maia" when Maia made the call. It is not linked to any contact: link a contact to it with `update_contact`. Nothing is sent and no webhook fires (CRM webhook events do not exist yet). Automations of the new engine that listen to this creation, or to the values it sets, can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.contacts_companies.write` capability.
          */
@@ -5301,7 +5301,7 @@ export interface paths {
          *
          *     **When not to use:** To link or unlink a person from the company, use `update_contact` (its `company` field); a company's contacts are not edited here. To remove the company altogether, use `delete_company`. To create one, use `create_company`.
          *
-         *     **Side effects:** All the fields of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an entry to the company's activity (field, previous and new value), attributed to the person who owns the token, with "via Maia" when Maia made the call. Saving the same value leaves no entry. Replacing `domains` frees the removed ones, so another company can take them. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** All the fields of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an entry to the company's activity (field, previous and new value), attributed to the person who owns the token, with "via Maia" when Maia made the call. Saving the same value leaves no entry. Replacing `domains` frees the removed ones, so another company can take them. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.contacts_companies.write` capability.
          */
@@ -8557,7 +8557,7 @@ export interface paths {
          *
          *     **When not to use:** To change a deal that already exists, use `update_opportunity`; to move it between stages, `move_opportunity_stage`. Check first with `list_opportunities` (filters `company` and `contact`) that the deal does not exist, because nothing prevents duplicates. To add a person or an organization, use `create_contact` or `create_company`.
          *
-         *     **Side effects:** The opportunity appears in the CRM with an `opportunity.created` entry in its activity, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. Its `record_source` is `api`. If you send `owner`, that user gets the assignment notification (in-app and, by default, email) unless they are the caller. Nothing is sent to contacts, no automation runs and no webhook fires (CRM webhook events do not exist yet). Retrying a request that succeeded creates a second opportunity.
+         *     **Side effects:** The opportunity appears in the CRM with an `opportunity.created` entry in its activity, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. Its `record_source` is `api`. If you send `owner`, that user gets the assignment notification (in-app and, by default, email) unless they are the caller. Nothing is sent to contacts and no webhook fires (CRM webhook events do not exist yet). Automations of the new engine that listen to this creation, or to the values it sets, can start: it counts as an «API» change (or a manual one when Maia made the call). Retrying a request that succeeded creates a second opportunity.
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline where it is created.
          */
@@ -8594,7 +8594,7 @@ export interface paths {
          *
          *     **When not to use:** To change the stage use `move_opportunity_stage`; to close it, `win_opportunity` or `lose_opportunity`; to reopen it, `reopen_opportunity`; to change its pipeline, `move_opportunity_pipeline`. If the destination stage requires fields, send them in that move, not here. To add a deal, use `create_opportunity`.
          *
-         *     **Side effects:** All properties of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an `opportunity.fields_changed` entry to the activity (field, previous and new value), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; saving the same value leaves no entry. Changing `value` of a won or lost deal revalues its closing snapshot. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** All properties of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an `opportunity.fields_changed` entry to the activity (field, previous and new value), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; saving the same value leaves no entry. Changing `value` of a won or lost deal revalues its closing snapshot. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8634,7 +8634,7 @@ export interface paths {
          *
          *     **When not to use:** To close it as won, use `win_opportunity`. To remove a record that should not exist, use `delete_opportunity`. To keep working it, use `move_opportunity_stage` or `reopen_opportunity`.
          *
-         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `lost` and the reason name and note, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was won, it changes the outcome and keeps the first closing date. The reason and note are kept in the closing history even if the reason is archived later. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `lost` and the reason name and note, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was won, it changes the outcome and keeps the first closing date. The reason and note are kept in the closing history even if the reason is archived later. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8662,7 +8662,7 @@ export interface paths {
          *
          *     **When not to use:** To move it between stages of the same pipeline, use `move_opportunity_stage`. Before moving a deal with an amount, run `preview_opportunity_pipeline_move` to know whether the currency needs to be confirmed.
          *
-         *     **Side effects:** Adds an `opportunity.pipeline_changed` entry (from and to pipeline and stage, and amount if it changed), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; it is not recorded as a stage change. Moving a closed deal to an open stage reopens it, and to a won or lost stage keeps it closed. The closing snapshot is revalued with the reference currency of the destination. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Adds an `opportunity.pipeline_changed` entry (from and to pipeline and stage, and amount if it changed), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; it is not recorded as a stage change. Moving a closed deal to an open stage reopens it, and to a won or lost stage keeps it closed. The closing snapshot is revalued with the reference currency of the destination. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity and to the destination one.
          */
@@ -8690,7 +8690,7 @@ export interface paths {
          *
          *     **When not to use:** To close a deal as won or lost, `win_opportunity` and `lose_opportunity` find the stage for you. To reopen a closed deal, use `reopen_opportunity`. To change the pipeline, use `move_opportunity_pipeline`. To change other data of the deal, use `update_opportunity`.
          *
-         *     **Side effects:** Adds an `opportunity.stage_changed` entry to the activity (from stage, to stage and kind: progressed, won, lost, reopened), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The time in the previous stage is closed and a new stay starts. Entering a won stage sets probability 100, a lost stage 0, and the closing amount is valued at the closing date. Moving to the stage it is already in changes nothing. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Adds an `opportunity.stage_changed` entry to the activity (from stage, to stage and kind: progressed, won, lost, reopened), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The time in the previous stage is closed and a new stay starts. Entering a won stage sets probability 100, a lost stage 0, and the closing amount is valued at the closing date. Moving to the stage it is already in changes nothing. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8718,7 +8718,7 @@ export interface paths {
          *
          *     **When not to use:** To move an open deal between open stages, use `move_opportunity_stage`. To close it again, use `win_opportunity` or `lose_opportunity`.
          *
-         *     **Side effects:** Adds an `opportunity.stage_changed` entry with kind `reopened`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The previous closing (date, amount snapshot and loss reason) stays in the history, a custom probability set before is not restored and a later close gets a new closing date. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Adds an `opportunity.stage_changed` entry with kind `reopened`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The previous closing (date, amount snapshot and loss reason) stays in the history, a custom probability set before is not restored and a later close gets a new closing date. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8746,7 +8746,7 @@ export interface paths {
          *
          *     **When not to use:** To close it as lost, use `lose_opportunity`. To put it in an open stage, use `move_opportunity_stage`. To undo a mistaken win and keep working the deal, use `reopen_opportunity`.
          *
-         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `won`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was lost, it changes the outcome and keeps the first closing date. If it is already in that won stage, nothing changes. The closing amount is valued at the rate of the closing date; with no rate yet the value is marked `pending` and filled later. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `won`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was lost, it changes the outcome and keeps the first closing date. If it is already in that won stage, nothing changes. The closing amount is valued at the rate of the closing date; with no rate yet the value is marked `pending` and filled later. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -10212,13 +10212,13 @@ export interface paths {
         put?: never;
         /**
          * Import an order
-         * @description Loads an order with the status it already has (`cart`, `new`, `paid`, `shipped`, `refunded` or `cancelled`), without going through the usual steps. It does not start automations or credit campaign revenue; the statistics of the store are recalculated.
+         * @description Loads an order with the status it already has (`cart`, `new`, `paid`, `shipped`, `refunded` or `cancelled`), without going through the usual steps. It does not start Classic automations or credit campaign revenue; the statistics of the store are recalculated. In the new automations, an imported order or cart only enters if its own date (processed, payment, cancellation or the cart's own date) is within the last 24 hours and later than the automation's publication.
          *
          *     **When to use:** To bring in the history of a shop (orders that already happened), for example when connecting it for the first time.
          *
          *     **When not to use:** For a live order, create a cart with `create_store_order` and move it forward with the action operations, so automations and revenue tracking run.
          *
-         *     **Side effects:** The statistics of the store are recalculated in the background. No automation is started.
+         *     **Side effects:** The statistics of the store are recalculated in the background. No Classic automation is started; for the new automations, see the date rule above.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.audiences.write` capability.
          */
@@ -11487,6 +11487,164 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/workflow_pieces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List workflow pieces
+         * @description Lists the pieces a workflow of the new automation engine can be published with: the triggers that start it and the steps, waits and containers it can run, in catalog order, each with the CRM plan it needs.
+         *
+         *     **When to use:** To know what a `catalogId` in the `definition` of `get_workflow` is, which pieces exist, or why a workflow with a piece needs CRM Pro.
+         *
+         *     **When not to use:** It is the same list for the whole account and says nothing about one workflow: read the workflow with `get_workflow`. A piece missing here is not offered by the editor and a workflow that has it cannot be published.
+         *
+         *     **Plans:** `required_plan` is the plan the piece needs by itself. Some options of a piece can need more (for example, assigning by rotation needs CRM Pro); the app tells it when publishing.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_workflow_pieces"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List workflows
+         * @description Lists the workflows of the new automation engine of the account, most recently changed first, with their state, the triggers of their draft and how many executions are running or blocked.
+         *
+         *     **When to use:** To find a workflow by name or state before reading it with `get_workflow`, or to see which workflows are running, paused or need attention because an execution is blocked.
+         *
+         *     **When not to use:** To read the steps of one workflow use `get_workflow`: the list leaves the draft out. The classic automations of an audience are `list_automations`; email sequences are `list_email_sequences`.
+         *
+         *     **Filters:** All filters are optional and combine with AND.
+         *     - `search`: part of the title, case-insensitive; surrounding spaces are ignored (up to 120 characters).
+         *     - `status`: only workflows in that state (see `status` in the response).
+         *     - `display_status`: only workflows whose `display_status` is that one; `error` lists those with a blocked execution.
+         *     - `entry_state`: only published workflows whose entries are open (`open`) or paused as a whole (`paused`), or those under commercial review (`commercial-paused`).
+         *     - `execution_state`: `paused`, workflows paused as a whole or under commercial review, whose executions do not move on; `running`, published workflows in neither case.
+         *     - `needs_attention`: `true` lists only workflows with at least one blocked execution.
+         *     Sorting: fixed, last changed first; there is no `order` parameter.
+         *     Pagination: `page` and `itemsPerPage` (default 25, maximum 100), like the rest of the API; the response gives the total in `hydra:totalItems`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_workflows"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a workflow
+         * @description Reads one workflow of the new automation engine: its state, its draft (`definition`), the triggers of its published version with their entry state, its published versions and who is responsible for it.
+         *
+         *     **When to use:** To see what a workflow does: its trigger, steps, waits, conditions and branches, as the document it is edited as. Also to know whether it is published, paused or has unpublished changes, and whether its responsible can still act.
+         *
+         *     **When not to use:** To find a workflow by name or state use `list_workflows`: it also gives the execution counts, which this response leaves out. To know which pieces (`catalogId`) a document may use and the CRM plan each one needs, use `list_workflow_pieces`. Workflows cannot be created, edited or published through the API: that happens in Easymailing.
+         *
+         *     **About `definition`:** It is the DRAFT, the document being edited, in format 3 and with its keys in camelCase exactly as the editor stores them: `settings`, `triggers` (each with `catalogId`, `configuration` and `next`) and `nodes` in reading order (each with `catalogId`, `configuration`, `next`, `branches` and `body`). When `unpublished_changes` is true it differs from the published version, which is the one running.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["get_workflow"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{uuid}/executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the executions of a workflow
+         * @description Lists the executions of one workflow of the new automation engine, newest first: for whom each one runs, on which published version, its state and, when it is blocked, stopped or canceled, why.
+         *
+         *     **When to use:** To see what a workflow is doing: which executions are running, waiting or blocked, which ended and how, or whether a contact went through it (`subject_uuid`, or `search` by name). Then read one with `get_workflow_execution` to see its route step by step.
+         *
+         *     **When not to use:** To know the state of the workflow itself (published, paused, how many executions are blocked) use `get_workflow` or `list_workflows`. Executions cannot be retried, skipped or canceled through the API: that happens in Easymailing.
+         *
+         *     **Visibility:** Only the executions whose subject the user can read are listed (a contact needs `contacts.read`, a company or an opportunity the CRM read capabilities and a CRM seat, a received webhook request `automations.work`…). A subject the user can only partly read (an opportunity of a pipeline they cannot see) comes with `subject.state` `hidden` and no name: a protected record.
+         *
+         *     **Filters:** All filters are optional and combine with AND.
+         *     - `state`: only executions in that state (see `state` in the response).
+         *     - `revision`: only executions running on that published version.
+         *     - `subject_type`: only executions for that kind of subject (see `subject.type`).
+         *     - `subject_uuid`: only executions for that record, for example a contact.
+         *     - `search`: part of the name of the record (a contact by first name, last name, full name, email or phone; a company by its name; an opportunity by its title, only in the pipelines the user can read), case-insensitive and literal; tasks and webhook requests are not searched, and records that no longer exist never match.
+         *     - `created_from` (included) and `created_before` (excluded): only executions that started in that range, ISO 8601 instants with their offset.
+         *     Sorting: fixed, the newest first; there is no `order` parameter.
+         *     Pagination: `itemsPerPage` (default 25, maximum 50) and an opaque `cursor[gt]`: to read the next page, call again with the same filters and the `cursor[gt]` of the `hydra:next` link of the previous response, and keep following `hydra:next` until a page comes back empty. An execution that starts meanwhile neither repeats nor shifts the following pages. There is no previous page. `hydra:totalItems` is not a total: it is the items of this page, plus one when another page follows.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_workflow_executions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{uuid}/executions/{executionUuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a workflow execution
+         * @description Reads one execution of a workflow with its exact route: a row per step (and per round of a «For each»), in the order they started, with the branch it took, its outputs and what it evaluated, plus who canceled it when no step row could keep it.
+         *
+         *     **When to use:** To explain why an execution is blocked, stopped or took a branch, or what a step did for one contact.
+         *
+         *     **When not to use:** To find the execution use `list_workflow_executions`. To read the workflow it runs, use `get_workflow` (the route names the steps by `node_uuid`, the `uuid` of `definition.nodes[]` of the version it runs on). Executions cannot be retried, skipped or canceled through the API.
+         *
+         *     **Visibility:** An execution whose subject the user cannot read does not exist for them: 404 `workflow_execution_not_found`, the same as one of another workflow. Inside `outputs` and `trace`, a record the user cannot read is `{"redacted": true}`. 90 days after it ended the route is purged: `steps` is empty, `detail_purged` is true and `summary` keeps the counts.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["get_workflow_execution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface webhooks {
     crm_company_created: {
@@ -12110,6 +12268,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -12205,6 +12365,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -12314,6 +12476,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -12420,6 +12584,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -15360,7 +15526,7 @@ export interface components {
              */
             readonly channel?: ((string | components["schemas"]["ActivityChannel"] | null) | null) | components["schemas"]["ActivityChannel"] | null;
             /**
-             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about).
+             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about). The start and the end of a workflow execution (`automation.workflow.started`, and `automation.workflow.finished` or, when it left through its exit conditions, `automation.workflow.exited`) carry `workflow_id`, `workflow_title` (as it was then), `revision` and `execution_id`; the end adds `outcome` (`completed`, `stopped` or `canceled`), `cause` when it has one and, for an exit, `exit` (the event that made it leave, or `filter`).
              * @example {
              *       "amount": "12000.00",
              *       "currency": "EUR",
@@ -15622,6 +15788,12 @@ export interface components {
                 reference?: {
                     /**
                      * Format: uuid
+                     * @description Only for `automation_workflow`: UUID of the execution of the workflow that the row is about.
+                     * @example 3f9c1e72-6b0a-4d85-9e24-7a1c5d8b0f36
+                     */
+                    execution_id?: string;
+                    /**
+                     * Format: uuid
                      * @description UUID of the object.
                      * @example 9b6d2f84-1a3c-4e57-8d0b-4c7a5e1f3d62
                      */
@@ -15673,7 +15845,7 @@ export interface components {
              */
             readonly occurrence_count?: number;
             /**
-             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created` or `automation.run`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
+             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created`, `automation.run`, `automation.workflow.started`, `automation.workflow.finished` or `automation.workflow.exited`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
              * @example opportunity.stage_changed
              */
             readonly type?: string;
@@ -15737,7 +15909,7 @@ export interface components {
              */
             readonly channel?: ((string | components["schemas"]["ActivityChannel"] | null) | null) | components["schemas"]["ActivityChannel"] | null;
             /**
-             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about).
+             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about). The start and the end of a workflow execution (`automation.workflow.started`, and `automation.workflow.finished` or, when it left through its exit conditions, `automation.workflow.exited`) carry `workflow_id`, `workflow_title` (as it was then), `revision` and `execution_id`; the end adds `outcome` (`completed`, `stopped` or `canceled`), `cause` when it has one and, for an exit, `exit` (the event that made it leave, or `filter`).
              * @example {
              *       "amount": "12000.00",
              *       "currency": "EUR",
@@ -15999,6 +16171,12 @@ export interface components {
                 reference?: {
                     /**
                      * Format: uuid
+                     * @description Only for `automation_workflow`: UUID of the execution of the workflow that the row is about.
+                     * @example 3f9c1e72-6b0a-4d85-9e24-7a1c5d8b0f36
+                     */
+                    execution_id?: string;
+                    /**
+                     * Format: uuid
                      * @description UUID of the object.
                      * @example 9b6d2f84-1a3c-4e57-8d0b-4c7a5e1f3d62
                      */
@@ -16050,7 +16228,7 @@ export interface components {
              */
             readonly occurrence_count?: number;
             /**
-             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created` or `automation.run`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
+             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created`, `automation.run`, `automation.workflow.started`, `automation.workflow.finished` or `automation.workflow.exited`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
              * @example opportunity.stage_changed
              */
             readonly type?: string;
@@ -16119,13 +16297,14 @@ export interface components {
          *     * `company` - A company
          *     * `opportunity` - An opportunity
          *     * `automation` - An automation
+         *     * `automation_workflow` - A workflow, with the execution the row is about
          *     * `form` - A subscription form
          *     * `survey` - A survey
          *     * `file` - A file
          *     * `import` - An import
          * @enum {string}
          */
-        ActivityReferenceKind: "note" | "task" | "contact" | "company" | "opportunity" | "automation" | "form" | "survey" | "file" | "import";
+        ActivityReferenceKind: "note" | "task" | "contact" | "company" | "opportunity" | "automation" | "automation_workflow" | "form" | "survey" | "file" | "import";
         "AddToGroupAction-automation_step.read": {
             /**
              * Format: iri-reference
@@ -47952,9 +48131,10 @@ export interface components {
          *     * `manual_exclusion` - A person excluded it
          *     * `subject_removed` - The contact was removed
          *     * `missing_required_data` - A required personalization tag had no value
+         *     * `responsible_unavailable` - Its responsible, the owner of the sending mailbox, was removed from the account
          * @enum {string}
          */
-        EmailSequenceExitReason: "completed" | "reply" | "meeting_booked" | "unsubscribe" | "bounce" | "invalid_address" | "suppressed" | "commercial_block" | "manual_exclusion" | "subject_removed" | "missing_required_data";
+        EmailSequenceExitReason: "completed" | "reply" | "meeting_booked" | "unsubscribe" | "bounce" | "invalid_address" | "suppressed" | "commercial_block" | "manual_exclusion" | "subject_removed" | "missing_required_data" | "responsible_unavailable";
         /**
          * @description Severity of the problem:
          *     * `error` - It blocks publishing
@@ -57820,7 +58000,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -57919,6 +58099,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -58075,7 +58261,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -58166,6 +58352,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -58332,7 +58524,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -58433,6 +58625,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -58631,6 +58829,12 @@ export interface components {
              */
             pipeline: string;
             /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
+            /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
              */
@@ -58730,6 +58934,12 @@ export interface components {
              */
             pipeline: string;
             /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
+            /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
              */
@@ -58775,7 +58985,7 @@ export interface components {
          */
         "Opportunity.OpportunityLoseInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -58809,7 +59019,7 @@ export interface components {
          */
         "Opportunity.OpportunityLoseInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -58957,7 +59167,7 @@ export interface components {
          */
         "Opportunity.OpportunityPipelineMoveInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59022,7 +59232,7 @@ export interface components {
          */
         "Opportunity.OpportunityPipelineMoveInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59087,7 +59297,7 @@ export interface components {
          */
         "Opportunity.OpportunityReopenInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59111,7 +59321,7 @@ export interface components {
          */
         "Opportunity.OpportunityReopenInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59135,7 +59345,7 @@ export interface components {
          */
         "Opportunity.OpportunityStageMoveInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59169,7 +59379,7 @@ export interface components {
          */
         "Opportunity.OpportunityStageMoveInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59240,6 +59450,12 @@ export interface components {
              * @example laura@acme.com
              */
             owner?: string | null;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
@@ -59319,6 +59535,12 @@ export interface components {
              */
             owner?: string | null;
             /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
+            /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
              */
@@ -59359,7 +59581,7 @@ export interface components {
          */
         "Opportunity.OpportunityWinInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59383,7 +59605,7 @@ export interface components {
          */
         "Opportunity.OpportunityWinInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59429,7 +59651,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -59530,6 +59752,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -59686,7 +59914,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -59777,6 +60005,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -59943,7 +60177,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -60044,6 +60278,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -67461,6 +67701,11 @@ export interface components {
              */
             priority?: "low" | "normal" | "high" | "urgent";
             /**
+             * @description Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.
+             * @example K7QM-3XRP
+             */
+            reference?: string | null;
+            /**
              * @description Ticket status
              * @example open
              * @enum {string}
@@ -67525,6 +67770,11 @@ export interface components {
              * @enum {string}
              */
             priority?: "low" | "normal" | "high" | "urgent";
+            /**
+             * @description Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.
+             * @example K7QM-3XRP
+             */
+            reference?: string | null;
             /**
              * @description Ticket status
              * @example open
@@ -73118,6 +73368,1579 @@ export interface components {
          * @enum {string}
          */
         WebhookScope: "marketing" | "crm";
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow-workflow.list": {
+            /**
+             * @description Executions that have not ended: running, waiting or blocked.
+             * @example 14
+             */
+            readonly active_execution_count?: number;
+            /**
+             * @description Blocked executions: they wait for someone to resolve them in the app.
+             * @example 0
+             */
+            readonly blocked_execution_count?: number;
+            /**
+             * @description The state a list shows. `draft`: never published. Otherwise `error` when some execution is blocked; otherwise `active` when `status` is `active`; otherwise `paused` (entries closed, whole workflow paused or commercial pause).
+             * @example paused
+             */
+            readonly display_status?: components["schemas"]["WorkflowDisplayStatus"];
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When the most recent execution started, whatever its state, ISO 8601. `null` when it has none.
+             * @example 2026-11-11T08:05:12+00:00
+             */
+            readonly last_execution_at?: string | null;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow-workflow.read": {
+            /**
+             * @description The draft of the workflow: a declarative document in format 3, with its keys in camelCase as the editor stores them (it is not translated to the snake_case of the API). `formatVersion` is 3; `settings` has `rootSubjectType`, `audienceUuid` and `exitWhen`; `triggers` and `nodes` (in reading order, every `next` points to a later node) have `uuid`, `catalogId` (see `list_workflow_pieces`) and `configuration`, which depends on the piece. A draft can be incomplete: only a published version runs.
+             * @example {
+             *       "formatVersion": 3,
+             *       "nodes": [
+             *         {
+             *           "body": null,
+             *           "branches": [],
+             *           "catalogId": "wait-duration",
+             *           "configuration": {
+             *             "durationUnit": "days",
+             *             "durationValue": 2
+             *           },
+             *           "name": null,
+             *           "next": null,
+             *           "uuid": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
+             *         }
+             *       ],
+             *       "settings": {
+             *         "audienceUuid": null,
+             *         "exitWhen": null,
+             *         "rootSubjectType": "contact"
+             *       },
+             *       "triggers": [
+             *         {
+             *           "catalogId": "record-created",
+             *           "configuration": {
+             *             "recordType": "contact"
+             *           },
+             *           "next": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+             *           "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *         }
+             *       ]
+             *     }
+             */
+            readonly definition?: Record<string, never>;
+            /**
+             * @description Version of the workflow, starting at 1: it grows each time its draft changes, it is published, or its entries are opened or closed. Two reads with the same value saw the same workflow.
+             * @example 7
+             */
+            readonly draft_version?: number;
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /** @description Who is responsible for the workflow: its executions act on their behalf. */
+            readonly responsible?: {
+                /**
+                 * @description Whether the responsible can act now. False when they were removed, deactivated or lost access: the workflow does not admit entries until someone else takes over in the app.
+                 * @example true
+                 */
+                can_act?: boolean;
+                /**
+                 * @description Their email; `null` for a removed member.
+                 * @example ana@example.com
+                 */
+                email?: string | null;
+                /**
+                 * @description Their name, or their email when they have none. A member removed from the account reads as «Deleted user», in the language of the person behind the credentials.
+                 * @example Ana García
+                 */
+                name?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member responsible for the workflow.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                uuid?: string;
+            };
+            /**
+             * @description A resume of the whole workflow is still moving the waits of the pause in the background; `paused_at` stays set until it ends.
+             * @example false
+             */
+            readonly resuming?: boolean;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description Triggers of the current published version and their entry state. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "entry_state": "open",
+             *         "published_since_revision": 1,
+             *         "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *       }
+             *     ]
+             */
+            readonly triggers?: {
+                /**
+                 * @description Whether this trigger admits new entries. The workflow also needs `entries_open`.
+                 * @example open
+                 */
+                entry_state?: components["schemas"]["WorkflowTriggerEntryState"];
+                /**
+                 * @description The first revision of the uninterrupted run of published versions, up to the current one, that has this trigger.
+                 * @example 1
+                 */
+                published_since_revision?: number;
+                /**
+                 * Format: uuid
+                 * @description UUID of the trigger, as in `definition.triggers[].uuid`.
+                 * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+                 */
+                uuid?: string;
+            }[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+            /**
+             * @description Published versions, newest first. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-10T16:20:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 2
+             *       },
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-03T09:00:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 1
+             *       }
+             *     ]
+             */
+            readonly versions?: {
+                /**
+                 * @description Steps, waits and containers in that version.
+                 * @example 2
+                 */
+                node_count?: number;
+                /**
+                 * Format: date-time
+                 * @description When it was published, ISO 8601.
+                 * @example 2026-11-10T16:20:00+00:00
+                 */
+                published_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who published it; `null` when it is not known.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                published_by?: string | null;
+                /**
+                 * @description Revision number, starting at 1.
+                 * @example 2
+                 */
+                revision?: number;
+            }[];
+        };
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow.jsonld-workflow.list": {
+            /**
+             * @description Executions that have not ended: running, waiting or blocked.
+             * @example 14
+             */
+            readonly active_execution_count?: number;
+            /**
+             * @description Blocked executions: they wait for someone to resolve them in the app.
+             * @example 0
+             */
+            readonly blocked_execution_count?: number;
+            /**
+             * @description The state a list shows. `draft`: never published. Otherwise `error` when some execution is blocked; otherwise `active` when `status` is `active`; otherwise `paused` (entries closed, whole workflow paused or commercial pause).
+             * @example paused
+             */
+            readonly display_status?: components["schemas"]["WorkflowDisplayStatus"];
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When the most recent execution started, whatever its state, ISO 8601. `null` when it has none.
+             * @example 2026-11-11T08:05:12+00:00
+             */
+            readonly last_execution_at?: string | null;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow.jsonld-workflow.read": {
+            /**
+             * @description The draft of the workflow: a declarative document in format 3, with its keys in camelCase as the editor stores them (it is not translated to the snake_case of the API). `formatVersion` is 3; `settings` has `rootSubjectType`, `audienceUuid` and `exitWhen`; `triggers` and `nodes` (in reading order, every `next` points to a later node) have `uuid`, `catalogId` (see `list_workflow_pieces`) and `configuration`, which depends on the piece. A draft can be incomplete: only a published version runs.
+             * @example {
+             *       "formatVersion": 3,
+             *       "nodes": [
+             *         {
+             *           "body": null,
+             *           "branches": [],
+             *           "catalogId": "wait-duration",
+             *           "configuration": {
+             *             "durationUnit": "days",
+             *             "durationValue": 2
+             *           },
+             *           "name": null,
+             *           "next": null,
+             *           "uuid": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
+             *         }
+             *       ],
+             *       "settings": {
+             *         "audienceUuid": null,
+             *         "exitWhen": null,
+             *         "rootSubjectType": "contact"
+             *       },
+             *       "triggers": [
+             *         {
+             *           "catalogId": "record-created",
+             *           "configuration": {
+             *             "recordType": "contact"
+             *           },
+             *           "next": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+             *           "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *         }
+             *       ]
+             *     }
+             */
+            readonly definition?: Record<string, never>;
+            /**
+             * @description Version of the workflow, starting at 1: it grows each time its draft changes, it is published, or its entries are opened or closed. Two reads with the same value saw the same workflow.
+             * @example 7
+             */
+            readonly draft_version?: number;
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /** @description Who is responsible for the workflow: its executions act on their behalf. */
+            readonly responsible?: {
+                /**
+                 * @description Whether the responsible can act now. False when they were removed, deactivated or lost access: the workflow does not admit entries until someone else takes over in the app.
+                 * @example true
+                 */
+                can_act?: boolean;
+                /**
+                 * @description Their email; `null` for a removed member.
+                 * @example ana@example.com
+                 */
+                email?: string | null;
+                /**
+                 * @description Their name, or their email when they have none. A member removed from the account reads as «Deleted user», in the language of the person behind the credentials.
+                 * @example Ana García
+                 */
+                name?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member responsible for the workflow.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                uuid?: string;
+            };
+            /**
+             * @description A resume of the whole workflow is still moving the waits of the pause in the background; `paused_at` stays set until it ends.
+             * @example false
+             */
+            readonly resuming?: boolean;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description Triggers of the current published version and their entry state. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "entry_state": "open",
+             *         "published_since_revision": 1,
+             *         "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *       }
+             *     ]
+             */
+            readonly triggers?: {
+                /**
+                 * @description Whether this trigger admits new entries. The workflow also needs `entries_open`.
+                 * @example open
+                 */
+                entry_state?: components["schemas"]["WorkflowTriggerEntryState"];
+                /**
+                 * @description The first revision of the uninterrupted run of published versions, up to the current one, that has this trigger.
+                 * @example 1
+                 */
+                published_since_revision?: number;
+                /**
+                 * Format: uuid
+                 * @description UUID of the trigger, as in `definition.triggers[].uuid`.
+                 * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+                 */
+                uuid?: string;
+            }[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+            /**
+             * @description Published versions, newest first. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-10T16:20:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 2
+             *       },
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-03T09:00:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 1
+             *       }
+             *     ]
+             */
+            readonly versions?: {
+                /**
+                 * @description Steps, waits and containers in that version.
+                 * @example 2
+                 */
+                node_count?: number;
+                /**
+                 * Format: date-time
+                 * @description When it was published, ISO 8601.
+                 * @example 2026-11-10T16:20:00+00:00
+                 */
+                published_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who published it; `null` when it is not known.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                published_by?: string | null;
+                /**
+                 * @description Revision number, starting at 1.
+                 * @example 2
+                 */
+                revision?: number;
+            }[];
+        };
+        /**
+         * @description State a list shows for the workflow:
+         *     * `draft` - Never published
+         *     * `active` - Running, with no blocked execution
+         *     * `paused` - Paused in any way (entries closed, whole workflow paused or commercial pause), with no blocked execution
+         *     * `error` - Published, with at least one blocked execution that someone has to resolve
+         * @enum {string}
+         */
+        WorkflowDisplayStatus: "draft" | "active" | "paused" | "error";
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution-workflow_execution.list": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution-workflow_execution.read": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description Who resolved it and when, when no step row could keep it (a cancel after its last step ended). Usually empty: the resolutions of a step are in its `trace`.
+             * @example []
+             */
+            readonly resolutions?: {
+                /**
+                 * @description What was done: `cancel`.
+                 * @example cancel
+                 */
+                action?: string;
+                /**
+                 * Format: date-time
+                 * @description When, ISO 8601.
+                 * @example 2026-11-10T10:00:00+00:00
+                 */
+                resolved_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who did it.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                resolved_by?: string;
+            }[];
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description Its exact route: a row per step (and per round of a «For each»), in the order they started. Empty once purged (`detail_purged`). */
+            readonly steps?: {
+                /**
+                 * @description Times it was tried.
+                 * @example 1
+                 */
+                attempts?: number;
+                /**
+                 * @description The branch it took, in a step with branches (`definition.nodes[].branches[].key`).
+                 * @example null
+                 * @example null
+                 * @example found
+                 */
+                branch_key?: string | null;
+                /**
+                 * @description The piece (`list_workflow_pieces`).
+                 * @example wait-duration
+                 */
+                catalog_id?: string;
+                /**
+                 * @description Why it blocked, stopped or failed, as the engine records it; `null` otherwise.
+                 * @example null
+                 * @example null
+                 * @example piece_unavailable
+                 */
+                cause?: string | null;
+                /**
+                 * @description Idempotency key of the effect of the step (an email, a record change…); `null` for a step without effect.
+                 * @example null
+                 * @example null
+                 * @example aut3:2b5e8c1d-6f4a-5b3c-9d2e-1f0a9b8c7d6e
+                 */
+                effect_key?: string | null;
+                /**
+                 * Format: date-time
+                 * @description When it finished, ISO 8601; `null` while it goes on.
+                 * @example null
+                 * @example null
+                 * @example 2026-11-10T09:00:01+00:00
+                 */
+                finished_at?: string | null;
+                /** @description The round of a «For each» this row belongs to; `null` outside any loop. */
+                iteration?: {
+                    /**
+                     * Format: uuid
+                     * @description The «For each» step.
+                     * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                     */
+                    for_each_uuid?: string;
+                    /**
+                     * @description The round, from 0.
+                     * @example 0
+                     */
+                    index?: number;
+                } | null;
+                /**
+                 * @description The name of the step in that version.
+                 * @example null
+                 * @example null
+                 * @example Wait 2 days
+                 */
+                name?: string | null;
+                /**
+                 * Format: uuid
+                 * @description The step (`definition.nodes[].uuid` of the version it runs on).
+                 * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+                 */
+                node_uuid?: string;
+                /**
+                 * @description What the step produced once completed, as the engine records it (keys in camelCase); a record the user cannot read is `{"redacted": true}`.
+                 * @example null
+                 * @example null
+                 * @example {
+                 *       "id": "7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b"
+                 *     }
+                 */
+                outputs?: Record<string, never> | null;
+                /**
+                 * Format: date-time
+                 * @description When the step started, ISO 8601.
+                 * @example 2026-11-10T09:00:00+00:00
+                 */
+                started_at?: string;
+                /**
+                 * @description State of the step.
+                 * @example waiting
+                 */
+                state?: components["schemas"]["WorkflowExecutionStepState"];
+                /**
+                 * @description What the step evaluated and decided, as the engine records it (for a «For each», `items`, `taken` and `total`), and `resolutions` of who retried, skipped or canceled it; a record the user cannot read is `{"redacted": true}`. The instants the engine traces are ISO 8601 in UTC (`+00:00`), like every date of the API.
+                 * @example {
+                 *       "taken": 2,
+                 *       "total": 2
+                 *     }
+                 */
+                trace?: Record<string, never>;
+                /**
+                 * Format: date-time
+                 * @description For a wait: when it ends, ISO 8601; `null` otherwise.
+                 * @example 2026-11-12T09:00:00+00:00
+                 */
+                wait_ends_at?: string | null;
+            }[];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution.jsonld-workflow_execution.list": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution.jsonld-workflow_execution.read": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description Who resolved it and when, when no step row could keep it (a cancel after its last step ended). Usually empty: the resolutions of a step are in its `trace`.
+             * @example []
+             */
+            readonly resolutions?: {
+                /**
+                 * @description What was done: `cancel`.
+                 * @example cancel
+                 */
+                action?: string;
+                /**
+                 * Format: date-time
+                 * @description When, ISO 8601.
+                 * @example 2026-11-10T10:00:00+00:00
+                 */
+                resolved_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who did it.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                resolved_by?: string;
+            }[];
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description Its exact route: a row per step (and per round of a «For each»), in the order they started. Empty once purged (`detail_purged`). */
+            readonly steps?: {
+                /**
+                 * @description Times it was tried.
+                 * @example 1
+                 */
+                attempts?: number;
+                /**
+                 * @description The branch it took, in a step with branches (`definition.nodes[].branches[].key`).
+                 * @example null
+                 * @example null
+                 * @example found
+                 */
+                branch_key?: string | null;
+                /**
+                 * @description The piece (`list_workflow_pieces`).
+                 * @example wait-duration
+                 */
+                catalog_id?: string;
+                /**
+                 * @description Why it blocked, stopped or failed, as the engine records it; `null` otherwise.
+                 * @example null
+                 * @example null
+                 * @example piece_unavailable
+                 */
+                cause?: string | null;
+                /**
+                 * @description Idempotency key of the effect of the step (an email, a record change…); `null` for a step without effect.
+                 * @example null
+                 * @example null
+                 * @example aut3:2b5e8c1d-6f4a-5b3c-9d2e-1f0a9b8c7d6e
+                 */
+                effect_key?: string | null;
+                /**
+                 * Format: date-time
+                 * @description When it finished, ISO 8601; `null` while it goes on.
+                 * @example null
+                 * @example null
+                 * @example 2026-11-10T09:00:01+00:00
+                 */
+                finished_at?: string | null;
+                /** @description The round of a «For each» this row belongs to; `null` outside any loop. */
+                iteration?: {
+                    /**
+                     * Format: uuid
+                     * @description The «For each» step.
+                     * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                     */
+                    for_each_uuid?: string;
+                    /**
+                     * @description The round, from 0.
+                     * @example 0
+                     */
+                    index?: number;
+                } | null;
+                /**
+                 * @description The name of the step in that version.
+                 * @example null
+                 * @example null
+                 * @example Wait 2 days
+                 */
+                name?: string | null;
+                /**
+                 * Format: uuid
+                 * @description The step (`definition.nodes[].uuid` of the version it runs on).
+                 * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+                 */
+                node_uuid?: string;
+                /**
+                 * @description What the step produced once completed, as the engine records it (keys in camelCase); a record the user cannot read is `{"redacted": true}`.
+                 * @example null
+                 * @example null
+                 * @example {
+                 *       "id": "7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b"
+                 *     }
+                 */
+                outputs?: Record<string, never> | null;
+                /**
+                 * Format: date-time
+                 * @description When the step started, ISO 8601.
+                 * @example 2026-11-10T09:00:00+00:00
+                 */
+                started_at?: string;
+                /**
+                 * @description State of the step.
+                 * @example waiting
+                 */
+                state?: components["schemas"]["WorkflowExecutionStepState"];
+                /**
+                 * @description What the step evaluated and decided, as the engine records it (for a «For each», `items`, `taken` and `total`), and `resolutions` of who retried, skipped or canceled it; a record the user cannot read is `{"redacted": true}`. The instants the engine traces are ISO 8601 in UTC (`+00:00`), like every date of the API.
+                 * @example {
+                 *       "taken": 2,
+                 *       "total": 2
+                 *     }
+                 */
+                trace?: Record<string, never>;
+                /**
+                 * Format: date-time
+                 * @description For a wait: when it ends, ISO 8601; `null` otherwise.
+                 * @example 2026-11-12T09:00:00+00:00
+                 */
+                wait_ends_at?: string | null;
+            }[];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description State of the execution:
+         *     * `active` - On its way: running a step, retrying it or checking its effect
+         *     * `waiting` - In a timed wait
+         *     * `blocked` - Stopped at a step until someone resolves it in the app; see `cause` and `expires_at`
+         *     * `completed` - Went through to the end
+         *     * `stopped` - Left the workflow early, for example by an exit rule; see `cause`
+         *     * `canceled` - Canceled by someone or by the expiry of a blocked execution; see `cause`
+         * @enum {string}
+         */
+        WorkflowExecutionState: "active" | "waiting" | "blocked" | "completed" | "stopped" | "canceled";
+        /**
+         * @description State of the step:
+         *     * `running` - Being run now
+         *     * `waiting` - A wait that has not ended
+         *     * `awaiting_effect` - Its effect (an email, a record change…) was sent and its result is being confirmed
+         *     * `retryable` - Failed and will be tried again
+         *     * `completed` - Done
+         *     * `skipped` - Skipped by someone after it blocked
+         *     * `stopped` - The execution left the workflow at this step
+         *     * `blocked` - Blocked: the execution waits for someone to resolve it
+         *     * `canceled` - The execution was canceled at this step
+         * @enum {string}
+         */
+        WorkflowExecutionStepState: "running" | "waiting" | "awaiting_effect" | "retryable" | "completed" | "skipped" | "stopped" | "blocked" | "canceled";
+        /**
+         * @description `list_workflow_pieces` (F7, task B4): the pieces that publishing a workflow accepts, as the internal API lists them for the editor
+         *     (`ListPublishableWorkflowPieces`): every registered trigger and every step the runtime runs, each with the CRM plan it needs. In this
+         *     host the steps that run come from the static list of CoreBundle (`RunnableWorkflowSteps`), which a contract test in symfony keeps
+         *     equal to the real handlers.
+         */
+        "WorkflowPiece-workflow_piece.read": {
+            /**
+             * @description Identifier of the piece: the `catalogId` of a trigger or node in the `definition` of a workflow.
+             * @example wait-duration
+             */
+            catalog_id?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description What the piece is: a trigger, a step, a wait or a container («For each»).
+             * @example wait
+             */
+            kind?: components["schemas"]["WorkflowPieceKind"];
+            /**
+             * @description The CRM plan the piece needs by itself. A workflow with a `crm_pro` piece is not published on CRM Essentials.
+             * @example crm_essentials
+             */
+            required_plan?: components["schemas"]["WorkflowRequiredPlan"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description `list_workflow_pieces` (F7, task B4): the pieces that publishing a workflow accepts, as the internal API lists them for the editor
+         *     (`ListPublishableWorkflowPieces`): every registered trigger and every step the runtime runs, each with the CRM plan it needs. In this
+         *     host the steps that run come from the static list of CoreBundle (`RunnableWorkflowSteps`), which a contract test in symfony keeps
+         *     equal to the real handlers.
+         */
+        "WorkflowPiece.jsonld-workflow_piece.read": {
+            /**
+             * @description Identifier of the piece: the `catalogId` of a trigger or node in the `definition` of a workflow.
+             * @example wait-duration
+             */
+            catalog_id?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description What the piece is: a trigger, a step, a wait or a container («For each»).
+             * @example wait
+             */
+            kind?: components["schemas"]["WorkflowPieceKind"];
+            /**
+             * @description The CRM plan the piece needs by itself. A workflow with a `crm_pro` piece is not published on CRM Essentials.
+             * @example crm_essentials
+             */
+            required_plan?: components["schemas"]["WorkflowRequiredPlan"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description Kind of piece:
+         *     * `trigger` - Starts the workflow for a subject
+         *     * `step` - Does something or decides a branch
+         *     * `wait` - Waits for a time, a date or an event
+         *     * `loop` - Runs its body once for each item of a list («For each»)
+         * @enum {string}
+         */
+        WorkflowPieceKind: "trigger" | "step" | "wait" | "loop";
+        /**
+         * @description CRM plan the piece needs to be published:
+         *     * `crm_essentials` - Any CRM plan
+         *     * `crm_pro` - The CRM Pro plan
+         * @enum {string}
+         */
+        WorkflowRequiredPlan: "crm_essentials" | "crm_pro";
+        /**
+         * @description State of the workflow:
+         *     * `draft` - Never published
+         *     * `active` - Published, with its entries open and not paused
+         *     * `paused` - Published, but its entries are closed or the whole workflow is paused
+         *     * `commercial-paused` - Paused because the account lost the CRM plan its published version needs
+         * @enum {string}
+         */
+        WorkflowStatus: "draft" | "active" | "paused" | "commercial-paused";
+        /**
+         * @description The record of the execution:
+         *     * `visible` - It exists and the user can read it, so `label` is its name (also a received webhook request, whose `label` is null)
+         *     * `hidden` - A protected record: the user cannot read it (its kind, or the pipeline of an opportunity), so there is no name or detail
+         *     * `deleted` - It no longer exists
+         * @enum {string}
+         */
+        WorkflowSubjectState: "visible" | "hidden" | "deleted";
+        /**
+         * @description What the execution runs for:
+         *     * `contact`, `company`, `opportunity`, `task`, `note` - A CRM record
+         *     * `meeting` - A meeting (the subject of the meeting triggers)
+         *     * `subscription` - A contact's subscription to an audience
+         *     * `order`, `cart` - An order or an abandoned cart of a store
+         *     * `survey_response` - An answer to a survey
+         *     * `opportunity_contact` - A contact of an opportunity (the pair)
+         *     * `meeting_contact` - A contact of a meeting (the pair)
+         *     * `webhook_request` - A request received by a webhook trigger; it is not a record
+         * @enum {string}
+         */
+        WorkflowSubjectType: "contact" | "company" | "opportunity" | "task" | "meeting" | "note" | "subscription" | "order" | "cart" | "survey_response" | "opportunity_contact" | "meeting_contact" | "webhook_request";
+        /**
+         * @description Entries of one trigger of the published version:
+         *     * `open` - The trigger admits new entries
+         *     * `paused` - The trigger was paused on its own and admits none
+         * @enum {string}
+         */
+        WorkflowTriggerEntryState: "open" | "paused";
     };
     responses: never;
     parameters: never;
@@ -107154,6 +108977,8 @@ export interface operations {
              *
              *     `opportunity_custom_probability_not_allowed`: A custom `probability` needs an open stage in a pipeline with `allow_custom_probability`. Leave `probability` out or send `null`.
              *
+             *     `opportunity_primary_contact_required`: The opportunity has contacts, so `primary_contact` cannot be `null`. Send the IRI of one of its contacts, or remove all the contacts first.
+             *
              *     `opportunity_stage_pipeline_mismatch`: The stage does not belong to the pipeline. Take the stage from `get_pipeline` of the right pipeline.
              *
              *     `opportunity_entry_requirements_missing`: The destination stage requires fields the opportunity does not have yet. `violations` lists them; send them in the same request and try again. Nothing was changed.
@@ -107371,6 +109196,8 @@ export interface operations {
              *     `opportunity_currency_not_allowed`: The pipeline does not accept that currency (it allows only its reference currency unless `allow_multiple_currencies` is on). Use the right currency or change the pipeline.
              *
              *     `opportunity_custom_probability_not_allowed`: A custom `probability` needs an open stage in a pipeline with `allow_custom_probability`. Leave `probability` out or send `null`.
+             *
+             *     `opportunity_primary_contact_required`: The opportunity has contacts, so `primary_contact` cannot be `null`. Send the IRI of one of its contacts, or remove all the contacts first.
              *
              *     `opportunity_field_read_only`: The body has a property that cannot be changed here (for example `pipeline` or `stage`). Use the move operations.
              */
@@ -119789,6 +121616,586 @@ export interface operations {
                     "Retry-After"?: string;
                     /** @description Requests left in the current window. */
                     "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_workflow_pieces: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WorkflowPiece collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowPiece-workflow_piece.read"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["WorkflowPiece.jsonld-workflow_piece.read"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_workflows: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Part of the title of the workflow, case-insensitive. Up to 120 characters.
+                 * @example leads
+                 */
+                search?: string;
+                /**
+                 * @description Only workflows in this state.
+                 * @example active
+                 */
+                status?: components["schemas"]["WorkflowStatus"];
+                /**
+                 * @description Only workflows whose `display_status` is this one.
+                 * @example error
+                 */
+                display_status?: components["schemas"]["WorkflowDisplayStatus"];
+                /**
+                 * @description Only published workflows whose entries are open (`open`) or paused as a whole (`paused`), or workflows under commercial review (`commercial-paused`).
+                 * @example open
+                 */
+                entry_state?: "open" | "paused" | "commercial-paused";
+                /**
+                 * @description `paused`: workflows paused as a whole or under commercial review, whose executions do not move on. `running`: published workflows in neither case.
+                 * @example running
+                 */
+                execution_state?: "running" | "paused";
+                /**
+                 * @description `true` lists only workflows with at least one blocked execution. `false` or no value does not filter.
+                 * @example true
+                 */
+                needs_attention?: boolean;
+                /**
+                 * @description Page number, starting at 1.
+                 * @example 1
+                 */
+                page?: number;
+                /**
+                 * @description Workflows per page. Default 25, maximum 100.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workflow collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workflow-workflow.list"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["Workflow.jsonld-workflow.list"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description A filter value is not valid: `status`, `display_status`, `entry_state`, `execution_state` or `needs_attention` outside the allowed values, `search` longer than 120 characters, or `page` / `itemsPerPage` outside their range. Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_workflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the workflow. Get it from `list_workflows`.
+                 * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workflow resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workflow-workflow.read"];
+                    "application/ld+json": components["schemas"]["Workflow.jsonld-workflow.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `workflow_not_found`: The workflow does not exist in this account, or it was deleted. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_workflows`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_workflow_executions: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Only executions in this state.
+                 * @example blocked
+                 */
+                state?: components["schemas"]["WorkflowExecutionState"];
+                /**
+                 * @description Only executions running on this published version (`versions[].revision` of `get_workflow`).
+                 * @example 2
+                 */
+                revision?: number;
+                /**
+                 * @description Only executions for this kind of subject.
+                 * @example contact
+                 */
+                subject_type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * @description Only executions for this record (`subject.uuid`), for example a contact from `list_contacts`. Case-insensitive.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                subject_uuid?: string;
+                /**
+                 * @description Part of the name of the record of the execution, case-insensitive and literal (`%` and `_` are plain characters). Up to 120 characters; surrounding spaces are ignored.
+                 * @example ana
+                 */
+                search?: string;
+                /**
+                 * @description Only executions that started at this instant or later. ISO 8601 with its offset.
+                 * @example 2026-11-01T00:00:00+00:00
+                 */
+                created_from?: string;
+                /**
+                 * @description Only executions that started before this instant (excluded). ISO 8601 with its offset; not before `created_from`.
+                 * @example 2026-11-11T00:00:00+00:00
+                 */
+                created_before?: string;
+                /**
+                 * @description Executions per page. Default 25, maximum 50.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+                /**
+                 * @description Opaque cursor of the next page, taken from the `hydra:next` link of the previous response. Use it only with the same workflow and filters.
+                 * @example MjAyNi0xMS0xMCAwOTowMDowMC4wMDAwMDB8NDI
+                 */
+                "cursor[gt]"?: string;
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the workflow. Get it from `list_workflows`.
+                 * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WorkflowExecution collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowExecution-workflow_execution.list"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["WorkflowExecution.jsonld-workflow_execution.list"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `workflow_not_found`: The workflow does not exist in this account, or it was deleted. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_workflows`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description A filter value is not valid: `state` or `subject_type` outside the allowed values, `subject_uuid` not a UUID, `search` longer than 120 characters, `revision` not a positive integer, an instant without its offset or a range that ends before it starts, `itemsPerPage` outside 1 to 50, or a `cursor[gt]` that was not taken unchanged from a `hydra:next` link (`cursor[lt]` is not supported). Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_workflow_execution: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the workflow. Get it from `list_workflows`.
+                 * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+                 */
+                uuid: string;
+                /**
+                 * @description UUID of the execution. Get it from `list_workflow_executions`.
+                 * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+                 */
+                executionUuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WorkflowExecution resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowExecution-workflow_execution.read"];
+                    "application/ld+json": components["schemas"]["WorkflowExecution.jsonld-workflow_execution.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `workflow_not_found`: The workflow does not exist in this account, or it was deleted. Find the right one with `list_workflows`.
+             *
+             *     `workflow_execution_not_found`: The execution does not exist in this workflow, or it runs for a record the user cannot read. An `executionUuid` that is not a valid UUID also gives 404. Find it with `list_workflow_executions`.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
                     [name: string]: unknown;
                 };
                 content: {
