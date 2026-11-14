@@ -20,4 +20,5 @@ enum EmailSequenceExitReason: string
     case ManualExclusion = 'manual_exclusion';
     case SubjectRemoved = 'subject_removed';
     case MissingRequiredData = 'missing_required_data';
+    case ResponsibleUnavailable = 'responsible_unavailable';
 }
