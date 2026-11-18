@@ -15,6 +15,7 @@ enum ActivityReferenceKind: string
     case Company = 'company';
     case Opportunity = 'opportunity';
     case Automation = 'automation';
+    case AutomationWorkflow = 'automation_workflow';
     case Form = 'form';
     case Survey = 'survey';
     case File = 'file';

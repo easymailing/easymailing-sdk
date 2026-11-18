@@ -22,7 +22,7 @@ export interface paths {
          *     **When not to use:** It is read-only: to add something to the timeline, create a note with `create_note` or a task with `create_task`; the activity is written by the action itself. To read the full text of a note, use `get_note` or `list_notes`; for tasks, `list_tasks`. To read one member's subscription history in an audience, use `list_member_activities`, which is empty in accounts that already use the new Customer App. There is no combined timeline of the whole account: you must name the record.
          *
          *     **Filters:** Exactly one of `contact`, `company` or `opportunity` is required, with the UUID of the record. A UUID that is not valid, does not exist or belongs to a record the user cannot see gives `404`.
-         *     `category[]` and `type[]` keep only those categories and types; `occurred_from` and `occurred_to` keep a range of days in the time zone of the account. The order is fixed (most recent `occurred_at` first); there is no `order` parameter and no text search. A company or an opportunity only has `crm` rows, so another category gives an empty list.
+         *     `category[]` and `type[]` keep only those categories and types; `occurred_from` and `occurred_to` keep a range of days in the time zone of the account. The order is fixed (most recent `occurred_at` first); there is no `order` parameter and no text search. A company or an opportunity only has `crm` rows and the `automation` rows of the workflows it went through, so another category gives an empty list.
          *     Visibility is decided row by row: a task or note row is hidden to a user without `crm.tasks_notes.read` or who cannot see that task, and an email or meeting row is hidden to a user who cannot read that mailbox or calendar. Hidden rows are not removed: they come back with `availability` `unavailable` (or `deleted` when the email or meeting was deleted for good), no `data` and an anonymous actor, so the list never leaks their content. Rows from a Google mailbox or calendar that was disconnected are not returned at all.
          *     Pagination: activity is paged with `itemsPerPage` (default 25, maximum 50) and an opaque `cursor[gt]`: to read the next page, call again with the same record and the same filters and the `cursor[gt]` of the `hydra:next` link of the previous response. The cursor only works for the same user, record and filters. The response gives the total number of rows in `hydra:totalItems`, counted when the first page is read (hidden rows count; rows written afterwards do not change it); keep following `hydra:next` until a page comes back empty.
          *
@@ -55,6 +55,279 @@ export interface paths {
          *     **Permissions:** Requires any of the `contacts.read`, `crm.contacts_companies.read` or `crm.opportunities.read` capabilities. No CRM seat is needed.
          */
         get: operations["get_activity_history_status"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List AI agents
+         * @description Lists the AI agents of the account, the last changed first, without their definition: name, description, state, version, who can use them, which tools they have, how many automations use them and what they spent in the last 30 days.
+         *
+         *     **What an agent is:** a helper of the account that is set up once (instructions, tools, limits) and then used wherever it is needed: in an automation step, or asked directly with `run_ai_agent`.
+         *
+         *     **When to use:** To find an agent by name or state before reading it with `get_ai_agent`, or before asking it something with `run_ai_agent`. Also to check that an agent with a similar purpose does not exist before creating another one.
+         *
+         *     **When not to use:** To read the instructions and tools of one agent use `get_ai_agent`: the list leaves the definition out. Automations that use an agent are `list_workflows`; classic automations are `list_automations`.
+         *
+         *     **Filters:** All filters are optional and combine with AND.
+         *     - `search`: part of the name, case-insensitive; surrounding spaces are ignored (up to 120 characters).
+         *     - `status`: only agents in that state. Without it the list has every agent except the archived ones; send `archived` to see those.
+         *     Sorting: fixed, last changed first; there is no `order` parameter.
+         *     Pagination: `page` and `itemsPerPage` (default 25, maximum 100), like the rest of the API; the response gives the total in `hydra:totalItems`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_ai_agents"];
+        put?: never;
+        /**
+         * Create an AI agent as a draft
+         * @description Creates an AI agent as a DRAFT: it is saved, but nothing runs from it and no automation can use it until it is published with `publish_ai_agent`. Everything is optional; what is not sent takes its default (no instructions, no tools, limits of 10 tool calls, 120 seconds and 0.25 EUR per task, access for the whole team, no own cap).
+         *
+         *     **When to use:** To save a new agent. To start from an idea, call `propose_ai_agent` first and send its answer here (it has the same keys). To improve an agent that already exists, use `update_ai_agent`.
+         *
+         *     **When not to use:** Do not create a second agent when `list_ai_agents` shows one with the same purpose: improve that one. Creating does not publish and does not spend anything; to try the draft use `run_ai_agent` with `version: draft`.
+         *
+         *     **Side effects:** The agent appears in Settings › AI agents of Easymailing as a draft, created by the person who owns the token. Nothing is published, sent or charged. When Maia makes the request, it cannot set a tool that writes in `auto` (automatic) mode (see the errors).
+         *
+         *     **Permissions:** Requires the `automations.manage` capability. It also needs AI in the plan (`maia.access`). The account must also have CRM Pro.
+         */
+        post: operations["create_ai_agent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/actions/propose": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Propose an AI agent from a description
+         * @description Turns a description into a proposal of agent: name, description, icon, instructions, tools and limits. THE PROPOSAL IS NOT SAVED: nothing is created. It has the same keys as the body of `create_ai_agent`, so it can be sent there as it is, or after changing it.
+         *
+         *     The proposal is cleaned before it is returned: it only has tools that exist, with valid values, and never connects anything or uploads files. If the description needs something the account cannot do (for example, writing to an external app), the answer says so in `warnings` and leaves it out.
+         *
+         *     **When to use:** When the user describes an agent in words and you want a good starting definition («create an agent that researches the companies from the form»). Then show it to the user, create it with `create_ai_agent` and, once tried, publish it.
+         *
+         *     **When not to use:** To save an agent whose definition you already know, use `create_ai_agent` directly. To improve an existing agent, read it with `get_ai_agent` and change it with `update_ai_agent`; this operation always starts from scratch. Do not call it again just to get a different wording: every call is charged.
+         *
+         *     **Side effects:** IT SPENDS AI BALANCE: one AI call, charged to the shared balance of the account (and to the cap of agents, if there is one) and shown as authoring help in the breakdown of the period. The balance is checked before the call. A call that fails is not charged. Nothing else changes.
+         *
+         *     **Permissions:** Requires the `automations.manage` capability. It also needs AI in the plan (`maia.access`). The account must also have CRM Pro.
+         */
+        post: operations["propose_ai_agent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get an AI agent
+         * @description Reads one AI agent: its draft (the definition being edited) and its current published version (the one that runs), with the state, who can use it, its spend cap and how much it is used.
+         *
+         *     **Draft and published:** `draft` is what `update_ai_agent` changes and nothing runs from it until it is published. `published` is the frozen version that automations and `run_ai_agent` use. When `unpublished_changes` is true they differ.
+         *
+         *     **When to use:** To see what an agent does (instructions, tools, limits) before asking it something, improving it or publishing it. Read it before `update_ai_agent`: a key of `draft` that is sent (for example `tools`) replaces that key as a whole.
+         *
+         *     **When not to use:** To find an agent by name use `list_ai_agents`. To see earlier published versions use `list_ai_agent_versions`. To see what an agent answered, use `get_ai_agent_run`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["get_ai_agent"];
+        /**
+         * Change the draft of an AI agent
+         * @description Changes the DRAFT of an agent (and its name, description, icon, access or own cap). Only the fields sent change. Inside `draft`, each key sent (`instructions`, `tools`, `limits`) replaces that key of the draft and the keys not sent are kept: sending only `instructions` keeps the tools and the limits. Nothing is published: the automations and the people who use the agent keep the published version until `publish_ai_agent`.
+         *
+         *     **When to use:** To improve an agent («make the researcher also look at LinkedIn»): read it with `get_ai_agent`, send the key of `draft` that changes (for example the whole `tools` list with the new tool), try it with `run_ai_agent` (`version: draft`) and publish it. Also to rename it or change who can use it.
+         *
+         *     **When not to use:** To make the change take effect use `publish_ai_agent` afterwards. To go back to an earlier version, read it with `list_ai_agent_versions` and send its `definition` here. To create a new agent use `create_ai_agent`. An archived agent cannot change.
+         *
+         *     **Side effects:** Saves the draft; nothing else. No version is created, no automation changes and nothing is charged. There is no version check: if two people save at the same time, the last write wins. Changes to `access` and `period_cap` apply at once, not on publishing. When Maia makes the request, it cannot set a tool that writes in `auto` (automatic) mode (see the errors).
+         *
+         *     **Permissions:** Requires the `automations.manage` capability. It also needs AI in the plan (`maia.access`). The account must also have CRM Pro.
+         */
+        put: operations["update_ai_agent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/{uuid}/actions/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Archive an AI agent
+         * @description Retires an agent: it disappears from the selector of the automation step, it cannot change and it cannot be asked. Its versions and what it spent stay. Archiving an agent that is already archived changes nothing.
+         *
+         *     **When to use:** When an agent is no longer wanted. Check `used_in` in `get_ai_agent` first.
+         *
+         *     **When not to use:** To stop using an agent for a while, change `access` or just leave it. To replace it, create or improve another one and move the automations in Easymailing before archiving. There is no way to undo it through the API.
+         *
+         *     **Side effects:** THE AUTOMATIONS THAT USE THE AGENT STOP: every execution that reaches an «AI agent» step with this agent is blocked with the cause `agent_unavailable` until someone changes the step or the agent is restored in Easymailing. Runs started with `run_ai_agent` that are still going are not interrupted. Nothing is deleted and nothing is charged.
+         *
+         *     **Permissions:** Requires the `automations.manage` capability. It also needs AI in the plan (`maia.access`). The account must also have CRM Pro. When Maia asks, the person confirms it first in the chat.
+         */
+        post: operations["archive_ai_agent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/{uuid}/actions/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish an AI agent
+         * @description Freezes the draft as the next version of the agent (version n+1) and makes it the current one (`published_version`). From then on `run_ai_agent` and new automations use it.
+         *
+         *     **Automations that already use the agent keep the version they validated:** publishing does not change them. They are brought to the new version in Easymailing, by a person who can see and edit everything the new version touches.
+         *
+         *     **When to use:** When the draft is ready and has been tried with `run_ai_agent` (`version: draft`). A draft that was never published cannot be asked or used in an automation.
+         *
+         *     **When not to use:** To save changes without making them live use `update_ai_agent`. Publishing needs a name and instructions: without them the answer is 422. Publishing again a draft with no changes still creates a new version; check `unpublished_changes` first.
+         *
+         *     **Side effects:** Creates a version and changes what `run_ai_agent` uses. It does not touch running or published automations, sends nothing and charges nothing. It cannot be undone, but the previous version stays in `list_ai_agent_versions` and can be copied back into the draft and published again. When Maia makes the request, it is refused if the draft sets a tool that writes in `auto` (automatic) mode, even when a person set it (see the errors).
+         *
+         *     **Permissions:** Requires the `automations.manage` capability. It also needs AI in the plan (`maia.access`). The account must also have CRM Pro. When Maia asks, the person confirms it first in the chat.
+         */
+        post: operations["publish_ai_agent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/{uuid}/runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the runs of an AI agent
+         * @description Lists the runs of an agent started with `run_ai_agent` in the last 30 days, the last one first, with the same fields as `get_ai_agent_run`: state, answer, sources, tools used, cost and cause when it stopped. Each person sees only the runs they started; administrators of automations (`automations.manage`) see every run of the agent.
+         *
+         *     **When to use:** To find a run whose `uuid` was lost, or to see what an agent has been asked lately and what it cost.
+         *
+         *     **When not to use:** To follow one run you already started use `get_ai_agent_run` with its `uuid`. Executions of the agent inside automations are not runs: they are in `list_workflow_executions`. Tests made in Easymailing (the «Test» panel of the agent) are not listed.
+         *
+         *     **Filters:** All filters are optional and combine with AND.
+         *     - `state`: only runs in that state.
+         *     Sorting: fixed, last started first; there is no `order` parameter.
+         *     Pagination: `page` and `itemsPerPage` (default 25, maximum 100); the total is in `hydra:totalItems`. Runs older than 30 days are not listed.
+         *
+         *     **Permissions:** Requires the `automations.read` capability. Only the runs the person started, unless they are an administrator of automations (`automations.manage`), who sees them all. What the agent read in the CRM is shown in `tools_used` only for records the reader can see.
+         */
+        get: operations["list_ai_agent_runs"];
+        put?: never;
+        /**
+         * Ask an AI agent to do a task
+         * @description Gives a task to a published agent and starts it. It is ASYNCHRONOUS: the answer is immediate with the run in `queued` state (202); the agent works in the background, searching, reading pages and reading the CRM within its limits, and the result is read with `get_ai_agent_run` until `state` is `completed` or `stopped`. A task usually takes under two minutes.
+         *
+         *     The answer is free text, or, with `response_format: fields`, one validated value per field you define. The agent always gives the sources it used and the tools it called.
+         *
+         *     **When to use:** When the user asks to delegate research or analysis to an agent: «ask the Investigador to look at arenalsalud.es». Pass `record` when the task is about a contact, company or opportunity. Use `version: draft` to try an agent that is still being improved.
+         *
+         *     **When not to use:** For a single answer that needs no tools or search, use the AI of the product directly. To have the result written into the CRM, create a note or update the record yourself with the answer (`create_note`, `update_company`): through the API an agent only reads. For automatic processing of every new lead, use an automation with an «AI agent» step in Easymailing, not repeated calls here. Do not repeat the call when it seems slow: poll `get_ai_agent_run`, or send a `client_request_id`.
+         *
+         *     **Side effects:** IT SPENDS AI BALANCE. The agent is charged after each turn, in the same shared balance as Maia and the automations, up to `limits.max_cost` for this task, up to the cap of the agent (`period_cap`) and up to the cap for all agents of the account; extra spending is used only up to its limit. Before starting, the balance, the caps and the plan are checked, and there must be at least `max_cost` left. A run of the draft is charged as a test. The agent only reads: searching the web and opening pages sends nothing to anyone and writes nothing in the CRM. Its tools that write never write in a run asked through the API, whatever their mode: as in the «Test» panel of Easymailing, they say what they would have done (in `tools_used`), and the run never waits for an approval. Runs are kept for 30 days. At most 5 agents work at the same time per account; the rest wait in `queued`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability. It also needs AI in the plan (`maia.access`) and CRM Pro, and the person must be allowed to use the agent: with access `team`, the `automations.work` capability; with access `managers`, `automations.manage`. `version: draft` always needs `automations.manage`. The agent works with the permissions of the person who owns the token (never more): with `crm_read` it only sees the records that person can see.
+         */
+        post: operations["run_ai_agent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/{uuid}/runs/{runUuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the result of an AI agent run
+         * @description Reads a run started with `run_ai_agent`: its state, the answer when it is `completed`, the sources, the tools the agent used, what it cost, how long it worked and, when it was `stopped`, the cause.
+         *
+         *     **When to use:** After `run_ai_agent`, to get the answer: call it again after `retry_after_ms` while `state` is `queued` or `running`, until it is `completed` or `stopped`. Also to read the cost of a run, or to see why it stopped.
+         *
+         *     **When not to use:** To start a task use `run_ai_agent`. Runs are kept 30 days; to find one whose `uuid` was lost use `list_ai_agent_runs`. A `waiting_approval` run does not move by polling: a person has to decide in Easymailing. Do not poll faster than `retry_after_ms`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability. Only the person who started the run, and administrators of automations (`automations.manage`), can read it. What the agent read in the CRM is shown in `tools_used` only for records the reader can see.
+         */
+        get: operations["get_ai_agent_run"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai_agents/{uuid}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the versions of an AI agent
+         * @description Lists the published versions of an agent, the last one first. Each one keeps the definition that was frozen when it was published.
+         *
+         *     **When to use:** To see how an agent changed over time, or to find the definition of an earlier version, for example to copy it back into the draft with `update_ai_agent`.
+         *
+         *     **When not to use:** The current version is already in `published` of `get_ai_agent`. A draft is not a version until it is published with `publish_ai_agent`.
+         *
+         *     **Filters:** Sorting: fixed, last version first. Pagination: `page` and `itemsPerPage` (default 25, maximum 100); the total is in `hydra:totalItems`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_ai_agent_versions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1330,11 +1603,11 @@ export interface paths {
         };
         /**
          * List subscription forms
-         * @description Returns the subscription forms of one audience, most recently updated first, with their type (embedded or popup), publication state and conversion statistics.
+         * @description Returns the subscription forms of one audience, most recently updated first, with their type (embedded or popup), publication state and, for classic forms, conversion statistics. It lists classic forms and forms created in the Customer App.
          *
          *     **When to use:** To find which sign-up forms an audience has, or which are published, paused or still drafts, before changing one or getting its embed code.
          *
-         *     **When not to use:** To read a single form use `get_audience_form`; to get the code that embeds a published form on a website use `get_form_publishing_info`.
+         *     **When not to use:** To read a single form use `get_audience_form`; to get the code that embeds a published form on a website use `get_form_publishing_info`. To list the forms of all audiences at once, use `list_subscription_forms`. Forms created in the Customer App (`generation: current`) are managed with the `subscription_form` operations. Their `stats` is `null` here: read `get_subscription_form_statistics`.
          *
          *     **Filters:** `title`: partial match on the form title. `type`: exact type, `embedded` or `popup`. `active`: `true` for published forms, `false` for the rest. `audience`: UUID of an audience (already fixed by the path). Sort with `order[created_at]`, `order[updated_at]` or `order[title]` (`asc`/`desc`).
          *
@@ -1364,7 +1637,7 @@ export interface paths {
          *
          *     **When to use:** To add a form that sits inside a page of the website (for example in the footer or a blog post). It does nothing on the website until you publish it with `publish_form`.
          *
-         *     **When not to use:** For a form that opens as a modal over the page use `create_popup_form`.
+         *     **When not to use:** For a form that opens as a modal over the page use `create_popup_form`. It creates a classic form, which the Customer App can only read until it is converted. For a form that can be edited, published and measured with the `subscription_form` operations, use `create_subscription_form`.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
          */
@@ -1390,7 +1663,7 @@ export interface paths {
          *
          *     **When to use:** To capture sign-ups with a modal that appears after some seconds, on scroll or when the visitor is about to leave. It does nothing on the website until you publish it with `publish_form`.
          *
-         *     **When not to use:** For a form that sits inside the page use `create_embedded_form`.
+         *     **When not to use:** For a form that sits inside the page use `create_embedded_form`. It creates a classic form, which the Customer App can only read until it is converted. For a form that can be edited, published and measured with the `subscription_form` operations, use `create_subscription_form`.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
          */
@@ -1410,11 +1683,11 @@ export interface paths {
         };
         /**
          * Get a subscription form
-         * @description Returns one subscription form: type, title, whether it is published or paused, double opt-in and channel settings, groups, popup behavior and conversion statistics.
+         * @description Returns one subscription form: type, title, whether it is published or paused, double opt-in and channel settings, groups, popup behavior and, for classic forms, conversion statistics. It reads classic forms and forms created in the Customer App.
          *
          *     **When to use:** To check the state or settings of a form you already know, for example before publishing or editing it.
          *
-         *     **When not to use:** To find forms use `list_audience_forms`; to get the code that embeds the form on a website use `get_form_publishing_info`.
+         *     **When not to use:** To find forms use `list_audience_forms`; to get the code that embeds the form on a website use `get_form_publishing_info`. Forms created in the Customer App (`generation: current`) are managed with the `subscription_form` operations. For those, `get_subscription_form` also gives consent, CRM data policy, welcome email and public link, and `stats` is `null` here: read `get_subscription_form_statistics`.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.read` capability.
          */
@@ -1427,7 +1700,7 @@ export interface paths {
          *
          *     **When to use:** To remove a form that is no longer needed and will not be used again.
          *
-         *     **When not to use:** To take the form off the website but keep it, use `unpublish_form` or `pause_form`.
+         *     **When not to use:** To take the form off the website but keep it, use `unpublish_form` or `pause_form`. For a form created in the Customer App use `delete_subscription_form`.
          *
          *     **Side effects:** Members who signed up through the form stay in the audience; only their link to the form is cleared. No webhook fires.
          *
@@ -1453,7 +1726,7 @@ export interface paths {
          *
          *     **When to use:** To stop a form for a short time (for example while a promotion is over) and bring it back later with `resume_form`.
          *
-         *     **When not to use:** To take it down until you publish it again, use `unpublish_form`.
+         *     **When not to use:** To take it down until you publish it again, use `unpublish_form`. For a form created in the Customer App use `pause_subscription_form`.
          *
          *     **Side effects:** The form stops collecting sign-ups on every website where its code is installed.
          *
@@ -1481,7 +1754,7 @@ export interface paths {
          *
          *     **When to use:** When a form is ready and you want it to start collecting sign-ups. After publishing, get the code to install with `get_form_publishing_info`.
          *
-         *     **When not to use:** To bring back a paused form you can also use `resume_form`; to take it down use `unpublish_form`.
+         *     **When not to use:** To bring back a paused form you can also use `resume_form`; to take it down use `unpublish_form`. For a form created in the Customer App use `publish_subscription_form`.
          *
          *     **Side effects:** The form starts collecting sign-ups on every website that has its code installed. Each person who submits it becomes a member of the audience and is added to the form's groups. With double opt-in they get a confirmation email and are confirmed only when they confirm; without it they are confirmed at once and the `member_subscribed` webhook, the subscription automations and the form's welcome email (if enabled) run. Someone who unsubscribed on their own always gets a confirmation email instead.
          *
@@ -1509,7 +1782,7 @@ export interface paths {
          *
          *     **When to use:** After `pause_form`, when the form should be shown again.
          *
-         *     **When not to use:** For a form that is unpublished use `publish_form`.
+         *     **When not to use:** For a form that is unpublished use `publish_form`. For a form created in the Customer App use `resume_subscription_form`.
          *
          *     **Side effects:** The form starts collecting sign-ups again on every website where its code is installed.
          *
@@ -1537,7 +1810,7 @@ export interface paths {
          *
          *     **When to use:** To stop collecting sign-ups through a form without deleting it, for example at the end of a campaign.
          *
-         *     **When not to use:** To stop it only for a while and keep it published, use `pause_form`; to remove it for good use `delete_form`.
+         *     **When not to use:** To stop it only for a while and keep it published, use `pause_form`; to remove it for good use `delete_form`. A form created in the Customer App has no unpublish: use `pause_subscription_form` to take it offline.
          *
          *     **Side effects:** The form stops collecting sign-ups on every website where its code is installed.
          *
@@ -1565,7 +1838,7 @@ export interface paths {
          *
          *     **When to use:** To rename an embedded form or change how it handles sign-ups. Send every setting you want to keep: omitted booleans, `channels` and `groups` go back to their defaults.
          *
-         *     **When not to use:** For a popup form use `update_popup_form`; to publish, pause or unpublish use `publish_form`, `pause_form` or `unpublish_form`.
+         *     **When not to use:** For a popup form use `update_popup_form`; to publish, pause or unpublish use `publish_form`, `pause_form` or `unpublish_form`. For a form created in the Customer App use `update_subscription_form`.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
          */
@@ -1591,7 +1864,7 @@ export interface paths {
          *
          *     **When to use:** To rename a popup, change its triggers, schedule, frequency or visibility, or change how it handles sign-ups. Send every setting you want to keep: omitted booleans, `channels` and `groups` go back to their defaults.
          *
-         *     **When not to use:** For an embedded form use `update_embedded_form`; to publish, pause or unpublish use `publish_form`, `pause_form` or `unpublish_form`.
+         *     **When not to use:** For an embedded form use `update_embedded_form`; to publish, pause or unpublish use `publish_form`, `pause_form` or `unpublish_form`. For a form created in the Customer App use `update_subscription_form` and `update_subscription_form_popup_behavior`.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
          */
@@ -1612,11 +1885,11 @@ export interface paths {
         };
         /**
          * Get a form install code
-         * @description Returns what is needed to put a published form on a website: the script and HTML snippets, the public URL of the form and links to the WordPress plugin and Shopify app. If the form is not published it returns what is missing instead.
+         * @description Returns what is needed to put a published form on a website: the script and HTML snippets, the public URL of the form and links to the WordPress plugin and Shopify app. If the form is not published it returns what is missing instead. It works for classic forms and for forms created in the Customer App.
          *
          *     **When to use:** After publishing a form, to get the snippet to paste into the website or send to the person who maintains it.
          *
-         *     **When not to use:** To publish the form first use `publish_form`; to read its settings use `get_audience_form`.
+         *     **When not to use:** To publish the form first use `publish_form` for a classic form or `publish_subscription_form` for one created in the Customer App; to read its settings use `get_audience_form` or `get_subscription_form`.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.read` capability.
          */
@@ -5264,7 +5537,7 @@ export interface paths {
          *
          *     **When not to use:** To add a person, use `create_contact`; that operation can also link the person to a company. Before creating, check that the company does not exist: search by domain with `list_companies`, because a domain can belong to only one company. To change an existing company, use `update_company`.
          *
-         *     **Side effects:** The company appears in the CRM with a `created` entry in its activity, attributed to the person who owns the token, with the note "via Maia" when Maia made the call. It is not linked to any contact: link a contact to it with `update_contact`. Nothing is sent and no automation or webhook fires (CRM webhook events do not exist yet).
+         *     **Side effects:** The company appears in the CRM with a `created` entry in its activity, attributed to the person who owns the token, with the note "via Maia" when Maia made the call. It is not linked to any contact: link a contact to it with `update_contact`. Nothing is sent and no webhook fires (CRM webhook events do not exist yet). Automations of the new engine that listen to this creation, or to the values it sets, can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.contacts_companies.write` capability.
          */
@@ -5301,7 +5574,7 @@ export interface paths {
          *
          *     **When not to use:** To link or unlink a person from the company, use `update_contact` (its `company` field); a company's contacts are not edited here. To remove the company altogether, use `delete_company`. To create one, use `create_company`.
          *
-         *     **Side effects:** All the fields of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an entry to the company's activity (field, previous and new value), attributed to the person who owns the token, with "via Maia" when Maia made the call. Saving the same value leaves no entry. Replacing `domains` frees the removed ones, so another company can take them. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** All the fields of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an entry to the company's activity (field, previous and new value), attributed to the person who owns the token, with "via Maia" when Maia made the call. Saving the same value leaves no entry. Replacing `domains` frees the removed ones, so another company can take them. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.contacts_companies.write` capability.
          */
@@ -8557,7 +8830,7 @@ export interface paths {
          *
          *     **When not to use:** To change a deal that already exists, use `update_opportunity`; to move it between stages, `move_opportunity_stage`. Check first with `list_opportunities` (filters `company` and `contact`) that the deal does not exist, because nothing prevents duplicates. To add a person or an organization, use `create_contact` or `create_company`.
          *
-         *     **Side effects:** The opportunity appears in the CRM with an `opportunity.created` entry in its activity, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. Its `record_source` is `api`. If you send `owner`, that user gets the assignment notification (in-app and, by default, email) unless they are the caller. Nothing is sent to contacts, no automation runs and no webhook fires (CRM webhook events do not exist yet). Retrying a request that succeeded creates a second opportunity.
+         *     **Side effects:** The opportunity appears in the CRM with an `opportunity.created` entry in its activity, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. Its `record_source` is `api`. If you send `owner`, that user gets the assignment notification (in-app and, by default, email) unless they are the caller. Nothing is sent to contacts and no webhook fires (CRM webhook events do not exist yet). Automations of the new engine that listen to this creation, or to the values it sets, can start: it counts as an «API» change (or a manual one when Maia made the call). Retrying a request that succeeded creates a second opportunity.
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline where it is created.
          */
@@ -8594,7 +8867,7 @@ export interface paths {
          *
          *     **When not to use:** To change the stage use `move_opportunity_stage`; to close it, `win_opportunity` or `lose_opportunity`; to reopen it, `reopen_opportunity`; to change its pipeline, `move_opportunity_pipeline`. If the destination stage requires fields, send them in that move, not here. To add a deal, use `create_opportunity`.
          *
-         *     **Side effects:** All properties of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an `opportunity.fields_changed` entry to the activity (field, previous and new value), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; saving the same value leaves no entry. Changing `value` of a won or lost deal revalues its closing snapshot. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** All properties of the request are applied together: if one is rejected, nothing is saved. Each field that really changes adds an `opportunity.fields_changed` entry to the activity (field, previous and new value), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; saving the same value leaves no entry. Changing `value` of a won or lost deal revalues its closing snapshot. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8634,7 +8907,7 @@ export interface paths {
          *
          *     **When not to use:** To close it as won, use `win_opportunity`. To remove a record that should not exist, use `delete_opportunity`. To keep working it, use `move_opportunity_stage` or `reopen_opportunity`.
          *
-         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `lost` and the reason name and note, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was won, it changes the outcome and keeps the first closing date. The reason and note are kept in the closing history even if the reason is archived later. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `lost` and the reason name and note, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was won, it changes the outcome and keeps the first closing date. The reason and note are kept in the closing history even if the reason is archived later. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8662,7 +8935,7 @@ export interface paths {
          *
          *     **When not to use:** To move it between stages of the same pipeline, use `move_opportunity_stage`. Before moving a deal with an amount, run `preview_opportunity_pipeline_move` to know whether the currency needs to be confirmed.
          *
-         *     **Side effects:** Adds an `opportunity.pipeline_changed` entry (from and to pipeline and stage, and amount if it changed), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; it is not recorded as a stage change. Moving a closed deal to an open stage reopens it, and to a won or lost stage keeps it closed. The closing snapshot is revalued with the reference currency of the destination. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Adds an `opportunity.pipeline_changed` entry (from and to pipeline and stage, and amount if it changed), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call; it is not recorded as a stage change. Moving a closed deal to an open stage reopens it, and to a won or lost stage keeps it closed. The closing snapshot is revalued with the reference currency of the destination. If it sets a new owner who is not the caller, that user gets the assignment notification (in-app and, by default, email); the previous owner's pending notification is closed. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity and to the destination one.
          */
@@ -8690,7 +8963,7 @@ export interface paths {
          *
          *     **When not to use:** To close a deal as won or lost, `win_opportunity` and `lose_opportunity` find the stage for you. To reopen a closed deal, use `reopen_opportunity`. To change the pipeline, use `move_opportunity_pipeline`. To change other data of the deal, use `update_opportunity`.
          *
-         *     **Side effects:** Adds an `opportunity.stage_changed` entry to the activity (from stage, to stage and kind: progressed, won, lost, reopened), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The time in the previous stage is closed and a new stay starts. Entering a won stage sets probability 100, a lost stage 0, and the closing amount is valued at the closing date. Moving to the stage it is already in changes nothing. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Adds an `opportunity.stage_changed` entry to the activity (from stage, to stage and kind: progressed, won, lost, reopened), attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The time in the previous stage is closed and a new stay starts. Entering a won stage sets probability 100, a lost stage 0, and the closing amount is valued at the closing date. Moving to the stage it is already in changes nothing. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8718,7 +8991,7 @@ export interface paths {
          *
          *     **When not to use:** To move an open deal between open stages, use `move_opportunity_stage`. To close it again, use `win_opportunity` or `lose_opportunity`.
          *
-         *     **Side effects:** Adds an `opportunity.stage_changed` entry with kind `reopened`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The previous closing (date, amount snapshot and loss reason) stays in the history, a custom probability set before is not restored and a later close gets a new closing date. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Adds an `opportunity.stage_changed` entry with kind `reopened`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. The previous closing (date, amount snapshot and loss reason) stays in the history, a custom probability set before is not restored and a later close gets a new closing date. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -8746,7 +9019,7 @@ export interface paths {
          *
          *     **When not to use:** To close it as lost, use `lose_opportunity`. To put it in an open stage, use `move_opportunity_stage`. To undo a mistaken win and keep working the deal, use `reopen_opportunity`.
          *
-         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `won`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was lost, it changes the outcome and keeps the first closing date. If it is already in that won stage, nothing changes. The closing amount is valued at the rate of the closing date; with no rate yet the value is marked `pending` and filled later. Nothing is sent and no automation or webhook fires.
+         *     **Side effects:** Same record as `move_opportunity_stage`: an `opportunity.stage_changed` entry with kind `won`, attributed to the person who owns the key or token, with the note «via Maia» when Maia made the call. If it was lost, it changes the outcome and keeps the first closing date. If it is already in that won stage, nothing changes. The closing amount is valued at the rate of the closing date; with no rate yet the value is marked `pending` and filled later. Nothing is sent and no webhook fires. Automations of the new engine that listen to this change can start: it counts as an «API» change (or a manual one when Maia made the call).
          *
          *     **Permissions:** Requires a CRM seat and the `crm.opportunities.work` capability. It also needs `work` access to the pipeline of the opportunity.
          */
@@ -10212,13 +10485,13 @@ export interface paths {
         put?: never;
         /**
          * Import an order
-         * @description Loads an order with the status it already has (`cart`, `new`, `paid`, `shipped`, `refunded` or `cancelled`), without going through the usual steps. It does not start automations or credit campaign revenue; the statistics of the store are recalculated.
+         * @description Loads an order with the status it already has (`cart`, `new`, `paid`, `shipped`, `refunded` or `cancelled`), without going through the usual steps. It does not start Classic automations or credit campaign revenue; the statistics of the store are recalculated. In the new automations, an imported order or cart only enters if its own date (processed, payment, cancellation or the cart's own date) is within the last 24 hours and later than the automation's publication.
          *
          *     **When to use:** To bring in the history of a shop (orders that already happened), for example when connecting it for the first time.
          *
          *     **When not to use:** For a live order, create a cart with `create_store_order` and move it forward with the action operations, so automations and revenue tracking run.
          *
-         *     **Side effects:** The statistics of the store are recalculated in the background. No automation is started.
+         *     **Side effects:** The statistics of the store are recalculated in the background. No Classic automation is started; for the new automations, see the date rule above.
          *
          *     **Permissions:** Requires the manager role or higher, or the `marketing.audiences.write` capability.
          */
@@ -10572,6 +10845,320 @@ export interface paths {
          *     **Permissions:** Requires the manager role or higher, or the `marketing.audiences.delete` capability.
          */
         delete: operations["delete_store_product"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_form_templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List form templates
+         * @description Returns the ready-made designs a new form can start from, for one audience, one form type and one set of channels. Only active templates with the same type, exactly the same channels and the same GDPR state as the audience are returned, newest first.
+         *
+         *     **When to use:** Before `create_subscription_form`, to choose a starting design and get its numeric `id`.
+         *
+         *     **When not to use:** You do not need it when the first compatible template is fine: `create_subscription_form` uses it when `template_id` is omitted. A template cannot be changed afterwards through the API: to start from an existing form use `duplicate_subscription_form`.
+         *
+         *     **Filters:** `audience`, `type` and `channels[]` are required. `locale` picks the language of the template names. The list is not paginated.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        get: operations["list_subscription_form_templates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List subscription forms
+         * @description Returns the sign-up forms of the account, from every audience and of both generations, with their type, channels, status and the number of people who joined through each. Newest first unless you sort.
+         *
+         *     **When to use:** To see which sign-up forms exist, which are live, paused or still drafts, or to find a form by name before reading, changing or publishing it.
+         *
+         *     **When not to use:** To read the full settings of one form use `get_subscription_form`. To get the code that installs a published form on a website use `get_form_publishing_info`. For how a form performs use `get_subscription_form_statistics`. To find the people who signed up through a form, search contacts by the subscription form: look up its filter field with `list_contact_filter_fields` and use it in `search_contacts`.
+         *
+         *     **Filters:** `title`: partial, case-insensitive match. `audience`: UUID of an audience. `status`: `form.status.draft`, `form.status.unpublished`, `form.status.published` or `form.status.paused`; an unknown value returns an empty list. `type`: `embedded` or `popup`. `channel`: `email` or `sms`; an unknown value returns an empty list. Sort with `order[title]`, `order[type]`, `order[audience_name]`, `order[created_at]` or `order[updated_at]` (`asc` or `desc`); without sorting the newest created come first.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.read` capability.
+         */
+        get: operations["list_subscription_forms"];
+        put?: never;
+        /**
+         * Create a subscription form
+         * @description Creates a sign-up form for an audience, in the Customer App engine, starting from a template. The form is not live: nobody sees it until `publish_subscription_form` is called. The consent purposes of the audience that cover the chosen channels are filled in for you.
+         *
+         *     **When to use:** To start a new sign-up form, embedded in a page or as a popup. Afterwards adjust it with `update_subscription_form`, set a popup's triggers with `update_subscription_form_popup_behavior`, and publish it.
+         *
+         *     **When not to use:** Audience, type and channels cannot be changed later: if one is wrong, create another form. To copy a form that already looks right use `duplicate_subscription_form`. To create a classic form that the Customer App can only read, use `create_embedded_form` or `create_popup_form`. The look of the form (colors, images, layout, fields) is edited in the Customer App editor, not through the API.
+         *
+         *     **Side effects:** Creates the form with `generation: current`, never published. The template is copied as its design: when `status` comes back as `form.status.unpublished` the design is ready, and when it is `form.status.draft` the form has no design yet and `publish_subscription_form` will try again to generate it from the template, answering `design_required` only if it cannot. Double opt-in is forced to `true` where the account requires it. With GDPR enabled in the audience, the compatible purposes are added and `consent_mode` is `all_required`. The preview thumbnail is generated in the background. Nothing is sent to anyone.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        post: operations["create_subscription_form"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a subscription form
+         * @description Returns one sign-up form with everything that defines it: audience, type, channels, double opt-in, consent, groups, what it does with existing CRM data, welcome email, popup behavior, publication state and its public link.
+         *
+         *     **When to use:** Before changing, publishing, pausing or deleting a form, or to find out why it is not live yet (`status`, `pending_changes`).
+         *
+         *     **When not to use:** To find forms use `list_subscription_forms`. For the code that installs the form on a website use `get_form_publishing_info`. For visitors and sign-ups use `get_subscription_form_statistics`. For a classic form (`generation: classic`) it works too, but only `get_audience_form` shows its legacy counters.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.read` capability.
+         */
+        get: operations["get_subscription_form"];
+        /**
+         * Update a subscription form
+         * @description Changes the settings of a Customer App form: name, language, groups the people are added to, double opt-in, consent, welcome email and what the form does with existing CRM data. Send only what you want to change.
+         *
+         *     **When to use:** To rename a form, add its sign-ups to groups, turn double opt-in or the welcome email on or off, choose whether visitors must accept every consent purpose or at least one, or change how it treats data of people and companies already in the CRM.
+         *
+         *     **When not to use:** Audience, type and channels cannot be changed after creation. The design (fields, texts, colors, layout) is edited in the Customer App editor. Popup triggers use `update_subscription_form_popup_behavior`. To make a published form live with the change use `publish_subscription_form`. Classic forms use `update_embedded_form` or `update_popup_form`. The consent purposes a form shows are chosen by a person in the Customer App: the API only reads them (`purposes` of `get_subscription_form`).
+         *
+         *     **Side effects:** On a published form, a change can only reach visitors after `publish_subscription_form`: until then `pending_changes` is `true` and visitors still see the previous version. Double opt-in cannot be turned off where the account requires it: the value stays `true`. The settings, the consent and the welcome email are saved one after the other, so if a later part is rejected the earlier ones stay saved: read the form again to see what applied.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        put: operations["update_subscription_form"];
+        post?: never;
+        /**
+         * Delete a subscription form
+         * @description Permanently deletes the form together with its history of received answers and its statistics. The contacts, companies and subscriptions it already created stay.
+         *
+         *     **When to use:** Only when the person wants the form gone for good.
+         *
+         *     **When not to use:** To take it offline for a while use `pause_subscription_form`. It cannot be undone. For a classic form use `delete_form`.
+         *
+         *     **Side effects:** Confirmation links of people who signed up but did not confirm yet stop working, and what was waiting to be applied for them (CRM data, group memberships) is lost. The rest of the history is cleaned up just after the response. People already subscribed through the form stay subscribed, and the form stops being shown on the sites that use it.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.delete` capability.
+         */
+        delete: operations["delete_subscription_form"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/actions/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Convert a classic form
+         * @description Moves a classic form to the Customer App engine so it can be edited, published and measured with the `subscription_form` operations. It cannot be undone. The installed code and the public link keep working and the people captured before stay.
+         *
+         *     **When to use:** When the person wants to manage an old form with the new operations, or Maia needs to change a setting of a classic form with `update_subscription_form`.
+         *
+         *     **When not to use:** Do not convert just to read a form: `get_subscription_form` and `get_audience_form` read both generations. A form that is already current answers `form_already_current`. After converting, `update_embedded_form`, `update_popup_form`, `publish_form`, `pause_form`, `resume_form`, `unpublish_form` and `delete_form` stop working on it.
+         *
+         *     **Side effects:** Irreversible. The form moves to the Customer App: the old panel and the classic operations can no longer edit it. If it had an installed design, that design is published as the first version of the new engine. Whether it is live does not change: a published form stays published, a paused one stays paused and one never published stays unpublished. The history of answers and the statistics start from zero on the day of conversion (`converted_at`).
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        put: operations["convert_subscription_form"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/actions/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Duplicate a subscription form
+         * @description Creates a copy of a Customer App form, with its design and settings, as a new draft that is not live. It is the quickest way to get a variant of a form that already looks right, in the same audience.
+         *
+         *     **When to use:** To start from a form that already has the design and settings wanted: a variant for another campaign, a new language, an A/B test.
+         *
+         *     **When not to use:** Classic forms cannot be duplicated: convert them first with `convert_subscription_form`. To start from a ready-made template use `create_subscription_form`. The copy stays in the audience of the original and cannot be moved.
+         *
+         *     **Side effects:** The copy is never live and does not carry statistics or received answers. It keeps the type, channels, language, double opt-in, groups and design of the original. The preview thumbnail is generated in the background.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        post: operations["duplicate_subscription_form"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/actions/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Pause a subscription form
+         * @description Takes a published form offline without losing it: visitors stop seeing it and it stops accepting sign-ups until it is resumed. The live version, the settings and everyone already captured stay.
+         *
+         *     **When to use:** To stop capturing sign-ups for a while (end of a campaign, a mistake in the form) and bring it back later.
+         *
+         *     **When not to use:** To remove the form for good use `delete_subscription_form`. There is no unpublish for Customer App forms: pausing is the way to take one offline. To bring it back use `resume_subscription_form`. For a classic form use `pause_form`.
+         *
+         *     **Side effects:** Visitors no longer see the form and sign-ups are rejected. Calling it on a form that is already paused changes nothing.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        put: operations["pause_subscription_form"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/actions/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Publish a subscription form
+         * @description Makes the form live: from now on it is shown wherever its code is installed and on its public link, and it starts capturing people. Publishing again after editing replaces the live version with the current one.
+         *
+         *     **When to use:** When the form has a design (or the template to generate it from) and its settings are ready and the person wants it to start capturing sign-ups, or to push later changes live (`pending_changes` is `true`).
+         *
+         *     **When not to use:** To take a live form offline for a while use `pause_subscription_form`; to bring a paused form back as it was use `resume_subscription_form`. A form with `status` `form.status.draft` has no design yet: publishing generates it from the template the form was created with, and answers `design_required` only when it cannot. For a classic form use `publish_form`.
+         *
+         *     **Side effects:** Real people can start signing up. With double opt-in, each sign-up sends a confirmation email (or SMS) to the person. A form still without design gets it generated from its template first. It freezes an immutable version of the form and makes it live, and a paused form is not resumed by this: use `resume_subscription_form`. The installed code and the public link do not change. Publishing needs an active default SMS sender in the audience when the form asks for double opt-in by SMS; without one the request is refused with `sms_sender_missing` and nothing is published.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        put: operations["publish_subscription_form"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/actions/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Resume a paused subscription form
+         * @description Brings a paused form back online with the version that was live when it was paused: visitors see it again and it accepts sign-ups.
+         *
+         *     **When to use:** After `pause_subscription_form`, when the person wants the form to capture sign-ups again.
+         *
+         *     **When not to use:** To push edits live use `publish_subscription_form`. A form that was never published cannot be resumed: publish it first. For a classic form use `resume_form`.
+         *
+         *     **Side effects:** Real people can sign up again; with double opt-in, each sign-up sends a confirmation email (or SMS). Calling it on a form that is not paused changes nothing.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        put: operations["resume_subscription_form"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/popup_behavior": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set when a popup form appears
+         * @description Sets when a popup form shows (after a delay, after scrolling or when the visitor is about to leave), how often the same visitor sees it, between which dates, and on which pages and devices. Send only what you want to change.
+         *
+         *     **When to use:** To decide when the popup appears: after some seconds, after a scroll depth, on exit intent; how many days before it shows again; during which dates; only on or never on certain URLs; and whether to hide it on desktop, tablet or phone.
+         *
+         *     **When not to use:** Only popup forms have behavior: an embedded form answers 422. The design of the popup is edited in the Customer App editor. Classic popups use `update_popup_form`.
+         *
+         *     **Side effects:** On a published form, the change reaches visitors only after `publish_subscription_form`; until then `pending_changes` is `true`.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.write` capability.
+         */
+        put: operations["update_subscription_form_popup_behavior"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subscription_forms/{uuid}/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get form statistics
+         * @description Returns how a Customer App form performed over a period, day by day: times it was shown, answers received, people who completed the subscription and the conversion rate. A converted form counts from the day it was converted.
+         *
+         *     **When to use:** To answer how a form is doing, compare two forms or see the effect of a change.
+         *
+         *     **When not to use:** For the people themselves, search contacts by the subscription form (look up its filter field with `list_contact_filter_fields`, then use `search_contacts`). For classic forms the counters are in `stats` of `get_audience_form`; this operation answers `classic_form_statistics_unavailable` for them.
+         *
+         *     **Filters:** `start` and `end` (`YYYY-MM-DD`) are required, in the time zone of the account; the period is at most 366 days. The days are grouped in that time zone.
+         *
+         *     **Permissions:** Requires the manager role or higher, or the `marketing.forms_landings.read` capability.
+         */
+        get: operations["get_subscription_form_statistics"];
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -11487,6 +12074,164 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/workflow_pieces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List workflow pieces
+         * @description Lists the pieces a workflow of the new automation engine can be published with: the triggers that start it and the steps, waits and containers it can run, in catalog order, each with the CRM plan it needs.
+         *
+         *     **When to use:** To know what a `catalogId` in the `definition` of `get_workflow` is, which pieces exist, or why a workflow with a piece needs CRM Pro.
+         *
+         *     **When not to use:** It is the same list for the whole account and says nothing about one workflow: read the workflow with `get_workflow`. A piece missing here is not offered by the editor and a workflow that has it cannot be published.
+         *
+         *     **Plans:** `required_plan` is the plan the piece needs by itself. Some options of a piece can need more (for example, assigning by rotation needs CRM Pro); the app tells it when publishing.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_workflow_pieces"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List workflows
+         * @description Lists the workflows of the new automation engine of the account, most recently changed first, with their state, the triggers of their draft and how many executions are running or blocked.
+         *
+         *     **When to use:** To find a workflow by name or state before reading it with `get_workflow`, or to see which workflows are running, paused or need attention because an execution is blocked.
+         *
+         *     **When not to use:** To read the steps of one workflow use `get_workflow`: the list leaves the draft out. The classic automations of an audience are `list_automations`; email sequences are `list_email_sequences`.
+         *
+         *     **Filters:** All filters are optional and combine with AND.
+         *     - `search`: part of the title, case-insensitive; surrounding spaces are ignored (up to 120 characters).
+         *     - `status`: only workflows in that state (see `status` in the response).
+         *     - `display_status`: only workflows whose `display_status` is that one; `error` lists those with a blocked execution.
+         *     - `entry_state`: only published workflows whose entries are open (`open`) or paused as a whole (`paused`), or those under commercial review (`commercial-paused`).
+         *     - `execution_state`: `paused`, workflows paused as a whole or under commercial review, whose executions do not move on; `running`, published workflows in neither case.
+         *     - `needs_attention`: `true` lists only workflows with at least one blocked execution.
+         *     Sorting: fixed, last changed first; there is no `order` parameter.
+         *     Pagination: `page` and `itemsPerPage` (default 25, maximum 100), like the rest of the API; the response gives the total in `hydra:totalItems`.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_workflows"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a workflow
+         * @description Reads one workflow of the new automation engine: its state, its draft (`definition`), the triggers of its published version with their entry state, its published versions and who is responsible for it.
+         *
+         *     **When to use:** To see what a workflow does: its trigger, steps, waits, conditions and branches, as the document it is edited as. Also to know whether it is published, paused or has unpublished changes, and whether its responsible can still act.
+         *
+         *     **When not to use:** To find a workflow by name or state use `list_workflows`: it also gives the execution counts, which this response leaves out. To know which pieces (`catalogId`) a document may use and the CRM plan each one needs, use `list_workflow_pieces`. Workflows cannot be created, edited or published through the API: that happens in Easymailing.
+         *
+         *     **About `definition`:** It is the DRAFT, the document being edited, in format 3 and with its keys in camelCase exactly as the editor stores them: `settings`, `triggers` (each with `catalogId`, `configuration` and `next`) and `nodes` in reading order (each with `catalogId`, `configuration`, `next`, `branches` and `body`). When `unpublished_changes` is true it differs from the published version, which is the one running.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["get_workflow"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{uuid}/executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the executions of a workflow
+         * @description Lists the executions of one workflow of the new automation engine, newest first: for whom each one runs, on which published version, its state and, when it is blocked, stopped or canceled, why.
+         *
+         *     **When to use:** To see what a workflow is doing: which executions are running, waiting or blocked, which ended and how, or whether a contact went through it (`subject_uuid`, or `search` by name). Then read one with `get_workflow_execution` to see its route step by step.
+         *
+         *     **When not to use:** To know the state of the workflow itself (published, paused, how many executions are blocked) use `get_workflow` or `list_workflows`. Executions cannot be retried, skipped or canceled through the API: that happens in Easymailing.
+         *
+         *     **Visibility:** Only the executions whose subject the user can read are listed (a contact needs `contacts.read`, a company or an opportunity the CRM read capabilities and a CRM seat, a received webhook request `automations.work`…). A subject the user can only partly read (an opportunity of a pipeline they cannot see) comes with `subject.state` `hidden` and no name: a protected record.
+         *
+         *     **Filters:** All filters are optional and combine with AND.
+         *     - `state`: only executions in that state (see `state` in the response).
+         *     - `revision`: only executions running on that published version.
+         *     - `subject_type`: only executions for that kind of subject (see `subject.type`).
+         *     - `subject_uuid`: only executions for that record, for example a contact.
+         *     - `search`: part of the name of the record (a contact by first name, last name, full name, email or phone; a company by its name; an opportunity by its title, only in the pipelines the user can read), case-insensitive and literal; tasks and webhook requests are not searched, and records that no longer exist never match.
+         *     - `created_from` (included) and `created_before` (excluded): only executions that started in that range, ISO 8601 instants with their offset.
+         *     Sorting: fixed, the newest first; there is no `order` parameter.
+         *     Pagination: `itemsPerPage` (default 25, maximum 50) and an opaque `cursor[gt]`: to read the next page, call again with the same filters and the `cursor[gt]` of the `hydra:next` link of the previous response, and keep following `hydra:next` until a page comes back empty. An execution that starts meanwhile neither repeats nor shifts the following pages. There is no previous page. `hydra:totalItems` is not a total: it is the items of this page, plus one when another page follows.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["list_workflow_executions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{uuid}/executions/{executionUuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a workflow execution
+         * @description Reads one execution of a workflow with its exact route: a row per step (and per round of a «For each»), in the order they started, with the branch it took, its outputs and what it evaluated, plus who canceled it when no step row could keep it.
+         *
+         *     **When to use:** To explain why an execution is blocked, stopped or took a branch, or what a step did for one contact.
+         *
+         *     **When not to use:** To find the execution use `list_workflow_executions`. To read the workflow it runs, use `get_workflow` (the route names the steps by `node_uuid`, the `uuid` of `definition.nodes[]` of the version it runs on). Executions cannot be retried, skipped or canceled through the API.
+         *
+         *     **Visibility:** An execution whose subject the user cannot read does not exist for them: 404 `workflow_execution_not_found`, the same as one of another workflow. Inside `outputs` and `trace`, a record the user cannot read is `{"redacted": true}`. 90 days after it ended the route is purged: `steps` is empty, `detail_purged` is true and `summary` keeps the counts.
+         *
+         *     **Permissions:** Requires the `automations.read` capability.
+         */
+        get: operations["get_workflow_execution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export interface webhooks {
     crm_company_created: {
@@ -12110,6 +12855,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -12205,6 +12952,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -12314,6 +13063,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -12420,6 +13171,8 @@ export interface webhooks {
                                 id: string;
                                 owner_id: string | null;
                                 pipeline_id: string;
+                                /** @description Contacto principal de la Oportunidad (uuid), `null` si no tiene Contactos. */
+                                primary_contact_id: string | null;
                                 stage_id: string | null;
                                 title: string;
                                 updated_at: string;
@@ -15360,7 +16113,7 @@ export interface components {
              */
             readonly channel?: ((string | components["schemas"]["ActivityChannel"] | null) | null) | components["schemas"]["ActivityChannel"] | null;
             /**
-             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about).
+             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about). The start and the end of a workflow execution (`automation.workflow.started`, and `automation.workflow.finished` or, when it left through its exit conditions, `automation.workflow.exited`) carry `workflow_id`, `workflow_title` (as it was then), `revision` and `execution_id`; the end adds `outcome` (`completed`, `stopped` or `canceled`), `cause` when it has one and, for an exit, `exit` (the event that made it leave, or `filter`).
              * @example {
              *       "amount": "12000.00",
              *       "currency": "EUR",
@@ -15622,6 +16375,12 @@ export interface components {
                 reference?: {
                     /**
                      * Format: uuid
+                     * @description Only for `automation_workflow`: UUID of the execution of the workflow that the row is about.
+                     * @example 3f9c1e72-6b0a-4d85-9e24-7a1c5d8b0f36
+                     */
+                    execution_id?: string;
+                    /**
+                     * Format: uuid
                      * @description UUID of the object.
                      * @example 9b6d2f84-1a3c-4e57-8d0b-4c7a5e1f3d62
                      */
@@ -15673,7 +16432,7 @@ export interface components {
              */
             readonly occurrence_count?: number;
             /**
-             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created` or `automation.run`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
+             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created`, `automation.run`, `automation.workflow.started`, `automation.workflow.finished` or `automation.workflow.exited`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
              * @example opportunity.stage_changed
              */
             readonly type?: string;
@@ -15737,7 +16496,7 @@ export interface components {
              */
             readonly channel?: ((string | components["schemas"]["ActivityChannel"] | null) | null) | components["schemas"]["ActivityChannel"] | null;
             /**
-             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about).
+             * @description What the row shows, as an object whose keys depend on `type` (for example `opportunity.stage_changed` carries the old and new stage names, `note.created` the title of the note). It is `{}` when `availability` is not `available`. Free text typed by people (titles, names, subjects) is returned as written and must be escaped before showing it as HTML. Besides the keys of each type, the API adds these when they apply: `email` (rows `email.sent` and `email.received`), `meeting` (rows `meeting.*`), `campaign` (rows of email and SMS campaigns) and `reference` (the object the row is about). The start and the end of a workflow execution (`automation.workflow.started`, and `automation.workflow.finished` or, when it left through its exit conditions, `automation.workflow.exited`) carry `workflow_id`, `workflow_title` (as it was then), `revision` and `execution_id`; the end adds `outcome` (`completed`, `stopped` or `canceled`), `cause` when it has one and, for an exit, `exit` (the event that made it leave, or `filter`).
              * @example {
              *       "amount": "12000.00",
              *       "currency": "EUR",
@@ -15999,6 +16758,12 @@ export interface components {
                 reference?: {
                     /**
                      * Format: uuid
+                     * @description Only for `automation_workflow`: UUID of the execution of the workflow that the row is about.
+                     * @example 3f9c1e72-6b0a-4d85-9e24-7a1c5d8b0f36
+                     */
+                    execution_id?: string;
+                    /**
+                     * Format: uuid
                      * @description UUID of the object.
                      * @example 9b6d2f84-1a3c-4e57-8d0b-4c7a5e1f3d62
                      */
@@ -16050,7 +16815,7 @@ export interface components {
              */
             readonly occurrence_count?: number;
             /**
-             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created` or `automation.run`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
+             * @description Dotted type of the fact, for example `contact.created`, `contact.fields_changed`, `company.fields_changed`, `opportunity.created`, `opportunity.stage_changed`, `opportunity.pipeline_changed`, `note.created`, `note.edited`, `note.deleted`, `task.created`, `task.completed`, `task.reopened`, `meeting.scheduled`, `meeting.rescheduled`, `meeting.cancelled`, `email.sent`, `email.received`, `file.uploaded`, `file.linked`, `file.removed`, `marketing.email.campaign`, `audience.membership.created`, `automation.run`, `automation.workflow.started`, `automation.workflow.finished` or `automation.workflow.exited`. New types can appear, so do not treat the list as closed. It decides which keys `data` has.
              * @example opportunity.stage_changed
              */
             readonly type?: string;
@@ -16119,13 +16884,14 @@ export interface components {
          *     * `company` - A company
          *     * `opportunity` - An opportunity
          *     * `automation` - An automation
+         *     * `automation_workflow` - A workflow, with the execution the row is about
          *     * `form` - A subscription form
          *     * `survey` - A survey
          *     * `file` - A file
          *     * `import` - An import
          * @enum {string}
          */
-        ActivityReferenceKind: "note" | "task" | "contact" | "company" | "opportunity" | "automation" | "form" | "survey" | "file" | "import";
+        ActivityReferenceKind: "note" | "task" | "contact" | "company" | "opportunity" | "automation" | "automation_workflow" | "form" | "survey" | "file" | "import";
         "AddToGroupAction-automation_step.read": {
             /**
              * Format: iri-reference
@@ -16165,6 +16931,1665 @@ export interface components {
              * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/d7a83bf3-4891-4fe9-a39b-c827fdf82fde
              */
             group?: string;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent-ai_agent.list": {
+            /**
+             * @description Who can use the agent: `team` = everyone who edits automations; `managers` = only those who manage them.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * Format: date-time
+             * @description When it was archived; `null` if it is not.
+             * @example 2026-11-20T10:00:00+00:00
+             */
+            readonly archived_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When it was created, ISO 8601.
+             * @example 2026-11-12T09:30:00+00:00
+             */
+            readonly created_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who created it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly created_by?: string;
+            /**
+             * @description What the agent is for, up to 500 characters.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description Key of the agent's icon (colourless icon of the Easymailing catalog). Default `agent-spark`.
+             * @example agent-spark
+             */
+            icon?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Name of the agent, up to 120 characters. Empty while the draft has no name; publishing needs one.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description Spend cap of this agent per billing period, `{amount, currency}` in EUR; `null` = no cap of its own. The account may also have a cap for all agents; both apply.
+             * @example null
+             */
+            period_cap?: Record<string, never> | null;
+            /**
+             * @description Number of the current published version; `null` while never published.
+             * @example 3
+             */
+            readonly published_version?: number | null;
+            /**
+             * @description What the agent spent in the last 30 days, in executions and tests, `{amount, currency}` in EUR.
+             * @example {
+             *       "amount": "4.82",
+             *       "currency": "EUR"
+             *     }
+             */
+            readonly spent_last_30_days?: Record<string, never>;
+            /**
+             * @description `draft`: never published. `published`: has a published version that can be asked. `archived`: retired; it cannot change or be asked, and the automations that use it stop with `agent_unavailable`.
+             * @example published
+             */
+            readonly status?: components["schemas"]["AiAgentStatus"];
+            /**
+             * @description `type` of each tool of the draft, in order.
+             * @example [
+             *       "web_search",
+             *       "read_page",
+             *       "crm_read"
+             *     ]
+             */
+            readonly tool_types?: string[];
+            /**
+             * @description The draft differs from the current published version (always true while never published). What runs, when someone asks the agent or an automation uses it, is the published version.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When it changed last, ISO 8601.
+             * @example 2026-11-14T16:05:00+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who changed it last.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string;
+            /**
+             * @description Published automations whose current version uses the agent.
+             * @example 2
+             */
+            readonly used_in?: number;
+            /**
+             * Format: uuid
+             * @description UUID of the agent.
+             * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent-ai_agent.read": {
+            /**
+             * @description Who can use the agent: `team` = everyone who edits automations; `managers` = only those who manage them.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * Format: date-time
+             * @description When it was archived; `null` if it is not.
+             * @example 2026-11-20T10:00:00+00:00
+             */
+            readonly archived_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When it was created, ISO 8601.
+             * @example 2026-11-12T09:30:00+00:00
+             */
+            readonly created_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who created it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly created_by?: string;
+            /**
+             * @description What the agent is for, up to 500 characters.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description The definition of the agent, with three keys, all optional on write (what is missing takes its default):
+             *     - `instructions` (string, up to 8,000 characters): who the agent is and how it works: role, goal, method and what it never does. It does NOT describe one task: the task is given each time the agent is asked.
+             *     - `tools` (list): `{type, config, mode}`. Each type at most once, except `mcp`, once per connection. Reading tools (`mode` is `read`, the only one they have): `web_search` (search the internet, with sources), `read_page` (open public https pages that appear in the task, in a search result or in a record it read; `config.allowed_domains` is an optional list of up to 20 domains, lowercase, without scheme, port or path; empty = any public domain), `crm_read` (search and read contacts, companies, opportunities, tasks, notes and their activity, with the permissions of whoever asks; of emails only subject, date and sender), `business_context` (deprecated: the business context now reaches every agent; the tool is still accepted and ignored), `files` (`config.files`: UUIDs of up to 20 files uploaded to the agent in Easymailing) and `calendar_availability` (free slots of a booking page, `config.booking_page`: its UUID). Tools that write, with `mode` `approval` (ask for approval, the default) or `auto` (automatic): `crm_create_note`, `crm_create_task`, `crm_update_opportunity`, `crm_move_opportunity` and `email_draft` (a draft, never sent). `mcp` uses an app connected in Easymailing: `config.connection` (its UUID) and `config.tools` (`{name, fingerprint, mode}`, up to 20 in all; `read` for tools of the app that only read). Writing tools only write inside automations: in a run started with `run_ai_agent` they never write (see there). `config` is `{}` for the tools without settings.
+             *     - `limits` (per task): `max_tool_calls` (integer 1-30, default 10), `max_seconds` (integer 10-600, default 120; counts only the agent's own work, not queues or waits) and `max_cost` (`{amount, currency}` in EUR, from 0.01 to 5.00, default 0.25).
+             *     Unknown keys, unknown tool types, repeated tools and out-of-range values are rejected, never corrected silently.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description Key of the agent's icon (colourless icon of the Easymailing catalog). Default `agent-spark`.
+             * @example agent-spark
+             */
+            icon?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Name of the agent, up to 120 characters. Empty while the draft has no name; publishing needs one.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description Spend cap of this agent per billing period, `{amount, currency}` in EUR; `null` = no cap of its own. The account may also have a cap for all agents; both apply.
+             * @example null
+             */
+            period_cap?: Record<string, never> | null;
+            /**
+             * @description The version that is current, `{number, definition, published_by, published_at}`, with `definition` in the same shape as `draft`; `null` while never published. What actually runs.
+             * @example null
+             */
+            readonly published?: Record<string, never> | null;
+            /**
+             * @description Number of the current published version; `null` while never published.
+             * @example 3
+             */
+            readonly published_version?: number | null;
+            /**
+             * @description What the agent spent in the last 30 days, in executions and tests, `{amount, currency}` in EUR.
+             * @example {
+             *       "amount": "4.82",
+             *       "currency": "EUR"
+             *     }
+             */
+            readonly spent_last_30_days?: Record<string, never>;
+            /**
+             * @description `draft`: never published. `published`: has a published version that can be asked. `archived`: retired; it cannot change or be asked, and the automations that use it stop with `agent_unavailable`.
+             * @example published
+             */
+            readonly status?: components["schemas"]["AiAgentStatus"];
+            /**
+             * @description `type` of each tool of the draft, in order.
+             * @example [
+             *       "web_search",
+             *       "read_page",
+             *       "crm_read"
+             *     ]
+             */
+            readonly tool_types?: string[];
+            /**
+             * @description The draft differs from the current published version (always true while never published). What runs, when someone asks the agent or an automation uses it, is the published version.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When it changed last, ISO 8601.
+             * @example 2026-11-14T16:05:00+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who changed it last.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string;
+            /**
+             * @description Published automations whose current version uses the agent.
+             * @example 2
+             */
+            readonly used_in?: number;
+            /**
+             * Format: uuid
+             * @description UUID of the agent.
+             * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent.AiAgentCreateInput": {
+            /**
+             * @description Who can use the agent. Default `team`.
+             * @default team
+             * @example team
+             */
+            access: components["schemas"]["AiAgentAccess"];
+            /**
+             * @description What the agent is for, up to 500 characters. Shown in the agent selector of the automation step and wherever the agent is listed.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description The definition of the agent, with three keys, all optional on write (what is missing takes its default):
+             *     - `instructions` (string, up to 8,000 characters): who the agent is and how it works: role, goal, method and what it never does. It does NOT describe one task: the task is given each time the agent is asked.
+             *     - `tools` (list): `{type, config, mode}`. Each type at most once, except `mcp`, once per connection. Reading tools (`mode` is `read`, the only one they have): `web_search` (search the internet, with sources), `read_page` (open public https pages that appear in the task, in a search result or in a record it read; `config.allowed_domains` is an optional list of up to 20 domains, lowercase, without scheme, port or path; empty = any public domain), `crm_read` (search and read contacts, companies, opportunities, tasks, notes and their activity, with the permissions of whoever asks; of emails only subject, date and sender), `business_context` (deprecated: the business context now reaches every agent; the tool is still accepted and ignored), `files` (`config.files`: UUIDs of up to 20 files uploaded to the agent in Easymailing) and `calendar_availability` (free slots of a booking page, `config.booking_page`: its UUID). Tools that write, with `mode` `approval` (ask for approval, the default) or `auto` (automatic): `crm_create_note`, `crm_create_task`, `crm_update_opportunity`, `crm_move_opportunity` and `email_draft` (a draft, never sent). `mcp` uses an app connected in Easymailing: `config.connection` (its UUID) and `config.tools` (`{name, fingerprint, mode}`, up to 20 in all; `read` for tools of the app that only read). Writing tools only write inside automations: in a run started with `run_ai_agent` they never write (see there). `config` is `{}` for the tools without settings.
+             *     - `limits` (per task): `max_tool_calls` (integer 1-30, default 10), `max_seconds` (integer 10-600, default 120; counts only the agent's own work, not queues or waits) and `max_cost` (`{amount, currency}` in EUR, from 0.01 to 5.00, default 0.25).
+             *     Unknown keys, unknown tool types, repeated tools and out-of-range values are rejected, never corrected silently.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description Key of the icon; default `agent-spark`.
+             * @default agent-spark
+             * @example agent-spark
+             */
+            icon: string;
+            /**
+             * @description Name of the agent, up to 120 characters. Surrounding spaces are removed. A draft can be saved without name, but publishing needs one.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description Optional spend cap of this agent per billing period, `{amount, currency}` in EUR. Missing or `null` = no cap of its own.
+             * @example {
+             *       "amount": "15.00",
+             *       "currency": "EUR"
+             *     }
+             */
+            period_cap?: Record<string, never> | null;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent.AiAgentCreateInput.jsonld": {
+            /**
+             * @description Who can use the agent. Default `team`.
+             * @default team
+             * @example team
+             */
+            access: components["schemas"]["AiAgentAccess"];
+            /**
+             * @description What the agent is for, up to 500 characters. Shown in the agent selector of the automation step and wherever the agent is listed.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description The definition of the agent, with three keys, all optional on write (what is missing takes its default):
+             *     - `instructions` (string, up to 8,000 characters): who the agent is and how it works: role, goal, method and what it never does. It does NOT describe one task: the task is given each time the agent is asked.
+             *     - `tools` (list): `{type, config, mode}`. Each type at most once, except `mcp`, once per connection. Reading tools (`mode` is `read`, the only one they have): `web_search` (search the internet, with sources), `read_page` (open public https pages that appear in the task, in a search result or in a record it read; `config.allowed_domains` is an optional list of up to 20 domains, lowercase, without scheme, port or path; empty = any public domain), `crm_read` (search and read contacts, companies, opportunities, tasks, notes and their activity, with the permissions of whoever asks; of emails only subject, date and sender), `business_context` (deprecated: the business context now reaches every agent; the tool is still accepted and ignored), `files` (`config.files`: UUIDs of up to 20 files uploaded to the agent in Easymailing) and `calendar_availability` (free slots of a booking page, `config.booking_page`: its UUID). Tools that write, with `mode` `approval` (ask for approval, the default) or `auto` (automatic): `crm_create_note`, `crm_create_task`, `crm_update_opportunity`, `crm_move_opportunity` and `email_draft` (a draft, never sent). `mcp` uses an app connected in Easymailing: `config.connection` (its UUID) and `config.tools` (`{name, fingerprint, mode}`, up to 20 in all; `read` for tools of the app that only read). Writing tools only write inside automations: in a run started with `run_ai_agent` they never write (see there). `config` is `{}` for the tools without settings.
+             *     - `limits` (per task): `max_tool_calls` (integer 1-30, default 10), `max_seconds` (integer 10-600, default 120; counts only the agent's own work, not queues or waits) and `max_cost` (`{amount, currency}` in EUR, from 0.01 to 5.00, default 0.25).
+             *     Unknown keys, unknown tool types, repeated tools and out-of-range values are rejected, never corrected silently.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description Key of the icon; default `agent-spark`.
+             * @default agent-spark
+             * @example agent-spark
+             */
+            icon: string;
+            /**
+             * @description Name of the agent, up to 120 characters. Surrounding spaces are removed. A draft can be saved without name, but publishing needs one.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description Optional spend cap of this agent per billing period, `{amount, currency}` in EUR. Missing or `null` = no cap of its own.
+             * @example {
+             *       "amount": "15.00",
+             *       "currency": "EUR"
+             *     }
+             */
+            period_cap?: Record<string, never> | null;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent.AiAgentUpdateInput": {
+            /**
+             * @description Who can use the agent. Missing = unchanged.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * @description New description, up to 500 characters. Missing = unchanged.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description The keys of the draft to change: each key sent (`instructions`, `tools`, `limits`) REPLACES that key of the draft as a whole (a `tools` list replaces the whole list; `limits` replaces the three limits, and a limit missing in it takes its default); the keys not sent are kept. Missing `draft` = the definition is not touched.
+             *
+             *     The definition of the agent, with three keys, all optional on write (what is missing takes its default):
+             *     - `instructions` (string, up to 8,000 characters): who the agent is and how it works: role, goal, method and what it never does. It does NOT describe one task: the task is given each time the agent is asked.
+             *     - `tools` (list): `{type, config, mode}`. Each type at most once, except `mcp`, once per connection. Reading tools (`mode` is `read`, the only one they have): `web_search` (search the internet, with sources), `read_page` (open public https pages that appear in the task, in a search result or in a record it read; `config.allowed_domains` is an optional list of up to 20 domains, lowercase, without scheme, port or path; empty = any public domain), `crm_read` (search and read contacts, companies, opportunities, tasks, notes and their activity, with the permissions of whoever asks; of emails only subject, date and sender), `business_context` (deprecated: the business context now reaches every agent; the tool is still accepted and ignored), `files` (`config.files`: UUIDs of up to 20 files uploaded to the agent in Easymailing) and `calendar_availability` (free slots of a booking page, `config.booking_page`: its UUID). Tools that write, with `mode` `approval` (ask for approval, the default) or `auto` (automatic): `crm_create_note`, `crm_create_task`, `crm_update_opportunity`, `crm_move_opportunity` and `email_draft` (a draft, never sent). `mcp` uses an app connected in Easymailing: `config.connection` (its UUID) and `config.tools` (`{name, fingerprint, mode}`, up to 20 in all; `read` for tools of the app that only read). Writing tools only write inside automations: in a run started with `run_ai_agent` they never write (see there). `config` is `{}` for the tools without settings.
+             *     - `limits` (per task): `max_tool_calls` (integer 1-30, default 10), `max_seconds` (integer 10-600, default 120; counts only the agent's own work, not queues or waits) and `max_cost` (`{amount, currency}` in EUR, from 0.01 to 5.00, default 0.25).
+             *     Unknown keys, unknown tool types, repeated tools and out-of-range values are rejected, never corrected silently.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description New icon key. Missing = unchanged.
+             * @example agent-spark
+             */
+            icon?: string;
+            /**
+             * @description New name, up to 120 characters. Surrounding spaces are removed. Missing = unchanged.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description New own cap per period, `{amount, currency}` in EUR. `null` removes it; missing keeps it.
+             * @example {
+             *       "amount": "15.00",
+             *       "currency": "EUR"
+             *     }
+             */
+            period_cap?: Record<string, never> | null;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent.AiAgentUpdateInput.jsonld": {
+            /**
+             * @description Who can use the agent. Missing = unchanged.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * @description New description, up to 500 characters. Missing = unchanged.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description The keys of the draft to change: each key sent (`instructions`, `tools`, `limits`) REPLACES that key of the draft as a whole (a `tools` list replaces the whole list; `limits` replaces the three limits, and a limit missing in it takes its default); the keys not sent are kept. Missing `draft` = the definition is not touched.
+             *
+             *     The definition of the agent, with three keys, all optional on write (what is missing takes its default):
+             *     - `instructions` (string, up to 8,000 characters): who the agent is and how it works: role, goal, method and what it never does. It does NOT describe one task: the task is given each time the agent is asked.
+             *     - `tools` (list): `{type, config, mode}`. Each type at most once, except `mcp`, once per connection. Reading tools (`mode` is `read`, the only one they have): `web_search` (search the internet, with sources), `read_page` (open public https pages that appear in the task, in a search result or in a record it read; `config.allowed_domains` is an optional list of up to 20 domains, lowercase, without scheme, port or path; empty = any public domain), `crm_read` (search and read contacts, companies, opportunities, tasks, notes and their activity, with the permissions of whoever asks; of emails only subject, date and sender), `business_context` (deprecated: the business context now reaches every agent; the tool is still accepted and ignored), `files` (`config.files`: UUIDs of up to 20 files uploaded to the agent in Easymailing) and `calendar_availability` (free slots of a booking page, `config.booking_page`: its UUID). Tools that write, with `mode` `approval` (ask for approval, the default) or `auto` (automatic): `crm_create_note`, `crm_create_task`, `crm_update_opportunity`, `crm_move_opportunity` and `email_draft` (a draft, never sent). `mcp` uses an app connected in Easymailing: `config.connection` (its UUID) and `config.tools` (`{name, fingerprint, mode}`, up to 20 in all; `read` for tools of the app that only read). Writing tools only write inside automations: in a run started with `run_ai_agent` they never write (see there). `config` is `{}` for the tools without settings.
+             *     - `limits` (per task): `max_tool_calls` (integer 1-30, default 10), `max_seconds` (integer 10-600, default 120; counts only the agent's own work, not queues or waits) and `max_cost` (`{amount, currency}` in EUR, from 0.01 to 5.00, default 0.25).
+             *     Unknown keys, unknown tool types, repeated tools and out-of-range values are rejected, never corrected silently.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description New icon key. Missing = unchanged.
+             * @example agent-spark
+             */
+            icon?: string;
+            /**
+             * @description New name, up to 120 characters. Surrounding spaces are removed. Missing = unchanged.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description New own cap per period, `{amount, currency}` in EUR. `null` removes it; missing keeps it.
+             * @example {
+             *       "amount": "15.00",
+             *       "currency": "EUR"
+             *     }
+             */
+            period_cap?: Record<string, never> | null;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent.jsonld-ai_agent.list": {
+            /**
+             * @description Who can use the agent: `team` = everyone who edits automations; `managers` = only those who manage them.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * Format: date-time
+             * @description When it was archived; `null` if it is not.
+             * @example 2026-11-20T10:00:00+00:00
+             */
+            readonly archived_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When it was created, ISO 8601.
+             * @example 2026-11-12T09:30:00+00:00
+             */
+            readonly created_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who created it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly created_by?: string;
+            /**
+             * @description What the agent is for, up to 500 characters.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description Key of the agent's icon (colourless icon of the Easymailing catalog). Default `agent-spark`.
+             * @example agent-spark
+             */
+            icon?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Name of the agent, up to 120 characters. Empty while the draft has no name; publishing needs one.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description Spend cap of this agent per billing period, `{amount, currency}` in EUR; `null` = no cap of its own. The account may also have a cap for all agents; both apply.
+             * @example null
+             */
+            period_cap?: Record<string, never> | null;
+            /**
+             * @description Number of the current published version; `null` while never published.
+             * @example 3
+             */
+            readonly published_version?: number | null;
+            /**
+             * @description What the agent spent in the last 30 days, in executions and tests, `{amount, currency}` in EUR.
+             * @example {
+             *       "amount": "4.82",
+             *       "currency": "EUR"
+             *     }
+             */
+            readonly spent_last_30_days?: Record<string, never>;
+            /**
+             * @description `draft`: never published. `published`: has a published version that can be asked. `archived`: retired; it cannot change or be asked, and the automations that use it stop with `agent_unavailable`.
+             * @example published
+             */
+            readonly status?: components["schemas"]["AiAgentStatus"];
+            /**
+             * @description `type` of each tool of the draft, in order.
+             * @example [
+             *       "web_search",
+             *       "read_page",
+             *       "crm_read"
+             *     ]
+             */
+            readonly tool_types?: string[];
+            /**
+             * @description The draft differs from the current published version (always true while never published). What runs, when someone asks the agent or an automation uses it, is the published version.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When it changed last, ISO 8601.
+             * @example 2026-11-14T16:05:00+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who changed it last.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string;
+            /**
+             * @description Published automations whose current version uses the agent.
+             * @example 2
+             */
+            readonly used_in?: number;
+            /**
+             * Format: uuid
+             * @description UUID of the agent.
+             * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description AI agents of the public API (ADR-0195). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *
+         *     Every operation checks its capability in the provider or processor before the use case ({@see \App\Application\Automation\ApiAiAgentAccess}),
+         *     because API Platform evaluates `security` after the provider; the rules live in the CoreBundle use cases (`Service\App\AiAgent`), the
+         *     same the internal API runs. The definition travels in snake_case ({@see \App\Api\State\Mapper\Automation\AiAgentDefinitionTranslator}).
+         *     `/ai_agents/actions/propose` is propose_ai_agent, not an agent.
+         */
+        "AiAgent.jsonld-ai_agent.read": {
+            /**
+             * @description Who can use the agent: `team` = everyone who edits automations; `managers` = only those who manage them.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * Format: date-time
+             * @description When it was archived; `null` if it is not.
+             * @example 2026-11-20T10:00:00+00:00
+             */
+            readonly archived_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When it was created, ISO 8601.
+             * @example 2026-11-12T09:30:00+00:00
+             */
+            readonly created_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who created it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly created_by?: string;
+            /**
+             * @description What the agent is for, up to 500 characters.
+             * @example Investiga empresas en internet y en el CRM, con fuentes.
+             */
+            description?: string;
+            /**
+             * @description The definition of the agent, with three keys, all optional on write (what is missing takes its default):
+             *     - `instructions` (string, up to 8,000 characters): who the agent is and how it works: role, goal, method and what it never does. It does NOT describe one task: the task is given each time the agent is asked.
+             *     - `tools` (list): `{type, config, mode}`. Each type at most once, except `mcp`, once per connection. Reading tools (`mode` is `read`, the only one they have): `web_search` (search the internet, with sources), `read_page` (open public https pages that appear in the task, in a search result or in a record it read; `config.allowed_domains` is an optional list of up to 20 domains, lowercase, without scheme, port or path; empty = any public domain), `crm_read` (search and read contacts, companies, opportunities, tasks, notes and their activity, with the permissions of whoever asks; of emails only subject, date and sender), `business_context` (deprecated: the business context now reaches every agent; the tool is still accepted and ignored), `files` (`config.files`: UUIDs of up to 20 files uploaded to the agent in Easymailing) and `calendar_availability` (free slots of a booking page, `config.booking_page`: its UUID). Tools that write, with `mode` `approval` (ask for approval, the default) or `auto` (automatic): `crm_create_note`, `crm_create_task`, `crm_update_opportunity`, `crm_move_opportunity` and `email_draft` (a draft, never sent). `mcp` uses an app connected in Easymailing: `config.connection` (its UUID) and `config.tools` (`{name, fingerprint, mode}`, up to 20 in all; `read` for tools of the app that only read). Writing tools only write inside automations: in a run started with `run_ai_agent` they never write (see there). `config` is `{}` for the tools without settings.
+             *     - `limits` (per task): `max_tool_calls` (integer 1-30, default 10), `max_seconds` (integer 10-600, default 120; counts only the agent's own work, not queues or waits) and `max_cost` (`{amount, currency}` in EUR, from 0.01 to 5.00, default 0.25).
+             *     Unknown keys, unknown tool types, repeated tools and out-of-range values are rejected, never corrected silently.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description Key of the agent's icon (colourless icon of the Easymailing catalog). Default `agent-spark`.
+             * @example agent-spark
+             */
+            icon?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Name of the agent, up to 120 characters. Empty while the draft has no name; publishing needs one.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description Spend cap of this agent per billing period, `{amount, currency}` in EUR; `null` = no cap of its own. The account may also have a cap for all agents; both apply.
+             * @example null
+             */
+            period_cap?: Record<string, never> | null;
+            /**
+             * @description The version that is current, `{number, definition, published_by, published_at}`, with `definition` in the same shape as `draft`; `null` while never published. What actually runs.
+             * @example null
+             */
+            readonly published?: Record<string, never> | null;
+            /**
+             * @description Number of the current published version; `null` while never published.
+             * @example 3
+             */
+            readonly published_version?: number | null;
+            /**
+             * @description What the agent spent in the last 30 days, in executions and tests, `{amount, currency}` in EUR.
+             * @example {
+             *       "amount": "4.82",
+             *       "currency": "EUR"
+             *     }
+             */
+            readonly spent_last_30_days?: Record<string, never>;
+            /**
+             * @description `draft`: never published. `published`: has a published version that can be asked. `archived`: retired; it cannot change or be asked, and the automations that use it stop with `agent_unavailable`.
+             * @example published
+             */
+            readonly status?: components["schemas"]["AiAgentStatus"];
+            /**
+             * @description `type` of each tool of the draft, in order.
+             * @example [
+             *       "web_search",
+             *       "read_page",
+             *       "crm_read"
+             *     ]
+             */
+            readonly tool_types?: string[];
+            /**
+             * @description The draft differs from the current published version (always true while never published). What runs, when someone asks the agent or an automation uses it, is the published version.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When it changed last, ISO 8601.
+             * @example 2026-11-14T16:05:00+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who changed it last.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string;
+            /**
+             * @description Published automations whose current version uses the agent.
+             * @example 2
+             */
+            readonly used_in?: number;
+            /**
+             * Format: uuid
+             * @description UUID of the agent.
+             * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Who can use the agent:
+         *     * `team` - Everyone who edits automations (`automations.work`)
+         *     * `managers` - Only those who manage automations (`automations.manage`)
+         * @enum {string}
+         */
+        AiAgentAccess: "team" | "managers";
+        /**
+         * @description `propose_ai_agent` (ADR-0195): a proposal of agent from a description, never saved. Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     A POST that answers 200: it creates nothing, so the proposal has no identifier.
+         */
+        "AiAgentProposal-ai_agent_proposal.read": {
+            /**
+             * @description Proposed access; always `team` (the default). Change it with the body of `create_ai_agent`.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * @description Proposed description.
+             * @example Investiga las empresas que entran por el formulario web y valora si encajan.
+             */
+            description?: string;
+            /**
+             * @description Proposed definition (`instructions`, `tools`, `limits`), in the shape described in `create_ai_agent`.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description Proposed icon key.
+             * @example agent-spark
+             */
+            icon?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Proposed name.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description What this call cost, `{amount, currency}` in EUR, already charged to the balance.
+             * @example {
+             *       "amount": "0.0210",
+             *       "currency": "EUR"
+             *     }
+             */
+            spent?: Record<string, never>;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+            /**
+             * @description What the description asked for and the proposal could not include, as `{code, message}`: `tool_unavailable` (a tool or connection that does not exist in the account), `file_upload_needed` (files that only a person can upload). Empty when everything fit.
+             * @example [
+             *       {
+             *         "code": "tool_unavailable",
+             *         "message": "Writing the result to Notion is not available: agents can only read for now."
+             *       }
+             *     ]
+             */
+            warnings?: Record<string, never>[];
+        };
+        /**
+         * @description `propose_ai_agent` (ADR-0195): a proposal of agent from a description, never saved. Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     A POST that answers 200: it creates nothing, so the proposal has no identifier.
+         */
+        "AiAgentProposal.AiAgentProposeInput": {
+            /**
+             * @description What the agent should do, in your own words, up to 2,000 characters. The more it says about the goal, the sources to trust and what the agent must never do, the better the proposal.
+             * @example Que investigue las empresas que entran por el formulario web: a qué se dedican, tamaño, novedades recientes y si encajan con lo que vendemos. Que cite siempre las fuentes.
+             */
+            description: string;
+        };
+        /**
+         * @description `propose_ai_agent` (ADR-0195): a proposal of agent from a description, never saved. Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     A POST that answers 200: it creates nothing, so the proposal has no identifier.
+         */
+        "AiAgentProposal.AiAgentProposeInput.jsonld": {
+            /**
+             * @description What the agent should do, in your own words, up to 2,000 characters. The more it says about the goal, the sources to trust and what the agent must never do, the better the proposal.
+             * @example Que investigue las empresas que entran por el formulario web: a qué se dedican, tamaño, novedades recientes y si encajan con lo que vendemos. Que cite siempre las fuentes.
+             */
+            description: string;
+        };
+        /**
+         * @description `propose_ai_agent` (ADR-0195): a proposal of agent from a description, never saved. Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     A POST that answers 200: it creates nothing, so the proposal has no identifier.
+         */
+        "AiAgentProposal.jsonld-ai_agent_proposal.read": {
+            /**
+             * @description Proposed access; always `team` (the default). Change it with the body of `create_ai_agent`.
+             * @example team
+             */
+            access?: components["schemas"]["AiAgentAccess"];
+            /**
+             * @description Proposed description.
+             * @example Investiga las empresas que entran por el formulario web y valora si encajan.
+             */
+            description?: string;
+            /**
+             * @description Proposed definition (`instructions`, `tools`, `limits`), in the shape described in `create_ai_agent`.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            draft?: Record<string, never>;
+            /**
+             * @description Proposed icon key.
+             * @example agent-spark
+             */
+            icon?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Proposed name.
+             * @example Investigador de empresas
+             */
+            name?: string;
+            /**
+             * @description What this call cost, `{amount, currency}` in EUR, already charged to the balance.
+             * @example {
+             *       "amount": "0.0210",
+             *       "currency": "EUR"
+             *     }
+             */
+            spent?: Record<string, never>;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+            /**
+             * @description What the description asked for and the proposal could not include, as `{code, message}`: `tool_unavailable` (a tool or connection that does not exist in the account), `file_upload_needed` (files that only a person can upload). Empty when everything fit.
+             * @example [
+             *       {
+             *         "code": "tool_unavailable",
+             *         "message": "Writing the result to Notion is not available: agents can only read for now."
+             *       }
+             *     ]
+             */
+            warnings?: Record<string, never>[];
+        };
+        /**
+         * @description Runs of an AI agent asked through the public API (ADR-0195): asynchronous tasks on the same engine as the «Test» panel and the
+         *     «AI agent» step (`AiAgentTestRun` with origin `api` and its `AiAgentRun`). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     `agentUuid` is only the path.
+         */
+        "AiAgentRun-ai_agent_run.read": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the agent that was asked.
+             * @example /ai_agents/6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+             */
+            agent?: string;
+            /**
+             * @description Version of the agent that ran, frozen when the run started; `null` for a run of the draft.
+             * @example 3
+             */
+            agent_version?: number | null;
+            /**
+             * @description The answer when `response_format` is `fields`: one key per requested field, validated. `null` while the run is not `completed`, with `text`, and when `ai_output_invalid`.
+             * @example null
+             */
+            answer_fields?: Record<string, never> | null;
+            /**
+             * @description The answer when `response_format` is `text`; `null` while the run is not `completed`, and with `fields`.
+             * @example Grupo Arenal Salud es un grupo sanitario privado con centros asistenciales. Encaje alto con lo que vendemos.
+             */
+            answer_text?: string | null;
+            /**
+             * Format: date-time
+             * @description When the run was requested, ISO 8601.
+             * @example 2026-11-15T10:40:00+00:00
+             */
+            created_at?: string;
+            /**
+             * @description Who asked, `{kind, name}`; `kind` is `user`, and a run asked by Maia is marked as made via Maia.
+             * @example {
+             *       "kind": "user",
+             *       "name": "Sergio Gallego"
+             *     }
+             */
+            created_by?: Record<string, never>;
+            /**
+             * @description Time the agent worked, in milliseconds; it does not count queue time or waits. `null` until it ends.
+             * @example 41200
+             */
+            duration_ms?: number | null;
+            /**
+             * Format: date-time
+             * @description When it ended; `null` while it has not.
+             * @example 2026-11-15T10:40:43+00:00
+             */
+            finished_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Until when the run can be read, ISO 8601 date and time; after that `get_ai_agent_run` answers 404. Copy what you need before.
+             * @example 2026-12-15T10:40:00+00:00
+             */
+            kept_until?: string;
+            /**
+             * @description Set when the agent hit one of its limits and had to answer with what it had (the answer is still given and the run is `completed`): `cost` (it reached `limits.max_cost`), `tool_calls` or `time`. `null` otherwise.
+             * @example null
+             */
+            limit_reached?: ((string | components["schemas"]["AiAgentRunLimit"] | null) | null) | components["schemas"]["AiAgentRunLimit"] | null;
+            /**
+             * Format: iri-reference
+             * @description IRI of the record the task is about; `null` if none.
+             * @example /companies/3a9e1f52-6c47-4d08-b1a3-9e2d7c5f8a40
+             */
+            record?: string | null;
+            /**
+             * @description `text` or `fields`, as requested.
+             * @example fields
+             */
+            response_format?: components["schemas"]["AiAgentRunResponseFormat"];
+            /**
+             * @description While the run is `queued` or `running`, how long to wait before asking again; `null` when it has ended or waits for approval.
+             * @example 3000
+             */
+            retry_after_ms?: number | null;
+            /**
+             * @description `published` or `draft`: what was run. A run of the draft is a test.
+             * @example published
+             */
+            source?: components["schemas"]["AiAgentRunSource"];
+            /**
+             * @description Pages the agent used, as `{title, url}`. Empty when it used no web search or page.
+             * @example [
+             *       {
+             *         "title": "Grupo Arenal Salud",
+             *         "url": "https://arenalsalud.es/"
+             *       }
+             *     ]
+             */
+            sources?: Record<string, never>[];
+            /**
+             * @description What the run has cost so far, `{amount, currency}` in EUR. It is charged turn by turn, so it grows while the run is going and is final when it ends.
+             * @example {
+             *       "amount": "0.0830",
+             *       "currency": "EUR"
+             *     }
+             */
+            spent?: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description When the agent started working; `null` while queued.
+             * @example 2026-11-15T10:40:02+00:00
+             */
+            started_at?: string | null;
+            /**
+             * @description `queued`: waiting for a turn (an account has at most 5 agents working at the same time). `running`: the agent is working. `waiting_approval`: reserved for runs that wait for a person to approve something that writes; a run asked through the API does not write, so it does not happen today. `completed`: finished with an answer. `stopped`: ended without a valid complete answer; see `stop_cause`.
+             * @example completed
+             */
+            state?: components["schemas"]["AiAgentRunState"];
+            /**
+             * @description Why a `stopped` run ended; `null` otherwise. `ai_credits_exhausted`, `ai_overage_exhausted`, `ai_agents_cap_reached`, `ai_agent_cap_reached`, `ai_credits_insufficient`, `ai_overage_unlimited`, `ai_payment_pending`: balance or caps, with the same meaning and remedy as in the errors of `run_ai_agent`. `economic_entitlement_unavailable`: the account lost CRM Pro. `agent_unavailable`: the agent was archived or the person can no longer use it. `ai_unavailable`: the AI provider failed after three attempts. `ai_output_invalid`: with `response_format: fields`, the answer did not fit the fields; it is charged and `answer_fields` is `null`.
+             * @example null
+             */
+            stop_cause?: ((string | components["schemas"]["AiAgentRunStopCause"] | null) | null) | components["schemas"]["AiAgentRunStopCause"] | null;
+            /**
+             * @description The task as it was sent.
+             * @example Investiga Grupo Arenal Salud (arenalsalud.es). Mira si ya la tenemos en el CRM y evalúa si encaja con lo que vendemos.
+             */
+            task?: string;
+            /**
+             * @description One entry per tool call, in order: `{type, detail, result, at}`. `detail` and `result` are short texts. For `crm_read` they only appear when the person who asked can read that record; otherwise they are `null`. No internal reasoning is included.
+             * @example [
+             *       {
+             *         "at": "2026-11-15T10:40:04+00:00",
+             *         "detail": "Search companies by domain arenalsalud.es",
+             *         "result": "No company found",
+             *         "type": "crm_read"
+             *       },
+             *       {
+             *         "at": "2026-11-15T10:40:07+00:00",
+             *         "detail": "Grupo Arenal Salud",
+             *         "result": "6 results",
+             *         "type": "web_search"
+             *       }
+             *     ]
+             */
+            tools_used?: Record<string, never>[];
+            /**
+             * Format: uuid
+             * @description UUID of the run. Read it with `get_ai_agent_run`.
+             * @example d4a8f3c1-7b52-4e09-8c16-5a2e9d0b4f73
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Runs of an AI agent asked through the public API (ADR-0195): asynchronous tasks on the same engine as the «Test» panel and the
+         *     «AI agent» step (`AiAgentTestRun` with origin `api` and its `AiAgentRun`). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     `agentUuid` is only the path.
+         */
+        "AiAgentRun.AiAgentRunInput": {
+            /**
+             * @description Optional key you choose (up to 64 characters, a UUID is fine) to repeat the request safely: the same key with the same body returns the run already created instead of starting and charging another one. The same key with a different body is 409 `client_request_reused`.
+             * @example 7f3c1a52-9b4d-4e60-a1c8-2d5e8f0b6a39
+             */
+            client_request_id?: string;
+            /**
+             * @description Reserved for when a run asked through the API can write (with approval). Then Maia (header `x-easymailing-agent: maia`) will send `true` once the person confirmed in the chat, when the version that runs has a tool that writes in `auto` (automatic) mode, and without it the answer will be 409 `ai_agent_run_confirmation_required`. Today a run never writes, so the field is ignored and that error does not happen. Default `false`.
+             * @default false
+             * @example false
+             */
+            confirmed: boolean;
+            /**
+             * @description Required when `response_format` is `fields`, up to 30 items, each `{path, type, required, items}`. `path` is the name of the field (letters, digits and `_`, up to 64 characters, no repeats); `type` is `text`, `number`, `date`, `boolean`, `object` or `list`; `required` says whether the answer must have it; `items` (only for `list`) is the type of each element. The answer is an object with those fields.
+             * @example [
+             *       {
+             *         "path": "a_que_se_dedica",
+             *         "required": true,
+             *         "type": "text"
+             *       },
+             *       {
+             *         "path": "sector",
+             *         "required": true,
+             *         "type": "text"
+             *       },
+             *       {
+             *         "path": "encaje",
+             *         "required": true,
+             *         "type": "number"
+             *       },
+             *       {
+             *         "path": "motivo_encaje",
+             *         "required": false,
+             *         "type": "text"
+             *       }
+             *     ]
+             */
+            fields?: Record<string, never>[];
+            /**
+             * Format: iri-reference
+             * @description IRI of a CRM record the task is about: `/contacts/{uuid}`, `/companies/{uuid}` or `/opportunities/{uuid}`. The agent reads it with its CRM tool, so the agent must have `crm_read`. Optional.
+             * @example /companies/3a9e1f52-6c47-4d08-b1a3-9e2d7c5f8a40
+             */
+            record?: string | null;
+            /**
+             * @description `text` (default): free text in `answer_text`. `fields`: one value per field of `fields` in `answer_fields`, validated; use it when another step will read the answer.
+             * @default text
+             * @example fields
+             */
+            response_format: components["schemas"]["AiAgentRunResponseFormat"];
+            /**
+             * @description What the agent has to do now, up to 4,000 characters. Write it as a complete request: the agent has no other context than its instructions, this task and what it reads.
+             * @example Investiga Grupo Arenal Salud (arenalsalud.es). Mira si ya la tenemos en el CRM y evalúa si encaja con lo que vendemos.
+             */
+            task: string;
+            /**
+             * @description `published` (default): the current published version, the one automations use. `draft`: the draft, to try changes before publishing; needs `automations.manage`.
+             * @default published
+             * @example published
+             */
+            version: components["schemas"]["AiAgentRunSource"];
+        };
+        /**
+         * @description Runs of an AI agent asked through the public API (ADR-0195): asynchronous tasks on the same engine as the «Test» panel and the
+         *     «AI agent» step (`AiAgentTestRun` with origin `api` and its `AiAgentRun`). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     `agentUuid` is only the path.
+         */
+        "AiAgentRun.AiAgentRunInput.jsonld": {
+            /**
+             * @description Optional key you choose (up to 64 characters, a UUID is fine) to repeat the request safely: the same key with the same body returns the run already created instead of starting and charging another one. The same key with a different body is 409 `client_request_reused`.
+             * @example 7f3c1a52-9b4d-4e60-a1c8-2d5e8f0b6a39
+             */
+            client_request_id?: string;
+            /**
+             * @description Reserved for when a run asked through the API can write (with approval). Then Maia (header `x-easymailing-agent: maia`) will send `true` once the person confirmed in the chat, when the version that runs has a tool that writes in `auto` (automatic) mode, and without it the answer will be 409 `ai_agent_run_confirmation_required`. Today a run never writes, so the field is ignored and that error does not happen. Default `false`.
+             * @default false
+             * @example false
+             */
+            confirmed: boolean;
+            /**
+             * @description Required when `response_format` is `fields`, up to 30 items, each `{path, type, required, items}`. `path` is the name of the field (letters, digits and `_`, up to 64 characters, no repeats); `type` is `text`, `number`, `date`, `boolean`, `object` or `list`; `required` says whether the answer must have it; `items` (only for `list`) is the type of each element. The answer is an object with those fields.
+             * @example [
+             *       {
+             *         "path": "a_que_se_dedica",
+             *         "required": true,
+             *         "type": "text"
+             *       },
+             *       {
+             *         "path": "sector",
+             *         "required": true,
+             *         "type": "text"
+             *       },
+             *       {
+             *         "path": "encaje",
+             *         "required": true,
+             *         "type": "number"
+             *       },
+             *       {
+             *         "path": "motivo_encaje",
+             *         "required": false,
+             *         "type": "text"
+             *       }
+             *     ]
+             */
+            fields?: Record<string, never>[];
+            /**
+             * Format: iri-reference
+             * @description IRI of a CRM record the task is about: `/contacts/{uuid}`, `/companies/{uuid}` or `/opportunities/{uuid}`. The agent reads it with its CRM tool, so the agent must have `crm_read`. Optional.
+             * @example /companies/3a9e1f52-6c47-4d08-b1a3-9e2d7c5f8a40
+             */
+            record?: string | null;
+            /**
+             * @description `text` (default): free text in `answer_text`. `fields`: one value per field of `fields` in `answer_fields`, validated; use it when another step will read the answer.
+             * @default text
+             * @example fields
+             */
+            response_format: components["schemas"]["AiAgentRunResponseFormat"];
+            /**
+             * @description What the agent has to do now, up to 4,000 characters. Write it as a complete request: the agent has no other context than its instructions, this task and what it reads.
+             * @example Investiga Grupo Arenal Salud (arenalsalud.es). Mira si ya la tenemos en el CRM y evalúa si encaja con lo que vendemos.
+             */
+            task: string;
+            /**
+             * @description `published` (default): the current published version, the one automations use. `draft`: the draft, to try changes before publishing; needs `automations.manage`.
+             * @default published
+             * @example published
+             */
+            version: components["schemas"]["AiAgentRunSource"];
+        };
+        /**
+         * @description Runs of an AI agent asked through the public API (ADR-0195): asynchronous tasks on the same engine as the «Test» panel and the
+         *     «AI agent» step (`AiAgentTestRun` with origin `api` and its `AiAgentRun`). Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     `agentUuid` is only the path.
+         */
+        "AiAgentRun.jsonld-ai_agent_run.read": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the agent that was asked.
+             * @example /ai_agents/6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+             */
+            agent?: string;
+            /**
+             * @description Version of the agent that ran, frozen when the run started; `null` for a run of the draft.
+             * @example 3
+             */
+            agent_version?: number | null;
+            /**
+             * @description The answer when `response_format` is `fields`: one key per requested field, validated. `null` while the run is not `completed`, with `text`, and when `ai_output_invalid`.
+             * @example null
+             */
+            answer_fields?: Record<string, never> | null;
+            /**
+             * @description The answer when `response_format` is `text`; `null` while the run is not `completed`, and with `fields`.
+             * @example Grupo Arenal Salud es un grupo sanitario privado con centros asistenciales. Encaje alto con lo que vendemos.
+             */
+            answer_text?: string | null;
+            /**
+             * Format: date-time
+             * @description When the run was requested, ISO 8601.
+             * @example 2026-11-15T10:40:00+00:00
+             */
+            created_at?: string;
+            /**
+             * @description Who asked, `{kind, name}`; `kind` is `user`, and a run asked by Maia is marked as made via Maia.
+             * @example {
+             *       "kind": "user",
+             *       "name": "Sergio Gallego"
+             *     }
+             */
+            created_by?: Record<string, never>;
+            /**
+             * @description Time the agent worked, in milliseconds; it does not count queue time or waits. `null` until it ends.
+             * @example 41200
+             */
+            duration_ms?: number | null;
+            /**
+             * Format: date-time
+             * @description When it ended; `null` while it has not.
+             * @example 2026-11-15T10:40:43+00:00
+             */
+            finished_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Until when the run can be read, ISO 8601 date and time; after that `get_ai_agent_run` answers 404. Copy what you need before.
+             * @example 2026-12-15T10:40:00+00:00
+             */
+            kept_until?: string;
+            /**
+             * @description Set when the agent hit one of its limits and had to answer with what it had (the answer is still given and the run is `completed`): `cost` (it reached `limits.max_cost`), `tool_calls` or `time`. `null` otherwise.
+             * @example null
+             */
+            limit_reached?: ((string | components["schemas"]["AiAgentRunLimit"] | null) | null) | components["schemas"]["AiAgentRunLimit"] | null;
+            /**
+             * Format: iri-reference
+             * @description IRI of the record the task is about; `null` if none.
+             * @example /companies/3a9e1f52-6c47-4d08-b1a3-9e2d7c5f8a40
+             */
+            record?: string | null;
+            /**
+             * @description `text` or `fields`, as requested.
+             * @example fields
+             */
+            response_format?: components["schemas"]["AiAgentRunResponseFormat"];
+            /**
+             * @description While the run is `queued` or `running`, how long to wait before asking again; `null` when it has ended or waits for approval.
+             * @example 3000
+             */
+            retry_after_ms?: number | null;
+            /**
+             * @description `published` or `draft`: what was run. A run of the draft is a test.
+             * @example published
+             */
+            source?: components["schemas"]["AiAgentRunSource"];
+            /**
+             * @description Pages the agent used, as `{title, url}`. Empty when it used no web search or page.
+             * @example [
+             *       {
+             *         "title": "Grupo Arenal Salud",
+             *         "url": "https://arenalsalud.es/"
+             *       }
+             *     ]
+             */
+            sources?: Record<string, never>[];
+            /**
+             * @description What the run has cost so far, `{amount, currency}` in EUR. It is charged turn by turn, so it grows while the run is going and is final when it ends.
+             * @example {
+             *       "amount": "0.0830",
+             *       "currency": "EUR"
+             *     }
+             */
+            spent?: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description When the agent started working; `null` while queued.
+             * @example 2026-11-15T10:40:02+00:00
+             */
+            started_at?: string | null;
+            /**
+             * @description `queued`: waiting for a turn (an account has at most 5 agents working at the same time). `running`: the agent is working. `waiting_approval`: reserved for runs that wait for a person to approve something that writes; a run asked through the API does not write, so it does not happen today. `completed`: finished with an answer. `stopped`: ended without a valid complete answer; see `stop_cause`.
+             * @example completed
+             */
+            state?: components["schemas"]["AiAgentRunState"];
+            /**
+             * @description Why a `stopped` run ended; `null` otherwise. `ai_credits_exhausted`, `ai_overage_exhausted`, `ai_agents_cap_reached`, `ai_agent_cap_reached`, `ai_credits_insufficient`, `ai_overage_unlimited`, `ai_payment_pending`: balance or caps, with the same meaning and remedy as in the errors of `run_ai_agent`. `economic_entitlement_unavailable`: the account lost CRM Pro. `agent_unavailable`: the agent was archived or the person can no longer use it. `ai_unavailable`: the AI provider failed after three attempts. `ai_output_invalid`: with `response_format: fields`, the answer did not fit the fields; it is charged and `answer_fields` is `null`.
+             * @example null
+             */
+            stop_cause?: ((string | components["schemas"]["AiAgentRunStopCause"] | null) | null) | components["schemas"]["AiAgentRunStopCause"] | null;
+            /**
+             * @description The task as it was sent.
+             * @example Investiga Grupo Arenal Salud (arenalsalud.es). Mira si ya la tenemos en el CRM y evalúa si encaja con lo que vendemos.
+             */
+            task?: string;
+            /**
+             * @description One entry per tool call, in order: `{type, detail, result, at}`. `detail` and `result` are short texts. For `crm_read` they only appear when the person who asked can read that record; otherwise they are `null`. No internal reasoning is included.
+             * @example [
+             *       {
+             *         "at": "2026-11-15T10:40:04+00:00",
+             *         "detail": "Search companies by domain arenalsalud.es",
+             *         "result": "No company found",
+             *         "type": "crm_read"
+             *       },
+             *       {
+             *         "at": "2026-11-15T10:40:07+00:00",
+             *         "detail": "Grupo Arenal Salud",
+             *         "result": "6 results",
+             *         "type": "web_search"
+             *       }
+             *     ]
+             */
+            tools_used?: Record<string, never>[];
+            /**
+             * Format: uuid
+             * @description UUID of the run. Read it with `get_ai_agent_run`.
+             * @example d4a8f3c1-7b52-4e09-8c16-5a2e9d0b4f73
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Limit reached:
+         *     * `cost` - It reached `limits.max_cost`
+         *     * `tool_calls` - It reached `limits.max_tool_calls`
+         *     * `time` - It reached `limits.max_seconds`
+         * @enum {string}
+         */
+        AiAgentRunLimit: "cost" | "tool_calls" | "time";
+        /**
+         * @description Shape of the answer:
+         *     * `text` - Free text in `answer_text`
+         *     * `fields` - One validated value per field in `answer_fields`
+         * @enum {string}
+         */
+        AiAgentRunResponseFormat: "text" | "fields";
+        /**
+         * @description What the run runs:
+         *     * `published` - The current published version
+         *     * `draft` - The draft (a test)
+         * @enum {string}
+         */
+        AiAgentRunSource: "published" | "draft";
+        /**
+         * @description State of the run:
+         *     * `queued` - Waiting for a turn
+         *     * `running` - The agent is working
+         *     * `waiting_approval` - Waits for a person to approve something that writes (not used by runs asked through the API)
+         *     * `completed` - Finished with an answer
+         *     * `stopped` - Ended without a valid complete answer; see `stop_cause`
+         * @enum {string}
+         */
+        AiAgentRunState: "queued" | "running" | "waiting_approval" | "completed" | "stopped";
+        /**
+         * @description Why the run stopped:
+         *     * `ai_credits_exhausted` - The included AI balance is used up and extra spending is off
+         *     * `ai_overage_exhausted` - The extra spending limit is reached
+         *     * `ai_agents_cap_reached` - The cap for all agents in this period is reached
+         *     * `ai_agent_cap_reached` - This agent reached its own cap
+         *     * `ai_credits_insufficient` - What is left is less than the maximum cost of one task
+         *     * `ai_overage_unlimited` - Extra spending without a limit, which agents do not use
+         *     * `ai_payment_pending` - An unpaid charge blocks new AI use
+         *     * `economic_entitlement_unavailable` - The account lost CRM Pro
+         *     * `agent_unavailable` - The agent was archived or the person who asked can no longer use it
+         *     * `ai_unavailable` - The AI provider failed
+         *     * `ai_output_invalid` - The answer was empty, cut or did not fit the requested fields
+         * @enum {string}
+         */
+        AiAgentRunStopCause: "ai_credits_exhausted" | "ai_overage_exhausted" | "ai_agents_cap_reached" | "ai_agent_cap_reached" | "ai_credits_insufficient" | "ai_overage_unlimited" | "ai_payment_pending" | "economic_entitlement_unavailable" | "agent_unavailable" | "ai_unavailable" | "ai_output_invalid";
+        /**
+         * @description State of the agent:
+         *     * `draft` - Never published
+         *     * `published` - Has a published version that can be asked
+         *     * `archived` - Retired; it cannot change or be asked
+         * @enum {string}
+         */
+        AiAgentStatus: "draft" | "published" | "archived";
+        /**
+         * @description `list_ai_agent_versions` (ADR-0195): the published versions of an agent, newest first. Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     A version has no reading of its own: the item route only names its `@id`, never exposed. `agentUuid` is only the path.
+         */
+        "AiAgentVersion-ai_agent_version.read": {
+            /**
+             * @description The definition frozen when it was published, in the same shape as `draft` of `get_ai_agent`.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            definition?: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Number of the version, from 1.
+             * @example 3
+             */
+            number?: number;
+            /**
+             * Format: date-time
+             * @description When it was published, ISO 8601.
+             * @example 2026-11-14T16:10:00+00:00
+             */
+            published_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            published_by?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description `list_ai_agent_versions` (ADR-0195): the published versions of an agent, newest first. Generated from the approved proposal (2026-11-16) by trabajo/2026-11-15-agentes-ia/fase-4-api-publica/tools/gen_ai_agents_api.py;
+         *     the texts are the proposal's, with the deviations the code imposes (notas.md § 10).
+         *     A version has no reading of its own: the item route only names its `@id`, never exposed. `agentUuid` is only the path.
+         */
+        "AiAgentVersion.jsonld-ai_agent_version.read": {
+            /**
+             * @description The definition frozen when it was published, in the same shape as `draft` of `get_ai_agent`.
+             * @example {
+             *       "instructions": "Eres analista comercial. Investigas empresas con su web y fuentes de los últimos 12 meses. Si no estás seguro de un dato, lo dices. Nunca inventas cifras.",
+             *       "limits": {
+             *         "max_cost": {
+             *           "amount": "0.25",
+             *           "currency": "EUR"
+             *         },
+             *         "max_seconds": 120,
+             *         "max_tool_calls": 10
+             *       },
+             *       "tools": [
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "web_search"
+             *         },
+             *         {
+             *           "config": {
+             *             "allowed_domains": []
+             *           },
+             *           "mode": "read",
+             *           "type": "read_page"
+             *         },
+             *         {
+             *           "config": {},
+             *           "mode": "read",
+             *           "type": "crm_read"
+             *         }
+             *       ]
+             *     }
+             */
+            definition?: Record<string, never>;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Number of the version, from 1.
+             * @example 3
+             */
+            number?: number;
+            /**
+             * Format: date-time
+             * @description When it was published, ISO 8601.
+             * @example 2026-11-14T16:10:00+00:00
+             */
+            published_at?: string;
+            /**
+             * Format: uuid
+             * @description Membership UUID of who published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            published_by?: string;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
         };
         "AsyncTask-async_task.read": {
             /**
@@ -47952,9 +50377,10 @@ export interface components {
          *     * `manual_exclusion` - A person excluded it
          *     * `subject_removed` - The contact was removed
          *     * `missing_required_data` - A required personalization tag had no value
+         *     * `responsible_unavailable` - Its responsible, the owner of the sending mailbox, was removed from the account
          * @enum {string}
          */
-        EmailSequenceExitReason: "completed" | "reply" | "meeting_booked" | "unsubscribe" | "bounce" | "invalid_address" | "suppressed" | "commercial_block" | "manual_exclusion" | "subject_removed" | "missing_required_data";
+        EmailSequenceExitReason: "completed" | "reply" | "meeting_booked" | "unsubscribe" | "bounce" | "invalid_address" | "suppressed" | "commercial_block" | "manual_exclusion" | "subject_removed" | "missing_required_data" | "responsible_unavailable";
         /**
          * @description Severity of the problem:
          *     * `error` - It blocks publishing
@@ -57820,7 +60246,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -57919,6 +60345,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -58075,7 +60507,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -58166,6 +60598,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -58332,7 +60770,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -58433,6 +60871,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -58631,6 +61075,12 @@ export interface components {
              */
             pipeline: string;
             /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
+            /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
              */
@@ -58730,6 +61180,12 @@ export interface components {
              */
             pipeline: string;
             /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
+            /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
              */
@@ -58775,7 +61231,7 @@ export interface components {
          */
         "Opportunity.OpportunityLoseInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -58809,7 +61265,7 @@ export interface components {
          */
         "Opportunity.OpportunityLoseInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -58957,7 +61413,7 @@ export interface components {
          */
         "Opportunity.OpportunityPipelineMoveInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59022,7 +61478,7 @@ export interface components {
          */
         "Opportunity.OpportunityPipelineMoveInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59087,7 +61543,7 @@ export interface components {
          */
         "Opportunity.OpportunityReopenInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59111,7 +61567,7 @@ export interface components {
          */
         "Opportunity.OpportunityReopenInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59135,7 +61591,7 @@ export interface components {
          */
         "Opportunity.OpportunityStageMoveInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59169,7 +61625,7 @@ export interface components {
          */
         "Opportunity.OpportunityStageMoveInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59240,6 +61696,12 @@ export interface components {
              * @example laura@acme.com
              */
             owner?: string | null;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
@@ -59319,6 +61781,12 @@ export interface components {
              */
             owner?: string | null;
             /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`): the person of reference of the deal, always one of its contacts. The first contact associated becomes the primary one. Sending a contact here also associates it, even if `contacts` leaves it out in the same request, so it counts toward the limit of 500 contacts (`opportunity_invalid_value` on `primary_contact` beyond it). `null` is rejected (`opportunity_primary_contact_required`) while the opportunity has contacts; it is accepted when there are none. If you remove the primary contact, the oldest remaining one takes its place.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
+            /**
              * @description Overrides the stage probability, 0 to 99. Allowed only while the opportunity is in an open stage of a pipeline with `allow_custom_probability`. `null` goes back to the probability of the stage.
              * @example 60
              */
@@ -59359,7 +61827,7 @@ export interface components {
          */
         "Opportunity.OpportunityWinInput": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59383,7 +61851,7 @@ export interface components {
          */
         "Opportunity.OpportunityWinInput.jsonld": {
             /**
-             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
+             * @description Values for the fields the destination stage requires to enter it (`required_fields` and `required_attributes` of the stage in `get_pipeline`). Same properties and format as `update_opportunity`: `owner`, `company`, `contacts`, `primary_contact`, `value`, `expected_close_date`, `description` and `attributes`. They are saved in the same step as the move: if the stage still lacks something, nothing is saved.
              * @example {
              *       "expected_close_date": "2026-12-15",
              *       "owner": "laura@acme.com"
@@ -59429,7 +61897,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -59530,6 +61998,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -59686,7 +62160,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -59777,6 +62251,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -59943,7 +62423,7 @@ export interface components {
              */
             company?: string | null;
             /**
-             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity. There is no primary contact.
+             * @description IRIs of the contacts (`/contacts/{uuid}`) linked to the opportunity, the primary contact first and then by date of association.
              * @example [
              *       "/contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d",
              *       "/contacts/9e4a1c7b-2d58-4f03-b6a9-7c0e3d5f8a12"
@@ -60044,6 +62524,12 @@ export interface components {
              * @example /pipelines/d2a7e5b1-9c43-4f68-b0a1-3e6c8f2d4b57
              */
             pipeline?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the primary contact (`/contacts/{uuid}`), the person of reference of the deal; always one of `contacts`. The first contact associated becomes the primary one; if it is removed or deleted, the oldest remaining contact takes its place. `null` only when the opportunity has no contacts.
+             * @example /contacts/5b1d3c7e-8f2a-4c6b-9d10-2e4f6a8b0c1d
+             */
+            primary_contact?: string | null;
             /**
              * @description Effective win probability, 0 to 100. It is the stage probability unless `probability_mode` is `custom`; 100 when won and 0 when lost.
              * @example 60
@@ -67444,6 +69930,1490 @@ export interface components {
              */
             subject: string;
         };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm-subscription_form.list": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the audience that receives the people who sign up. Set when the form is created and never changes.
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            readonly audience?: string;
+            /**
+             * @description What the form collects: `email`, `sms` or both. Never changes after creation.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * Format: date-time
+             * @description When a classic form was converted with `convert_subscription_form`. `null` for forms that were never converted.
+             * @example 2026-10-20T09:00:00+02:00
+             */
+            readonly converted_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When the form was created.
+             * @example 2026-11-02T09:15:00+01:00
+             */
+            readonly created_at?: string;
+            /**
+             * @description `current` forms are created and edited in the Customer App and managed with the `subscription_form` operations. `classic` forms belong to the older engine: they are managed with the operations under `/audiences/{audienceUuid}/suscription_forms` and the Customer App only shows them until they are converted.
+             * @example current
+             */
+            readonly generation?: components["schemas"]["SubscriptionFormGeneration"];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Where the form stands: `form.status.draft` has no design yet (publishing generates it from its template when it can); `form.status.unpublished` has a design but has never been published; `form.status.published` is live; `form.status.paused` was published and is taken offline until it is resumed.
+             * @example form.status.published
+             */
+            readonly status?: components["schemas"]["SuscriptionFormStatus"];
+            /**
+             * @description Number of memberships created through this form: people who joined the audience by signing up here, each counted once. Someone who was already in the audience before filling it in is not counted.
+             * @example 128
+             */
+            readonly subscriber_count?: number;
+            /**
+             * @description Internal name of the form (255 characters at most). Visitors do not see it.
+             * @example Newsletter sign-up
+             */
+            title?: string;
+            /**
+             * @description `embedded` shows the form inside a page; `popup` shows it over the page when its triggers fire. Never changes after creation.
+             * @example embedded
+             */
+            readonly type?: components["schemas"]["SuscriptionFormType"];
+            /**
+             * Format: date-time
+             * @description When the form was last changed.
+             * @example 2026-11-09T17:40:00+01:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the form.
+             * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm-subscription_form.read": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the audience that receives the people who sign up. Set when the form is created and never changes.
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            readonly audience?: string;
+            /**
+             * @description Purposes the form could show: the purposes enabled in the audience that cover a channel of the form. A person chooses which of them the form shows, in the Customer App.
+             * @example [
+             *       {
+             *         "name": "Marketing emails",
+             *         "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+             *       }
+             *     ]
+             */
+            available_purposes?: Record<string, never>[];
+            /**
+             * @description What the form collects: `email`, `sms` or both. Never changes after creation.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * @description How the consent purposes shown in the form are required: `all_required` means the visitor must accept every purpose, `one_required` at least one. It matters when the audience has GDPR enabled.
+             * @example all_required
+             */
+            consent_mode?: components["schemas"]["SubscriptionFormConsentMode"];
+            /**
+             * Format: date-time
+             * @description When a classic form was converted with `convert_subscription_form`. `null` for forms that were never converted.
+             * @example 2026-10-20T09:00:00+02:00
+             */
+            readonly converted_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When the form was created.
+             * @example 2026-11-02T09:15:00+01:00
+             */
+            readonly created_at?: string;
+            /**
+             * @description What the form does with the data of a contact and of a company that already exist in the CRM. `contact` and `company` each take `fill_empty` (write an answer only where the record has no value), `preserve` (never write an existing record) or `update` (write every non-empty answer). `company` only matters when the form asks for company data.
+             * @example {
+             *       "company": "fill_empty",
+             *       "contact": "fill_empty"
+             *     }
+             */
+            crm_data_policy?: {
+                /**
+                 * @description Mode for companies.
+                 * @example fill_empty
+                 */
+                company: components["schemas"]["SubscriptionFormCrmDataMode"];
+                /**
+                 * @description Mode for contacts.
+                 * @example fill_empty
+                 */
+                contact: components["schemas"]["SubscriptionFormCrmDataMode"];
+            };
+            /**
+             * @description `true` sends a confirmation email and subscribes the person only after they click it. Always `true` when the account requires double opt-in.
+             * @example true
+             */
+            email_double_opt_in?: boolean;
+            /**
+             * @description `current` forms are created and edited in the Customer App and managed with the `subscription_form` operations. `classic` forms belong to the older engine: they are managed with the operations under `/audiences/{audienceUuid}/suscription_forms` and the Customer App only shows them until they are converted.
+             * @example current
+             */
+            readonly generation?: components["schemas"]["SubscriptionFormGeneration"];
+            /**
+             * @description IRIs of the groups of the audience that every person who signs up is added to. Read their names with `list_audience_groups`.
+             * @example [
+             *       "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+             *     ]
+             */
+            groups?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Language of the form texts, as a locale code.
+             * @example en
+             */
+            locale?: string | null;
+            /**
+             * @description `true` when the form has been changed since it was last published, so visitors still see the older version until `publish_subscription_form` is called. `false` for a form that has never been published or has nothing new to publish.
+             * @example false
+             */
+            readonly pending_changes?: boolean;
+            /**
+             * @description Triggers, frequency, schedule, URLs and devices of a popup form. `null` for embedded forms.
+             * @example {
+             *       "exclude_urls": [],
+             *       "frequency_days": 30,
+             *       "hide_on_desktop": false,
+             *       "hide_on_mobile": false,
+             *       "hide_on_tablet": false,
+             *       "include_urls": [],
+             *       "on_exit": true,
+             *       "on_load_scroll_enabled": false,
+             *       "on_load_scroll_percentage": 50,
+             *       "on_load_time_enabled": true,
+             *       "on_load_time_seconds": 8,
+             *       "schedule_enabled": false,
+             *       "schedule_end_at": null,
+             *       "schedule_start_at": null
+             *     }
+             */
+            popup_behavior?: {
+                /**
+                 * @description Never show the popup on these URLs.
+                 * @example []
+                 */
+                exclude_urls?: string[];
+                /**
+                 * @description Days before the same visitor sees the popup again: 1, 7, 15, 30, 60, 90, 180 or 365.
+                 * @example 30
+                 */
+                frequency_days?: components["schemas"]["SubscriptionFormPopupFrequencyDays"];
+                /**
+                 * @description Hide the popup on desktop computers.
+                 * @example false
+                 */
+                hide_on_desktop?: boolean;
+                /**
+                 * @description Hide the popup on phones.
+                 * @example false
+                 */
+                hide_on_mobile?: boolean;
+                /**
+                 * @description Hide the popup on tablets.
+                 * @example false
+                 */
+                hide_on_tablet?: boolean;
+                /**
+                 * @description Show the popup only on these URLs. Empty means everywhere.
+                 * @example [
+                 *       "https://acme.com/blog"
+                 *     ]
+                 */
+                include_urls?: string[];
+                /**
+                 * @description Show the popup when the visitor is about to leave the page.
+                 * @example true
+                 */
+                on_exit?: boolean;
+                /**
+                 * @description Show the popup after the visitor scrolls.
+                 * @example false
+                 */
+                on_load_scroll_enabled?: boolean;
+                /**
+                 * @description Scroll depth that fires the popup: 25, 50, 75 or 100.
+                 * @example 50
+                 */
+                on_load_scroll_percentage?: components["schemas"]["SubscriptionFormPopupScrollPercentage"];
+                /**
+                 * @description Show the popup after a delay.
+                 * @example true
+                 */
+                on_load_time_enabled?: boolean;
+                /**
+                 * @description Delay in seconds, 0 or more.
+                 * @example 5
+                 */
+                on_load_time_seconds?: number;
+                /**
+                 * @description Limit the popup to a date range. When `false` the dates are ignored and saved as `null`.
+                 * @example false
+                 */
+                schedule_enabled?: boolean;
+                /**
+                 * Format: date
+                 * @description Day the popup stops being shown, as `YYYY-MM-DD`. It must be after `schedule_start_at`.
+                 * @example 2026-11-30
+                 */
+                schedule_end_at?: string | null;
+                /**
+                 * Format: date
+                 * @description Day the popup starts being shown, as `YYYY-MM-DD`. Used only when `schedule_enabled` is `true`.
+                 * @example 2026-11-20
+                 */
+                schedule_start_at?: string | null;
+            } | null;
+            /**
+             * @description Consent purposes shown in the form, as `{uuid, name}`.
+             * @example [
+             *       {
+             *         "name": "Marketing emails",
+             *         "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+             *       }
+             *     ]
+             */
+            purposes?: Record<string, never>[];
+            /**
+             * Format: uri
+             * @description Public link to a page hosted by Easymailing that shows the form. `null` until the form is published for the first time. From then on the link is always given, but it only works while the form is published and not paused.
+             * @example https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7
+             */
+            readonly share_url?: string | null;
+            /**
+             * @description `true` asks for confirmation by SMS before subscribing the phone. Always `true` when the account requires it.
+             * @example false
+             */
+            sms_double_opt_in?: boolean;
+            /**
+             * @description Where the form stands: `form.status.draft` has no design yet (publishing generates it from its template when it can); `form.status.unpublished` has a design but has never been published; `form.status.published` is live; `form.status.paused` was published and is taken offline until it is resumed.
+             * @example form.status.published
+             */
+            readonly status?: components["schemas"]["SuscriptionFormStatus"];
+            /**
+             * @description Number of memberships created through this form: people who joined the audience by signing up here, each counted once. Someone who was already in the audience before filling it in is not counted.
+             * @example 128
+             */
+            readonly subscriber_count?: number;
+            /**
+             * @description Internal name of the form (255 characters at most). Visitors do not see it.
+             * @example Newsletter sign-up
+             */
+            title?: string;
+            /**
+             * @description `embedded` shows the form inside a page; `popup` shows it over the page when its triggers fire. Never changes after creation.
+             * @example embedded
+             */
+            readonly type?: components["schemas"]["SuscriptionFormType"];
+            /**
+             * Format: date-time
+             * @description When the form was last changed.
+             * @example 2026-11-09T17:40:00+01:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the form.
+             * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+             */
+            readonly uuid?: string;
+            /**
+             * @description `true` sends the welcome email once the subscription is complete.
+             * @example true
+             */
+            welcome_email_enabled?: boolean;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormCreateInput": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the audience that receives the people who sign up. Get it from `list_audiences`. Cannot be changed later.
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience: string;
+            /**
+             * @description What the form collects: `email`, `sms` or both. Cannot be changed later.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            channels: string[];
+            /**
+             * @description `true` sends a confirmation email and subscribes the person only after they click it. Forced to `true` when the account requires it. Default `false`.
+             * @example true
+             */
+            email_double_opt_in?: boolean;
+            /**
+             * @description Language of the form texts. Optional when the account has a single language; required when it has several.
+             * @example en
+             */
+            locale?: string;
+            /**
+             * @description `true` asks for confirmation by SMS before subscribing the phone. Forced to `true` when the account requires it. Default `false`.
+             * @example false
+             */
+            sms_double_opt_in?: boolean;
+            /**
+             * @description Numeric `id` of a template from `list_subscription_form_templates`. If you omit it, the first template that list would return for this audience, type and channels is used.
+             * @example 12
+             */
+            template_id?: number;
+            /**
+             * @description Internal name of the form (255 characters at most). Visitors do not see it.
+             * @example Newsletter sign-up
+             */
+            title: string;
+            /**
+             * @description `embedded` shows the form inside a page; `popup` shows it over the page when its triggers fire (needs a plan that includes popups). Cannot be changed later.
+             * @example embedded
+             */
+            type: components["schemas"]["SuscriptionFormType"];
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormCreateInput.jsonld": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the audience that receives the people who sign up. Get it from `list_audiences`. Cannot be changed later.
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            audience: string;
+            /**
+             * @description What the form collects: `email`, `sms` or both. Cannot be changed later.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            channels: string[];
+            /**
+             * @description `true` sends a confirmation email and subscribes the person only after they click it. Forced to `true` when the account requires it. Default `false`.
+             * @example true
+             */
+            email_double_opt_in?: boolean;
+            /**
+             * @description Language of the form texts. Optional when the account has a single language; required when it has several.
+             * @example en
+             */
+            locale?: string;
+            /**
+             * @description `true` asks for confirmation by SMS before subscribing the phone. Forced to `true` when the account requires it. Default `false`.
+             * @example false
+             */
+            sms_double_opt_in?: boolean;
+            /**
+             * @description Numeric `id` of a template from `list_subscription_form_templates`. If you omit it, the first template that list would return for this audience, type and channels is used.
+             * @example 12
+             */
+            template_id?: number;
+            /**
+             * @description Internal name of the form (255 characters at most). Visitors do not see it.
+             * @example Newsletter sign-up
+             */
+            title: string;
+            /**
+             * @description `embedded` shows the form inside a page; `popup` shows it over the page when its triggers fire (needs a plan that includes popups). Cannot be changed later.
+             * @example embedded
+             */
+            type: components["schemas"]["SuscriptionFormType"];
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormDuplicateInput": {
+            /**
+             * @description Name of the copy (255 characters at most). If omitted, the name of the original with a copy marker.
+             * @example Newsletter sign-up (Black Friday)
+             */
+            title?: string;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormDuplicateInput.jsonld": {
+            /**
+             * @description Name of the copy (255 characters at most). If omitted, the name of the original with a copy marker.
+             * @example Newsletter sign-up (Black Friday)
+             */
+            title?: string;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormPopupBehaviorInput": {
+            /**
+             * @description Never show the popup on these URLs.
+             * @example []
+             */
+            exclude_urls?: string[];
+            /**
+             * @description Days before the same visitor sees the popup again: 1, 7, 15, 30, 60, 90, 180 or 365.
+             * @example 30
+             */
+            frequency_days?: components["schemas"]["SubscriptionFormPopupFrequencyDays"];
+            /**
+             * @description Hide the popup on desktop computers.
+             * @example false
+             */
+            hide_on_desktop?: boolean;
+            /**
+             * @description Hide the popup on phones.
+             * @example false
+             */
+            hide_on_mobile?: boolean;
+            /**
+             * @description Hide the popup on tablets.
+             * @example false
+             */
+            hide_on_tablet?: boolean;
+            /**
+             * @description Show the popup only on these URLs. Empty means everywhere.
+             * @example [
+             *       "https://acme.com/blog"
+             *     ]
+             */
+            include_urls?: string[];
+            /**
+             * @description Show the popup when the visitor is about to leave the page.
+             * @example true
+             */
+            on_exit?: boolean;
+            /**
+             * @description Show the popup after the visitor scrolls.
+             * @example false
+             */
+            on_load_scroll_enabled?: boolean;
+            /**
+             * @description Scroll depth that fires the popup: 25, 50, 75 or 100.
+             * @example 50
+             */
+            on_load_scroll_percentage?: components["schemas"]["SubscriptionFormPopupScrollPercentage"];
+            /**
+             * @description Show the popup after a delay.
+             * @example true
+             */
+            on_load_time_enabled?: boolean;
+            /**
+             * @description Delay in seconds, 0 or more.
+             * @example 5
+             */
+            on_load_time_seconds?: number;
+            /**
+             * @description Limit the popup to a date range. When `false` the dates are ignored and saved as `null`.
+             * @example false
+             */
+            schedule_enabled?: boolean;
+            /**
+             * Format: date
+             * @description Day the popup stops being shown, as `YYYY-MM-DD`. It must be after `schedule_start_at`.
+             * @example 2026-11-30
+             */
+            schedule_end_at?: string | null;
+            /**
+             * Format: date
+             * @description Day the popup starts being shown, as `YYYY-MM-DD`. Used only when `schedule_enabled` is `true`.
+             * @example 2026-11-20
+             */
+            schedule_start_at?: string | null;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormPopupBehaviorInput.jsonld": {
+            /**
+             * @description Never show the popup on these URLs.
+             * @example []
+             */
+            exclude_urls?: string[];
+            /**
+             * @description Days before the same visitor sees the popup again: 1, 7, 15, 30, 60, 90, 180 or 365.
+             * @example 30
+             */
+            frequency_days?: components["schemas"]["SubscriptionFormPopupFrequencyDays"];
+            /**
+             * @description Hide the popup on desktop computers.
+             * @example false
+             */
+            hide_on_desktop?: boolean;
+            /**
+             * @description Hide the popup on phones.
+             * @example false
+             */
+            hide_on_mobile?: boolean;
+            /**
+             * @description Hide the popup on tablets.
+             * @example false
+             */
+            hide_on_tablet?: boolean;
+            /**
+             * @description Show the popup only on these URLs. Empty means everywhere.
+             * @example [
+             *       "https://acme.com/blog"
+             *     ]
+             */
+            include_urls?: string[];
+            /**
+             * @description Show the popup when the visitor is about to leave the page.
+             * @example true
+             */
+            on_exit?: boolean;
+            /**
+             * @description Show the popup after the visitor scrolls.
+             * @example false
+             */
+            on_load_scroll_enabled?: boolean;
+            /**
+             * @description Scroll depth that fires the popup: 25, 50, 75 or 100.
+             * @example 50
+             */
+            on_load_scroll_percentage?: components["schemas"]["SubscriptionFormPopupScrollPercentage"];
+            /**
+             * @description Show the popup after a delay.
+             * @example true
+             */
+            on_load_time_enabled?: boolean;
+            /**
+             * @description Delay in seconds, 0 or more.
+             * @example 5
+             */
+            on_load_time_seconds?: number;
+            /**
+             * @description Limit the popup to a date range. When `false` the dates are ignored and saved as `null`.
+             * @example false
+             */
+            schedule_enabled?: boolean;
+            /**
+             * Format: date
+             * @description Day the popup stops being shown, as `YYYY-MM-DD`. It must be after `schedule_start_at`.
+             * @example 2026-11-30
+             */
+            schedule_end_at?: string | null;
+            /**
+             * Format: date
+             * @description Day the popup starts being shown, as `YYYY-MM-DD`. Used only when `schedule_enabled` is `true`.
+             * @example 2026-11-20
+             */
+            schedule_start_at?: string | null;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormUpdateInput": {
+            /**
+             * @description `all_required`: the visitor must accept every purpose shown; `one_required`: at least one. Left unchanged if omitted.
+             * @example all_required
+             */
+            consent_mode?: components["schemas"]["SubscriptionFormConsentMode"];
+            /**
+             * @description What to do with the data of a contact and of a company that already exist. Send both `contact` and `company`. Left unchanged if omitted.
+             * @example {
+             *       "company": "fill_empty",
+             *       "contact": "fill_empty"
+             *     }
+             */
+            crm_data_policy?: {
+                /**
+                 * @description Mode for companies: `fill_empty`, `preserve` or `update`.
+                 * @example fill_empty
+                 */
+                company: components["schemas"]["SubscriptionFormCrmDataMode"];
+                /**
+                 * @description Mode for contacts: `fill_empty`, `preserve` or `update`.
+                 * @example fill_empty
+                 */
+                contact: components["schemas"]["SubscriptionFormCrmDataMode"];
+            };
+            /**
+             * @description Require email confirmation before subscribing. Left unchanged if omitted; cannot be turned off where the account requires it.
+             * @example true
+             */
+            email_double_opt_in?: boolean;
+            /**
+             * @description IRIs of groups of the form's audience that every person who signs up is added to. Replaces the whole list; `[]` removes all. Left unchanged if omitted. Get them from `list_audience_groups`.
+             * @example [
+             *       "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+             *     ]
+             */
+            groups?: string[];
+            /**
+             * @description Language of the form texts, one of the languages of the account. Left unchanged if omitted.
+             * @example es
+             */
+            locale?: string;
+            /**
+             * @description Require SMS confirmation before subscribing the phone. Left unchanged if omitted; cannot be turned off where the account requires it.
+             * @example false
+             */
+            sms_double_opt_in?: boolean;
+            /**
+             * @description Internal name (255 characters at most, not empty). Left unchanged if omitted.
+             * @example Newsletter sign-up (footer)
+             */
+            title?: string;
+            /**
+             * @description `true` sends the welcome email once the subscription is complete. Left unchanged if omitted.
+             * @example true
+             */
+            welcome_email_enabled?: boolean;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.SubscriptionFormUpdateInput.jsonld": {
+            /**
+             * @description `all_required`: the visitor must accept every purpose shown; `one_required`: at least one. Left unchanged if omitted.
+             * @example all_required
+             */
+            consent_mode?: components["schemas"]["SubscriptionFormConsentMode"];
+            /**
+             * @description What to do with the data of a contact and of a company that already exist. Send both `contact` and `company`. Left unchanged if omitted.
+             * @example {
+             *       "company": "fill_empty",
+             *       "contact": "fill_empty"
+             *     }
+             */
+            crm_data_policy?: {
+                /**
+                 * @description Mode for companies: `fill_empty`, `preserve` or `update`.
+                 * @example fill_empty
+                 */
+                company: components["schemas"]["SubscriptionFormCrmDataMode"];
+                /**
+                 * @description Mode for contacts: `fill_empty`, `preserve` or `update`.
+                 * @example fill_empty
+                 */
+                contact: components["schemas"]["SubscriptionFormCrmDataMode"];
+            };
+            /**
+             * @description Require email confirmation before subscribing. Left unchanged if omitted; cannot be turned off where the account requires it.
+             * @example true
+             */
+            email_double_opt_in?: boolean;
+            /**
+             * @description IRIs of groups of the form's audience that every person who signs up is added to. Replaces the whole list; `[]` removes all. Left unchanged if omitted. Get them from `list_audience_groups`.
+             * @example [
+             *       "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+             *     ]
+             */
+            groups?: string[];
+            /**
+             * @description Language of the form texts, one of the languages of the account. Left unchanged if omitted.
+             * @example es
+             */
+            locale?: string;
+            /**
+             * @description Require SMS confirmation before subscribing the phone. Left unchanged if omitted; cannot be turned off where the account requires it.
+             * @example false
+             */
+            sms_double_opt_in?: boolean;
+            /**
+             * @description Internal name (255 characters at most, not empty). Left unchanged if omitted.
+             * @example Newsletter sign-up (footer)
+             */
+            title?: string;
+            /**
+             * @description `true` sends the welcome email once the subscription is complete. Left unchanged if omitted.
+             * @example true
+             */
+            welcome_email_enabled?: boolean;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.jsonld-subscription_form.list": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the audience that receives the people who sign up. Set when the form is created and never changes.
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            readonly audience?: string;
+            /**
+             * @description What the form collects: `email`, `sms` or both. Never changes after creation.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * Format: date-time
+             * @description When a classic form was converted with `convert_subscription_form`. `null` for forms that were never converted.
+             * @example 2026-10-20T09:00:00+02:00
+             */
+            readonly converted_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When the form was created.
+             * @example 2026-11-02T09:15:00+01:00
+             */
+            readonly created_at?: string;
+            /**
+             * @description `current` forms are created and edited in the Customer App and managed with the `subscription_form` operations. `classic` forms belong to the older engine: they are managed with the operations under `/audiences/{audienceUuid}/suscription_forms` and the Customer App only shows them until they are converted.
+             * @example current
+             */
+            readonly generation?: components["schemas"]["SubscriptionFormGeneration"];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Where the form stands: `form.status.draft` has no design yet (publishing generates it from its template when it can); `form.status.unpublished` has a design but has never been published; `form.status.published` is live; `form.status.paused` was published and is taken offline until it is resumed.
+             * @example form.status.published
+             */
+            readonly status?: components["schemas"]["SuscriptionFormStatus"];
+            /**
+             * @description Number of memberships created through this form: people who joined the audience by signing up here, each counted once. Someone who was already in the audience before filling it in is not counted.
+             * @example 128
+             */
+            readonly subscriber_count?: number;
+            /**
+             * @description Internal name of the form (255 characters at most). Visitors do not see it.
+             * @example Newsletter sign-up
+             */
+            title?: string;
+            /**
+             * @description `embedded` shows the form inside a page; `popup` shows it over the page when its triggers fire. Never changes after creation.
+             * @example embedded
+             */
+            readonly type?: components["schemas"]["SuscriptionFormType"];
+            /**
+             * Format: date-time
+             * @description When the form was last changed.
+             * @example 2026-11-09T17:40:00+01:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the form.
+             * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Subscription forms of the Customer App ("current generation") in the public API (plan 4, Task 4a: the two reads; Task 5a: create, update and popup behavior; Task 5b: duplicate, convert and delete).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *
+         *     Published since the unveil (branch `feature/api-formularios-destape`, after the QA of MKT-010): the operations were
+         *     built hidden with `deprecated: true` (decision D4) and now appear in the specification, the snapshot and the MCP.
+         *     `SubscriptionFormsApprovedContractTest` compares them with the approved contract. Each operation declares the whole
+         *     example of its response (`DocumentationOverride::RESPONSE_EXAMPLE`): the schema is shared and its property examples
+         *     cannot vary per operation.
+         *
+         *     `subscription_form:list` is the summary every item of the list has; `subscription_form:read` adds the settings
+         *     only `get_subscription_form` returns.
+         */
+        "SubscriptionForm.jsonld-subscription_form.read": {
+            /**
+             * Format: iri-reference
+             * @description IRI of the audience that receives the people who sign up. Set when the form is created and never changes.
+             * @example /audiences/0df14405-90ff-4287-b3e4-ef088901ee6f
+             */
+            readonly audience?: string;
+            /**
+             * @description Purposes the form could show: the purposes enabled in the audience that cover a channel of the form. A person chooses which of them the form shows, in the Customer App.
+             * @example [
+             *       {
+             *         "name": "Marketing emails",
+             *         "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+             *       }
+             *     ]
+             */
+            available_purposes?: Record<string, never>[];
+            /**
+             * @description What the form collects: `email`, `sms` or both. Never changes after creation.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * @description How the consent purposes shown in the form are required: `all_required` means the visitor must accept every purpose, `one_required` at least one. It matters when the audience has GDPR enabled.
+             * @example all_required
+             */
+            consent_mode?: components["schemas"]["SubscriptionFormConsentMode"];
+            /**
+             * Format: date-time
+             * @description When a classic form was converted with `convert_subscription_form`. `null` for forms that were never converted.
+             * @example 2026-10-20T09:00:00+02:00
+             */
+            readonly converted_at?: string | null;
+            /**
+             * Format: date-time
+             * @description When the form was created.
+             * @example 2026-11-02T09:15:00+01:00
+             */
+            readonly created_at?: string;
+            /**
+             * @description What the form does with the data of a contact and of a company that already exist in the CRM. `contact` and `company` each take `fill_empty` (write an answer only where the record has no value), `preserve` (never write an existing record) or `update` (write every non-empty answer). `company` only matters when the form asks for company data.
+             * @example {
+             *       "company": "fill_empty",
+             *       "contact": "fill_empty"
+             *     }
+             */
+            crm_data_policy?: {
+                /**
+                 * @description Mode for companies.
+                 * @example fill_empty
+                 */
+                company: components["schemas"]["SubscriptionFormCrmDataMode"];
+                /**
+                 * @description Mode for contacts.
+                 * @example fill_empty
+                 */
+                contact: components["schemas"]["SubscriptionFormCrmDataMode"];
+            };
+            /**
+             * @description `true` sends a confirmation email and subscribes the person only after they click it. Always `true` when the account requires double opt-in.
+             * @example true
+             */
+            email_double_opt_in?: boolean;
+            /**
+             * @description `current` forms are created and edited in the Customer App and managed with the `subscription_form` operations. `classic` forms belong to the older engine: they are managed with the operations under `/audiences/{audienceUuid}/suscription_forms` and the Customer App only shows them until they are converted.
+             * @example current
+             */
+            readonly generation?: components["schemas"]["SubscriptionFormGeneration"];
+            /**
+             * @description IRIs of the groups of the audience that every person who signs up is added to. Read their names with `list_audience_groups`.
+             * @example [
+             *       "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+             *     ]
+             */
+            groups?: string[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Language of the form texts, as a locale code.
+             * @example en
+             */
+            locale?: string | null;
+            /**
+             * @description `true` when the form has been changed since it was last published, so visitors still see the older version until `publish_subscription_form` is called. `false` for a form that has never been published or has nothing new to publish.
+             * @example false
+             */
+            readonly pending_changes?: boolean;
+            /**
+             * @description Triggers, frequency, schedule, URLs and devices of a popup form. `null` for embedded forms.
+             * @example {
+             *       "exclude_urls": [],
+             *       "frequency_days": 30,
+             *       "hide_on_desktop": false,
+             *       "hide_on_mobile": false,
+             *       "hide_on_tablet": false,
+             *       "include_urls": [],
+             *       "on_exit": true,
+             *       "on_load_scroll_enabled": false,
+             *       "on_load_scroll_percentage": 50,
+             *       "on_load_time_enabled": true,
+             *       "on_load_time_seconds": 8,
+             *       "schedule_enabled": false,
+             *       "schedule_end_at": null,
+             *       "schedule_start_at": null
+             *     }
+             */
+            popup_behavior?: {
+                /**
+                 * @description Never show the popup on these URLs.
+                 * @example []
+                 */
+                exclude_urls?: string[];
+                /**
+                 * @description Days before the same visitor sees the popup again: 1, 7, 15, 30, 60, 90, 180 or 365.
+                 * @example 30
+                 */
+                frequency_days?: components["schemas"]["SubscriptionFormPopupFrequencyDays"];
+                /**
+                 * @description Hide the popup on desktop computers.
+                 * @example false
+                 */
+                hide_on_desktop?: boolean;
+                /**
+                 * @description Hide the popup on phones.
+                 * @example false
+                 */
+                hide_on_mobile?: boolean;
+                /**
+                 * @description Hide the popup on tablets.
+                 * @example false
+                 */
+                hide_on_tablet?: boolean;
+                /**
+                 * @description Show the popup only on these URLs. Empty means everywhere.
+                 * @example [
+                 *       "https://acme.com/blog"
+                 *     ]
+                 */
+                include_urls?: string[];
+                /**
+                 * @description Show the popup when the visitor is about to leave the page.
+                 * @example true
+                 */
+                on_exit?: boolean;
+                /**
+                 * @description Show the popup after the visitor scrolls.
+                 * @example false
+                 */
+                on_load_scroll_enabled?: boolean;
+                /**
+                 * @description Scroll depth that fires the popup: 25, 50, 75 or 100.
+                 * @example 50
+                 */
+                on_load_scroll_percentage?: components["schemas"]["SubscriptionFormPopupScrollPercentage"];
+                /**
+                 * @description Show the popup after a delay.
+                 * @example true
+                 */
+                on_load_time_enabled?: boolean;
+                /**
+                 * @description Delay in seconds, 0 or more.
+                 * @example 5
+                 */
+                on_load_time_seconds?: number;
+                /**
+                 * @description Limit the popup to a date range. When `false` the dates are ignored and saved as `null`.
+                 * @example false
+                 */
+                schedule_enabled?: boolean;
+                /**
+                 * Format: date
+                 * @description Day the popup stops being shown, as `YYYY-MM-DD`. It must be after `schedule_start_at`.
+                 * @example 2026-11-30
+                 */
+                schedule_end_at?: string | null;
+                /**
+                 * Format: date
+                 * @description Day the popup starts being shown, as `YYYY-MM-DD`. Used only when `schedule_enabled` is `true`.
+                 * @example 2026-11-20
+                 */
+                schedule_start_at?: string | null;
+            } | null;
+            /**
+             * @description Consent purposes shown in the form, as `{uuid, name}`.
+             * @example [
+             *       {
+             *         "name": "Marketing emails",
+             *         "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+             *       }
+             *     ]
+             */
+            purposes?: Record<string, never>[];
+            /**
+             * Format: uri
+             * @description Public link to a page hosted by Easymailing that shows the form. `null` until the form is published for the first time. From then on the link is always given, but it only works while the form is published and not paused.
+             * @example https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7
+             */
+            readonly share_url?: string | null;
+            /**
+             * @description `true` asks for confirmation by SMS before subscribing the phone. Always `true` when the account requires it.
+             * @example false
+             */
+            sms_double_opt_in?: boolean;
+            /**
+             * @description Where the form stands: `form.status.draft` has no design yet (publishing generates it from its template when it can); `form.status.unpublished` has a design but has never been published; `form.status.published` is live; `form.status.paused` was published and is taken offline until it is resumed.
+             * @example form.status.published
+             */
+            readonly status?: components["schemas"]["SuscriptionFormStatus"];
+            /**
+             * @description Number of memberships created through this form: people who joined the audience by signing up here, each counted once. Someone who was already in the audience before filling it in is not counted.
+             * @example 128
+             */
+            readonly subscriber_count?: number;
+            /**
+             * @description Internal name of the form (255 characters at most). Visitors do not see it.
+             * @example Newsletter sign-up
+             */
+            title?: string;
+            /**
+             * @description `embedded` shows the form inside a page; `popup` shows it over the page when its triggers fire. Never changes after creation.
+             * @example embedded
+             */
+            readonly type?: components["schemas"]["SuscriptionFormType"];
+            /**
+             * Format: date-time
+             * @description When the form was last changed.
+             * @example 2026-11-09T17:40:00+01:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the form.
+             * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+             */
+            readonly uuid?: string;
+            /**
+             * @description `true` sends the welcome email once the subscription is complete.
+             * @example true
+             */
+            welcome_email_enabled?: boolean;
+        };
+        /**
+         * @description Consent mode of a subscription form:
+         *     * `all_required` - The visitor must accept every purpose
+         *     * `one_required` - The visitor must accept at least one purpose
+         * @enum {string}
+         */
+        SubscriptionFormConsentMode: "all_required" | "one_required";
+        /**
+         * @description How a form treats data of an existing CRM record:
+         *     * `fill_empty` - Write an answer only where the record has no value
+         *     * `preserve` - Never write an existing record
+         *     * `update` - Write every non-empty answer
+         * @enum {string}
+         */
+        SubscriptionFormCrmDataMode: "fill_empty" | "preserve" | "update";
+        /**
+         * @description Subscription form generation:
+         *     * `current` - Created and edited in the Customer App
+         *     * `classic` - Belongs to the older engine, read-only until converted
+         * @enum {string}
+         */
+        SubscriptionFormGeneration: "current" | "classic";
+        /**
+         * @description Days before the same visitor sees a popup again:
+         *     * `1`
+         *     * `7`
+         *     * `15`
+         *     * `30`
+         *     * `60`
+         *     * `90`
+         *     * `180`
+         *     * `365`
+         * @enum {integer}
+         */
+        SubscriptionFormPopupFrequencyDays: 1 | 7 | 15 | 30 | 60 | 90 | 180 | 365;
+        /**
+         * @description Scroll depth that fires a popup, in percent:
+         *     * `25`
+         *     * `50`
+         *     * `75`
+         *     * `100`
+         * @enum {integer}
+         */
+        SubscriptionFormPopupScrollPercentage: 25 | 50 | 75 | 100;
+        /**
+         * @description `get_subscription_form_statistics`: daily activity of a form of the Customer App (plan 4, Task 4b).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *     Published since the unveil (it was built hidden, decision D4); `SubscriptionFormsApprovedContractTest` compares it
+         *     with the approved contract.
+         */
+        "SubscriptionFormStatistics-subscription_form_statistics.read": {
+            /**
+             * @description Channels of the published version of the form. A change of channels in a draft does not count until it is published.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * @description One entry per day counted, oldest first: `date`, `impressions`, `submissions`, `email_subscriptions`, `sms_subscriptions`, `subscribed_contacts` and `conversion_rate`.
+             * @example [
+             *       {
+             *         "conversion_rate": 2.5,
+             *         "date": "2026-11-10",
+             *         "email_subscriptions": 3,
+             *         "impressions": 120,
+             *         "sms_subscriptions": 0,
+             *         "submissions": 5,
+             *         "subscribed_contacts": 3
+             *       }
+             *     ]
+             */
+            readonly days?: Record<string, never>[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Days actually counted: they start on the day a converted form was converted. `null` when the whole period is before that day.
+             * @example {
+             *       "end": "2026-11-11",
+             *       "start": "2026-10-01"
+             *     }
+             */
+            readonly range?: {
+                /**
+                 * Format: date
+                 * @description Last day counted.
+                 * @example 2026-11-11
+                 */
+                end: string;
+                /**
+                 * Format: date
+                 * @description First day counted.
+                 * @example 2026-10-01
+                 */
+                start: string;
+            } | null;
+            /**
+             * @description The period you asked for.
+             * @example {
+             *       "end": "2026-11-11",
+             *       "start": "2026-10-01"
+             *     }
+             */
+            readonly requested_range?: {
+                /**
+                 * Format: date
+                 * @description Last day.
+                 * @example 2026-11-11
+                 */
+                end: string;
+                /**
+                 * Format: date
+                 * @description First day.
+                 * @example 2026-10-01
+                 */
+                start: string;
+            };
+            /**
+             * @description IANA time zone used to group the days.
+             * @example Europe/Madrid
+             */
+            readonly timezone?: string;
+            /**
+             * @description Totals for the counted period.
+             * @example {
+             *       "conversion_rate": 2.37,
+             *       "impressions": 5400,
+             *       "submissions": 190,
+             *       "subscribed_contacts": 128
+             *     }
+             */
+            readonly totals?: {
+                /**
+                 * @description `subscribed_contacts` divided by `impressions`, as a percentage with two decimals. `null` when there were no impressions.
+                 * @example 2.37
+                 */
+                conversion_rate: number | null;
+                /**
+                 * @description Times the form was shown.
+                 * @example 5400
+                 */
+                impressions: number;
+                /**
+                 * @description Answers accepted from visitors.
+                 * @example 190
+                 */
+                submissions: number;
+                /**
+                 * @description Distinct contacts who completed their subscription in the period, whatever their status now.
+                 * @example 128
+                 */
+                subscribed_contacts: number;
+            };
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description `get_subscription_form_statistics`: daily activity of a form of the Customer App (plan 4, Task 4b).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *     Published since the unveil (it was built hidden, decision D4); `SubscriptionFormsApprovedContractTest` compares it
+         *     with the approved contract.
+         */
+        "SubscriptionFormStatistics.jsonld-subscription_form_statistics.read": {
+            /**
+             * @description Channels of the published version of the form. A change of channels in a draft does not count until it is published.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * @description One entry per day counted, oldest first: `date`, `impressions`, `submissions`, `email_subscriptions`, `sms_subscriptions`, `subscribed_contacts` and `conversion_rate`.
+             * @example [
+             *       {
+             *         "conversion_rate": 2.5,
+             *         "date": "2026-11-10",
+             *         "email_subscriptions": 3,
+             *         "impressions": 120,
+             *         "sms_subscriptions": 0,
+             *         "submissions": 5,
+             *         "subscribed_contacts": 3
+             *       }
+             *     ]
+             */
+            readonly days?: Record<string, never>[];
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description Days actually counted: they start on the day a converted form was converted. `null` when the whole period is before that day.
+             * @example {
+             *       "end": "2026-11-11",
+             *       "start": "2026-10-01"
+             *     }
+             */
+            readonly range?: {
+                /**
+                 * Format: date
+                 * @description Last day counted.
+                 * @example 2026-11-11
+                 */
+                end: string;
+                /**
+                 * Format: date
+                 * @description First day counted.
+                 * @example 2026-10-01
+                 */
+                start: string;
+            } | null;
+            /**
+             * @description The period you asked for.
+             * @example {
+             *       "end": "2026-11-11",
+             *       "start": "2026-10-01"
+             *     }
+             */
+            readonly requested_range?: {
+                /**
+                 * Format: date
+                 * @description Last day.
+                 * @example 2026-11-11
+                 */
+                end: string;
+                /**
+                 * Format: date
+                 * @description First day.
+                 * @example 2026-10-01
+                 */
+                start: string;
+            };
+            /**
+             * @description IANA time zone used to group the days.
+             * @example Europe/Madrid
+             */
+            readonly timezone?: string;
+            /**
+             * @description Totals for the counted period.
+             * @example {
+             *       "conversion_rate": 2.37,
+             *       "impressions": 5400,
+             *       "submissions": 190,
+             *       "subscribed_contacts": 128
+             *     }
+             */
+            readonly totals?: {
+                /**
+                 * @description `subscribed_contacts` divided by `impressions`, as a percentage with two decimals. `null` when there were no impressions.
+                 * @example 2.37
+                 */
+                conversion_rate: number | null;
+                /**
+                 * @description Times the form was shown.
+                 * @example 5400
+                 */
+                impressions: number;
+                /**
+                 * @description Answers accepted from visitors.
+                 * @example 190
+                 */
+                submissions: number;
+                /**
+                 * @description Distinct contacts who completed their subscription in the period, whatever their status now.
+                 * @example 128
+                 */
+                subscribed_contacts: number;
+            };
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description `list_subscription_form_templates`: the starting designs a new form can use (plan 4, Task 4b).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *     Published since the unveil (it was built hidden, decision D4); `SubscriptionFormsApprovedContractTest` compares it
+         *     with the approved contract.
+         */
+        "SubscriptionFormTemplate-subscription_form_template.read": {
+            /**
+             * @description Channels the template is made for.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * @description Numeric identifier of the template. Templates have no UUID: use this number as `template_id` in `create_subscription_form`.
+             * @example 12
+             */
+            readonly id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: uri
+             * @description Picture of the template.
+             * @example https://assets.example.com/form-templates/12.png
+             */
+            readonly thumbnail_url?: string | null;
+            /**
+             * @description Name of the template.
+             * @example Minimal email
+             */
+            readonly title?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description `list_subscription_form_templates`: the starting designs a new form can use (plan 4, Task 4b).
+         *     The texts are the approved contract's (`trabajo/2026-11-11-maia-customer-app/formularios-propuesta/subscription-forms.json`).
+         *     Published since the unveil (it was built hidden, decision D4); `SubscriptionFormsApprovedContractTest` compares it
+         *     with the approved contract.
+         */
+        "SubscriptionFormTemplate.jsonld-subscription_form_template.read": {
+            /**
+             * @description Channels the template is made for.
+             * @example [
+             *       "email"
+             *     ]
+             */
+            readonly channels?: string[];
+            /**
+             * @description Numeric identifier of the template. Templates have no UUID: use this number as `template_id` in `create_subscription_form`.
+             * @example 12
+             */
+            readonly id?: number;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: uri
+             * @description Picture of the template.
+             * @example https://assets.example.com/form-templates/12.png
+             */
+            readonly thumbnail_url?: string | null;
+            /**
+             * @description Name of the template.
+             * @example Minimal email
+             */
+            readonly title?: string | null;
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
         "SupportTicket-support_ticket.read": {
             comments?: components["schemas"]["SupportTicketCommentResource-support_ticket.read"][];
             /**
@@ -67460,6 +71430,11 @@ export interface components {
              * @enum {string}
              */
             priority?: "low" | "normal" | "high" | "urgent";
+            /**
+             * @description Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.
+             * @example K7QM-3XRP
+             */
+            reference?: string | null;
             /**
              * @description Ticket status
              * @example open
@@ -67525,6 +71500,11 @@ export interface components {
              * @enum {string}
              */
             priority?: "low" | "normal" | "high" | "urgent";
+            /**
+             * @description Ticket code shown to the user in the support emails and in the support portal: use it, not `id`, when you mention the ticket to the user. `null` for tickets not handled in the support portal.
+             * @example K7QM-3XRP
+             */
+            reference?: string | null;
             /**
              * @description Ticket status
              * @example open
@@ -68286,6 +72266,12 @@ export interface components {
             channels: string[];
             /**
              * Format: date-time
+             * @description When the form was converted to the Customer App. `null` if it never was.
+             * @example 2026-10-20T09:00:00+02:00
+             */
+            readonly converted_at?: string | null;
+            /**
+             * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
@@ -68295,6 +72281,11 @@ export interface components {
             double_opt_in?: boolean;
             /** @description Is welcome email enabled? */
             enable_welcome_email?: boolean;
+            /**
+             * @description `classic` forms are managed with the operations under `/audiences/{audienceUuid}/suscription_forms`; `current` forms were created or converted in the Customer App and are managed with `get_subscription_form` and the other `subscription_form` operations.
+             * @example classic
+             */
+            readonly generation?: components["schemas"]["SubscriptionFormGeneration"];
             groups?: string[];
             /**
              * @description Hash to show in api
@@ -68307,8 +72298,9 @@ export interface components {
             /** @description Is paused? */
             paused?: boolean;
             sms_double_opt_in?: boolean | null;
-            /** @description Form statistics (impressions, conversions, conversion rate) */
+            /** @description Form statistics (impressions, conversions, conversion rate). `null` for forms with `generation: current` (created in the Customer App or converted to it). */
             stats?: components["schemas"]["SuscriptionFormStatsDto-suscription_form.read"] | null;
+            /** @description Where the form stands: `form.status.draft` has no design yet; `form.status.unpublished` has a design but is not live; `form.status.published` is live; `form.status.paused` is published but offline. A form created in the Customer App counts as designed when its design is saved in the Customer App editor. */
             status?: components["schemas"]["SuscriptionFormStatus"];
             /**
              * @description Suscription form title
@@ -68554,7 +72546,7 @@ export interface components {
              */
             script_code?: string;
             /**
-             * @description Current status of the form
+             * @description Current status of the form: `form.status.draft`, `form.status.unpublished`, `form.status.published` or `form.status.paused`. A form created in the Customer App counts as designed when its design is saved in the Customer App editor.
              * @example form.status.published
              */
             status?: string;
@@ -68615,7 +72607,7 @@ export interface components {
              */
             script_code?: string;
             /**
-             * @description Current status of the form
+             * @description Current status of the form: `form.status.draft`, `form.status.unpublished`, `form.status.published` or `form.status.paused`. A form created in the Customer App counts as designed when its design is saved in the Customer App editor.
              * @example form.status.published
              */
             status?: string;
@@ -68836,6 +72828,12 @@ export interface components {
             channels: string[];
             /**
              * Format: date-time
+             * @description When the form was converted to the Customer App. `null` if it never was.
+             * @example 2026-10-20T09:00:00+02:00
+             */
+            readonly converted_at?: string | null;
+            /**
+             * Format: date-time
              * @description Date & Time resource created
              */
             created_at?: string;
@@ -68845,6 +72843,11 @@ export interface components {
             double_opt_in?: boolean;
             /** @description Is welcome email enabled? */
             enable_welcome_email?: boolean;
+            /**
+             * @description `classic` forms are managed with the operations under `/audiences/{audienceUuid}/suscription_forms`; `current` forms were created or converted in the Customer App and are managed with `get_subscription_form` and the other `subscription_form` operations.
+             * @example classic
+             */
+            readonly generation?: components["schemas"]["SubscriptionFormGeneration"];
             groups?: string[];
             /**
              * @description Hash to show in api
@@ -68857,8 +72860,9 @@ export interface components {
             /** @description Is paused? */
             paused?: boolean;
             sms_double_opt_in?: boolean | null;
-            /** @description Form statistics (impressions, conversions, conversion rate) */
+            /** @description Form statistics (impressions, conversions, conversion rate). `null` for forms with `generation: current` (created in the Customer App or converted to it). */
             stats?: components["schemas"]["SuscriptionFormStatsDto.jsonld-suscription_form.read"] | null;
+            /** @description Where the form stands: `form.status.draft` has no design yet; `form.status.unpublished` has a design but is not live; `form.status.published` is live; `form.status.paused` is published but offline. A form created in the Customer App counts as designed when its design is saved in the Customer App editor. */
             status?: components["schemas"]["SuscriptionFormStatus"];
             /**
              * @description Suscription form title
@@ -73118,6 +77122,1579 @@ export interface components {
          * @enum {string}
          */
         WebhookScope: "marketing" | "crm";
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow-workflow.list": {
+            /**
+             * @description Executions that have not ended: running, waiting or blocked.
+             * @example 14
+             */
+            readonly active_execution_count?: number;
+            /**
+             * @description Blocked executions: they wait for someone to resolve them in the app.
+             * @example 0
+             */
+            readonly blocked_execution_count?: number;
+            /**
+             * @description The state a list shows. `draft`: never published. Otherwise `error` when some execution is blocked; otherwise `active` when `status` is `active`; otherwise `paused` (entries closed, whole workflow paused or commercial pause).
+             * @example paused
+             */
+            readonly display_status?: components["schemas"]["WorkflowDisplayStatus"];
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When the most recent execution started, whatever its state, ISO 8601. `null` when it has none.
+             * @example 2026-11-11T08:05:12+00:00
+             */
+            readonly last_execution_at?: string | null;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow-workflow.read": {
+            /**
+             * @description The draft of the workflow: a declarative document in format 3, with its keys in camelCase as the editor stores them (it is not translated to the snake_case of the API). `formatVersion` is 3; `settings` has `rootSubjectType`, `audienceUuid` and `exitWhen`; `triggers` and `nodes` (in reading order, every `next` points to a later node) have `uuid`, `catalogId` (see `list_workflow_pieces`) and `configuration`, which depends on the piece. A draft can be incomplete: only a published version runs.
+             * @example {
+             *       "formatVersion": 3,
+             *       "nodes": [
+             *         {
+             *           "body": null,
+             *           "branches": [],
+             *           "catalogId": "wait-duration",
+             *           "configuration": {
+             *             "durationUnit": "days",
+             *             "durationValue": 2
+             *           },
+             *           "name": null,
+             *           "next": null,
+             *           "uuid": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
+             *         }
+             *       ],
+             *       "settings": {
+             *         "audienceUuid": null,
+             *         "exitWhen": null,
+             *         "rootSubjectType": "contact"
+             *       },
+             *       "triggers": [
+             *         {
+             *           "catalogId": "record-created",
+             *           "configuration": {
+             *             "recordType": "contact"
+             *           },
+             *           "next": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+             *           "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *         }
+             *       ]
+             *     }
+             */
+            readonly definition?: Record<string, never>;
+            /**
+             * @description Version of the workflow, starting at 1: it grows each time its draft changes, it is published, or its entries are opened or closed. Two reads with the same value saw the same workflow.
+             * @example 7
+             */
+            readonly draft_version?: number;
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /** @description Who is responsible for the workflow: its executions act on their behalf. */
+            readonly responsible?: {
+                /**
+                 * @description Whether the responsible can act now. False when they were removed, deactivated or lost access: the workflow does not admit entries until someone else takes over in the app.
+                 * @example true
+                 */
+                can_act?: boolean;
+                /**
+                 * @description Their email; `null` for a removed member.
+                 * @example ana@example.com
+                 */
+                email?: string | null;
+                /**
+                 * @description Their name, or their email when they have none. A member removed from the account reads as «Deleted user», in the language of the person behind the credentials.
+                 * @example Ana García
+                 */
+                name?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member responsible for the workflow.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                uuid?: string;
+            };
+            /**
+             * @description A resume of the whole workflow is still moving the waits of the pause in the background; `paused_at` stays set until it ends.
+             * @example false
+             */
+            readonly resuming?: boolean;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description Triggers of the current published version and their entry state. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "entry_state": "open",
+             *         "published_since_revision": 1,
+             *         "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *       }
+             *     ]
+             */
+            readonly triggers?: {
+                /**
+                 * @description Whether this trigger admits new entries. The workflow also needs `entries_open`.
+                 * @example open
+                 */
+                entry_state?: components["schemas"]["WorkflowTriggerEntryState"];
+                /**
+                 * @description The first revision of the uninterrupted run of published versions, up to the current one, that has this trigger.
+                 * @example 1
+                 */
+                published_since_revision?: number;
+                /**
+                 * Format: uuid
+                 * @description UUID of the trigger, as in `definition.triggers[].uuid`.
+                 * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+                 */
+                uuid?: string;
+            }[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+            /**
+             * @description Published versions, newest first. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-10T16:20:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 2
+             *       },
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-03T09:00:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 1
+             *       }
+             *     ]
+             */
+            readonly versions?: {
+                /**
+                 * @description Steps, waits and containers in that version.
+                 * @example 2
+                 */
+                node_count?: number;
+                /**
+                 * Format: date-time
+                 * @description When it was published, ISO 8601.
+                 * @example 2026-11-10T16:20:00+00:00
+                 */
+                published_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who published it; `null` when it is not known.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                published_by?: string | null;
+                /**
+                 * @description Revision number, starting at 1.
+                 * @example 2
+                 */
+                revision?: number;
+            }[];
+        };
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow.jsonld-workflow.list": {
+            /**
+             * @description Executions that have not ended: running, waiting or blocked.
+             * @example 14
+             */
+            readonly active_execution_count?: number;
+            /**
+             * @description Blocked executions: they wait for someone to resolve them in the app.
+             * @example 0
+             */
+            readonly blocked_execution_count?: number;
+            /**
+             * @description The state a list shows. `draft`: never published. Otherwise `error` when some execution is blocked; otherwise `active` when `status` is `active`; otherwise `paused` (entries closed, whole workflow paused or commercial pause).
+             * @example paused
+             */
+            readonly display_status?: components["schemas"]["WorkflowDisplayStatus"];
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When the most recent execution started, whatever its state, ISO 8601. `null` when it has none.
+             * @example 2026-11-11T08:05:12+00:00
+             */
+            readonly last_execution_at?: string | null;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+        };
+        /**
+         * @description Workflows of the new automation engine in the public API (F7, task B4). Read only (decision 32 of F7): creating, editing,
+         *     validating and publishing happen in the app or through Maia's own tools, never here. Each provider checks `automations.read` before
+         *     the use case ({@see \App\Application\Automation\ApiWorkflowAccess}), because API Platform evaluates `security` after the provider; the
+         *     rules and the visibility are those of the CoreBundle use cases the internal API runs (`Service\App\Automation\Workflows`).
+         *
+         *     The list gives the summary (with the execution counts); `get_workflow` the whole workflow with its draft (`definition`, the format 3
+         *     document as stored, in camelCase like the internal API: it is a declarative document, not API fields), the triggers of the published
+         *     version, the versions and the responsible. A workflow that the account does not have is 404 `workflow_not_found`.
+         */
+        "Workflow.jsonld-workflow.read": {
+            /**
+             * @description The draft of the workflow: a declarative document in format 3, with its keys in camelCase as the editor stores them (it is not translated to the snake_case of the API). `formatVersion` is 3; `settings` has `rootSubjectType`, `audienceUuid` and `exitWhen`; `triggers` and `nodes` (in reading order, every `next` points to a later node) have `uuid`, `catalogId` (see `list_workflow_pieces`) and `configuration`, which depends on the piece. A draft can be incomplete: only a published version runs.
+             * @example {
+             *       "formatVersion": 3,
+             *       "nodes": [
+             *         {
+             *           "body": null,
+             *           "branches": [],
+             *           "catalogId": "wait-duration",
+             *           "configuration": {
+             *             "durationUnit": "days",
+             *             "durationValue": 2
+             *           },
+             *           "name": null,
+             *           "next": null,
+             *           "uuid": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d"
+             *         }
+             *       ],
+             *       "settings": {
+             *         "audienceUuid": null,
+             *         "exitWhen": null,
+             *         "rootSubjectType": "contact"
+             *       },
+             *       "triggers": [
+             *         {
+             *           "catalogId": "record-created",
+             *           "configuration": {
+             *             "recordType": "contact"
+             *           },
+             *           "next": "5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+             *           "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *         }
+             *       ]
+             *     }
+             */
+            readonly definition?: Record<string, never>;
+            /**
+             * @description Version of the workflow, starting at 1: it grows each time its draft changes, it is published, or its entries are opened or closed. Two reads with the same value saw the same workflow.
+             * @example 7
+             */
+            readonly draft_version?: number;
+            /**
+             * @description The workflow admits new entries (its global entry switch). False for a workflow never published. A trigger can still be paused on its own: see `triggers`.
+             * @example true
+             */
+            readonly entries_open?: boolean;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description Since when the whole workflow is paused (nothing enters and no execution moves on), ISO 8601. `null` when it is not; a commercial pause does not set it.
+             * @example 2026-11-11T10:30:00+00:00
+             */
+            readonly paused_at?: string | null;
+            /**
+             * @description Revision number of the current published version; 0 when it was never published.
+             * @example 2
+             */
+            readonly published_revision?: number;
+            /** @description Who is responsible for the workflow: its executions act on their behalf. */
+            readonly responsible?: {
+                /**
+                 * @description Whether the responsible can act now. False when they were removed, deactivated or lost access: the workflow does not admit entries until someone else takes over in the app.
+                 * @example true
+                 */
+                can_act?: boolean;
+                /**
+                 * @description Their email; `null` for a removed member.
+                 * @example ana@example.com
+                 */
+                email?: string | null;
+                /**
+                 * @description Their name, or their email when they have none. A member removed from the account reads as «Deleted user», in the language of the person behind the credentials.
+                 * @example Ana García
+                 */
+                name?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member responsible for the workflow.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                uuid?: string;
+            };
+            /**
+             * @description A resume of the whole workflow is still moving the waits of the pause in the background; `paused_at` stays set until it ends.
+             * @example false
+             */
+            readonly resuming?: boolean;
+            /**
+             * @description State of the workflow. `draft`: never published. `active`: published, with its entries open and not paused. `paused`: published, but its entries are closed or the whole workflow is paused (`paused_at`). `commercial-paused`: paused by Easymailing because the account lost the CRM plan its published version needs; it is reviewed and reactivated in the app.
+             * @example paused
+             */
+            readonly status?: components["schemas"]["WorkflowStatus"];
+            /**
+             * @description Name of the workflow, up to 120 characters.
+             * @example Web leads: task for the owner in 2 days
+             */
+            readonly title?: string;
+            /**
+             * @description `catalogId` of each trigger of the draft, in order. `list_workflow_pieces` lists them.
+             * @example [
+             *       "record-created"
+             *     ]
+             */
+            readonly trigger_catalog_ids?: string[];
+            /**
+             * @description Triggers of the current published version and their entry state. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "entry_state": "open",
+             *         "published_since_revision": 1,
+             *         "uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *       }
+             *     ]
+             */
+            readonly triggers?: {
+                /**
+                 * @description Whether this trigger admits new entries. The workflow also needs `entries_open`.
+                 * @example open
+                 */
+                entry_state?: components["schemas"]["WorkflowTriggerEntryState"];
+                /**
+                 * @description The first revision of the uninterrupted run of published versions, up to the current one, that has this trigger.
+                 * @example 1
+                 */
+                published_since_revision?: number;
+                /**
+                 * Format: uuid
+                 * @description UUID of the trigger, as in `definition.triggers[].uuid`.
+                 * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+                 */
+                uuid?: string;
+            }[];
+            /**
+             * @description The draft differs from the published version: what is being edited is not what runs until it is published.
+             * @example false
+             */
+            readonly unpublished_changes?: boolean;
+            /**
+             * Format: date-time
+             * @description When the workflow was last edited or published, ISO 8601.
+             * @example 2026-11-10T16:20:00+00:00
+             */
+            readonly updated_at?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the account member who last edited or published it.
+             * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+             */
+            readonly updated_by?: string | null;
+            /**
+             * Format: uuid
+             * @description UUID of the workflow.
+             * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly uuid?: string;
+            /**
+             * @description Published versions, newest first. Empty for a workflow never published.
+             * @example [
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-10T16:20:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 2
+             *       },
+             *       {
+             *         "node_count": 1,
+             *         "published_at": "2026-11-03T09:00:00+00:00",
+             *         "published_by": "b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57",
+             *         "revision": 1
+             *       }
+             *     ]
+             */
+            readonly versions?: {
+                /**
+                 * @description Steps, waits and containers in that version.
+                 * @example 2
+                 */
+                node_count?: number;
+                /**
+                 * Format: date-time
+                 * @description When it was published, ISO 8601.
+                 * @example 2026-11-10T16:20:00+00:00
+                 */
+                published_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who published it; `null` when it is not known.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                published_by?: string | null;
+                /**
+                 * @description Revision number, starting at 1.
+                 * @example 2
+                 */
+                revision?: number;
+            }[];
+        };
+        /**
+         * @description State a list shows for the workflow:
+         *     * `draft` - Never published
+         *     * `active` - Running, with no blocked execution
+         *     * `paused` - Paused in any way (entries closed, whole workflow paused or commercial pause), with no blocked execution
+         *     * `error` - Published, with at least one blocked execution that someone has to resolve
+         * @enum {string}
+         */
+        WorkflowDisplayStatus: "draft" | "active" | "paused" | "error";
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution-workflow_execution.list": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution-workflow_execution.read": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description Who resolved it and when, when no step row could keep it (a cancel after its last step ended). Usually empty: the resolutions of a step are in its `trace`.
+             * @example []
+             */
+            readonly resolutions?: {
+                /**
+                 * @description What was done: `cancel`.
+                 * @example cancel
+                 */
+                action?: string;
+                /**
+                 * Format: date-time
+                 * @description When, ISO 8601.
+                 * @example 2026-11-10T10:00:00+00:00
+                 */
+                resolved_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who did it.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                resolved_by?: string;
+            }[];
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description Its exact route: a row per step (and per round of a «For each»), in the order they started. Empty once purged (`detail_purged`). */
+            readonly steps?: {
+                /**
+                 * @description Times it was tried.
+                 * @example 1
+                 */
+                attempts?: number;
+                /**
+                 * @description The branch it took, in a step with branches (`definition.nodes[].branches[].key`).
+                 * @example null
+                 * @example null
+                 * @example found
+                 */
+                branch_key?: string | null;
+                /**
+                 * @description The piece (`list_workflow_pieces`).
+                 * @example wait-duration
+                 */
+                catalog_id?: string;
+                /**
+                 * @description Why it blocked, stopped or failed, as the engine records it; `null` otherwise.
+                 * @example null
+                 * @example null
+                 * @example piece_unavailable
+                 */
+                cause?: string | null;
+                /**
+                 * @description Idempotency key of the effect of the step (an email, a record change…); `null` for a step without effect.
+                 * @example null
+                 * @example null
+                 * @example aut3:2b5e8c1d-6f4a-5b3c-9d2e-1f0a9b8c7d6e
+                 */
+                effect_key?: string | null;
+                /**
+                 * Format: date-time
+                 * @description When it finished, ISO 8601; `null` while it goes on.
+                 * @example null
+                 * @example null
+                 * @example 2026-11-10T09:00:01+00:00
+                 */
+                finished_at?: string | null;
+                /** @description The round of a «For each» this row belongs to; `null` outside any loop. */
+                iteration?: {
+                    /**
+                     * Format: uuid
+                     * @description The «For each» step.
+                     * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                     */
+                    for_each_uuid?: string;
+                    /**
+                     * @description The round, from 0.
+                     * @example 0
+                     */
+                    index?: number;
+                } | null;
+                /**
+                 * @description The name of the step in that version.
+                 * @example null
+                 * @example null
+                 * @example Wait 2 days
+                 */
+                name?: string | null;
+                /**
+                 * Format: uuid
+                 * @description The step (`definition.nodes[].uuid` of the version it runs on).
+                 * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+                 */
+                node_uuid?: string;
+                /**
+                 * @description What the step produced once completed, as the engine records it (keys in camelCase); a record the user cannot read is `{"redacted": true}`.
+                 * @example null
+                 * @example null
+                 * @example {
+                 *       "id": "7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b"
+                 *     }
+                 */
+                outputs?: Record<string, never> | null;
+                /**
+                 * Format: date-time
+                 * @description When the step started, ISO 8601.
+                 * @example 2026-11-10T09:00:00+00:00
+                 */
+                started_at?: string;
+                /**
+                 * @description State of the step.
+                 * @example waiting
+                 */
+                state?: components["schemas"]["WorkflowExecutionStepState"];
+                /**
+                 * @description What the step evaluated and decided, as the engine records it (for a «For each», `items`, `taken` and `total`), and `resolutions` of who retried, skipped or canceled it; a record the user cannot read is `{"redacted": true}`. The instants the engine traces are ISO 8601 in UTC (`+00:00`), like every date of the API.
+                 * @example {
+                 *       "taken": 2,
+                 *       "total": 2
+                 *     }
+                 */
+                trace?: Record<string, never>;
+                /**
+                 * Format: date-time
+                 * @description For a wait: when it ends, ISO 8601; `null` otherwise.
+                 * @example 2026-11-12T09:00:00+00:00
+                 */
+                wait_ends_at?: string | null;
+            }[];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution.jsonld-workflow_execution.list": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description Executions of a workflow of the new automation engine in the public API (F7, task B5). Read only, with the visibility of the internal
+         *     API (`WorkflowExecutionVisibility`, contract § 14): an execution whose subject the caller cannot read does not exist for them (404
+         *     `workflow_execution_not_found`, as one of another workflow), a record value of `outputs` or `trace` they cannot read is
+         *     `{"redacted": true}`, and a subject whose record they cannot read in full (the pipeline of an opportunity) is `hidden`: a protected
+         *     record, without name. Every capability is read under the token's ceiling ({@see \App\Application\Crm\CeiledApiAccountAccess}).
+         *
+         *     `list_workflow_executions` pages forward only by cursor (`cursor[gt]`): `cursor` is the opaque position API Platform copies into
+         *     `hydra:next` (the same for every item of a page: the one after the last), and {@see ForwardOnlyCursor} drops the `hydra:previous` it
+         *     would also build. The last page with items still links to the empty page that ends the walk. It is never published.
+         */
+        "WorkflowExecution.jsonld-workflow_execution.read": {
+            /**
+             * @description Why it is blocked, stopped or canceled, as the engine records it (for example `blocked_unresolved` when a blocked execution expired, or `canceled_by_user`); `null` otherwise.
+             * @example null
+             * @example null
+             * @example canceled_by_user
+             */
+            readonly cause?: string | null;
+            /**
+             * Format: date-time
+             * @description When it started, ISO 8601.
+             * @example 2026-11-10T09:00:00+00:00
+             */
+            readonly created_at?: string;
+            /** @description The round of a «For each» it is in; `null` outside any loop. */
+            readonly current_iteration?: {
+                /**
+                 * Format: uuid
+                 * @description The «For each» step.
+                 * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                 */
+                for_each_uuid?: string;
+                /**
+                 * @description The round, from 0.
+                 * @example 0
+                 */
+                index?: number;
+            } | null;
+            /**
+             * Format: uuid
+             * @description The step it is at, or where it ended (`definition.nodes[].uuid` of the version it runs on).
+             * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+             */
+            readonly current_node_uuid?: string;
+            /**
+             * @description The route of the execution was purged (90 days after it ended): `steps` is empty and `summary` is what is left.
+             * @example false
+             */
+            readonly detail_purged?: boolean;
+            /**
+             * Format: date-time
+             * @description Only while blocked: when it is canceled (`blocked_unresolved`) unless someone resolves it, 30 days after it blocked plus the time its workflow was paused. While the workflow is paused the expiry is frozen: this is the instant it would have if the pause were lifted now. `null` otherwise.
+             * @example null
+             * @example null
+             * @example 2026-12-10T09:00:00+00:00
+             */
+            readonly expires_at?: string | null;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * Format: date-time
+             * @description When it runs next (the end of a wait, a retry or the check of an effect), ISO 8601; `null` otherwise.
+             * @example 2026-11-12T09:00:00+00:00
+             */
+            readonly next_attempt_at?: string | null;
+            /**
+             * @description Who resolved it and when, when no step row could keep it (a cancel after its last step ended). Usually empty: the resolutions of a step are in its `trace`.
+             * @example []
+             */
+            readonly resolutions?: {
+                /**
+                 * @description What was done: `cancel`.
+                 * @example cancel
+                 */
+                action?: string;
+                /**
+                 * Format: date-time
+                 * @description When, ISO 8601.
+                 * @example 2026-11-10T10:00:00+00:00
+                 */
+                resolved_at?: string;
+                /**
+                 * Format: uuid
+                 * @description UUID of the account member who did it.
+                 * @example b7d3a1e6-5c28-4f90-8e14-2a6c9d0b3f57
+                 */
+                resolved_by?: string;
+            }[];
+            /**
+             * @description The published version it runs on.
+             * @default 1
+             * @example 2
+             */
+            readonly revision: number;
+            /**
+             * @description State of the execution. `waiting` is a timed wait; `active`, anything else still on its way.
+             * @example waiting
+             */
+            readonly state?: components["schemas"]["WorkflowExecutionState"];
+            /** @description Its exact route: a row per step (and per round of a «For each»), in the order they started. Empty once purged (`detail_purged`). */
+            readonly steps?: {
+                /**
+                 * @description Times it was tried.
+                 * @example 1
+                 */
+                attempts?: number;
+                /**
+                 * @description The branch it took, in a step with branches (`definition.nodes[].branches[].key`).
+                 * @example null
+                 * @example null
+                 * @example found
+                 */
+                branch_key?: string | null;
+                /**
+                 * @description The piece (`list_workflow_pieces`).
+                 * @example wait-duration
+                 */
+                catalog_id?: string;
+                /**
+                 * @description Why it blocked, stopped or failed, as the engine records it; `null` otherwise.
+                 * @example null
+                 * @example null
+                 * @example piece_unavailable
+                 */
+                cause?: string | null;
+                /**
+                 * @description Idempotency key of the effect of the step (an email, a record change…); `null` for a step without effect.
+                 * @example null
+                 * @example null
+                 * @example aut3:2b5e8c1d-6f4a-5b3c-9d2e-1f0a9b8c7d6e
+                 */
+                effect_key?: string | null;
+                /**
+                 * Format: date-time
+                 * @description When it finished, ISO 8601; `null` while it goes on.
+                 * @example null
+                 * @example null
+                 * @example 2026-11-10T09:00:01+00:00
+                 */
+                finished_at?: string | null;
+                /** @description The round of a «For each» this row belongs to; `null` outside any loop. */
+                iteration?: {
+                    /**
+                     * Format: uuid
+                     * @description The «For each» step.
+                     * @example 8c7d6e5f-4a3b-4c2d-9e1f-0a9b8c7d6e5f
+                     */
+                    for_each_uuid?: string;
+                    /**
+                     * @description The round, from 0.
+                     * @example 0
+                     */
+                    index?: number;
+                } | null;
+                /**
+                 * @description The name of the step in that version.
+                 * @example null
+                 * @example null
+                 * @example Wait 2 days
+                 */
+                name?: string | null;
+                /**
+                 * Format: uuid
+                 * @description The step (`definition.nodes[].uuid` of the version it runs on).
+                 * @example 5a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+                 */
+                node_uuid?: string;
+                /**
+                 * @description What the step produced once completed, as the engine records it (keys in camelCase); a record the user cannot read is `{"redacted": true}`.
+                 * @example null
+                 * @example null
+                 * @example {
+                 *       "id": "7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b"
+                 *     }
+                 */
+                outputs?: Record<string, never> | null;
+                /**
+                 * Format: date-time
+                 * @description When the step started, ISO 8601.
+                 * @example 2026-11-10T09:00:00+00:00
+                 */
+                started_at?: string;
+                /**
+                 * @description State of the step.
+                 * @example waiting
+                 */
+                state?: components["schemas"]["WorkflowExecutionStepState"];
+                /**
+                 * @description What the step evaluated and decided, as the engine records it (for a «For each», `items`, `taken` and `total`), and `resolutions` of who retried, skipped or canceled it; a record the user cannot read is `{"redacted": true}`. The instants the engine traces are ISO 8601 in UTC (`+00:00`), like every date of the API.
+                 * @example {
+                 *       "taken": 2,
+                 *       "total": 2
+                 *     }
+                 */
+                trace?: Record<string, never>;
+                /**
+                 * Format: date-time
+                 * @description For a wait: when it ends, ISO 8601; `null` otherwise.
+                 * @example 2026-11-12T09:00:00+00:00
+                 */
+                wait_ends_at?: string | null;
+            }[];
+            /** @description For whom the execution runs. */
+            readonly subject?: {
+                /**
+                 * @description Contact: email; company: primary domain; opportunity: its company; `null` otherwise.
+                 * @example ana@example.com
+                 */
+                detail?: string | null;
+                /**
+                 * @description Its readable name (contact: name or email; company: name; opportunity: title; task: title); `null` for a webhook request, a record that no longer exists or a protected record (see `state`).
+                 * @example Ana García
+                 */
+                label?: string | null;
+                /**
+                 * @description `visible`, `hidden` (a protected record: no name or detail) or `deleted`.
+                 * @example visible
+                 */
+                state?: components["schemas"]["WorkflowSubjectState"];
+                /**
+                 * @description What the execution runs for.
+                 * @example contact
+                 */
+                type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * Format: uuid
+                 * @description The record; `null` for a received webhook request.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                uuid?: string | null;
+            };
+            /**
+             * @description What is kept of the route after the purge, for 24 months: the number of steps per step state (`steps`), their `total`, how many were rounds of a «For each» (`iterations`) and the trigger it entered by (`trigger_uuid`). `null` while the route exists.
+             * @example null
+             * @example null
+             * @example {
+             *       "iterations": 0,
+             *       "steps": {
+             *         "completed": 3
+             *       },
+             *       "total": 3,
+             *       "trigger_uuid": "0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10"
+             *     }
+             */
+            readonly summary?: Record<string, never> | null;
+            /**
+             * Format: uuid
+             * @description The trigger it entered by (`definition.triggers[].uuid` of that version).
+             * @example 0f9a7c52-1d3e-4b6a-8c2f-7e5d4a3b2c10
+             */
+            readonly trigger_uuid?: string;
+            /**
+             * Format: date-time
+             * @description When it last changed, ISO 8601.
+             * @example 2026-11-10T09:00:01+00:00
+             */
+            readonly updated_at?: string;
+            /**
+             * Format: uuid
+             * @description UUID of the execution.
+             * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+             */
+            readonly uuid?: string;
+            /**
+             * Format: iri-reference
+             * @description IRI of the workflow (`get_workflow`).
+             * @example /workflows/3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+             */
+            readonly workflow?: string;
+        };
+        /**
+         * @description State of the execution:
+         *     * `active` - On its way: running a step, retrying it or checking its effect
+         *     * `waiting` - In a timed wait
+         *     * `blocked` - Stopped at a step until someone resolves it in the app; see `cause` and `expires_at`
+         *     * `completed` - Went through to the end
+         *     * `stopped` - Left the workflow early, for example by an exit rule; see `cause`
+         *     * `canceled` - Canceled by someone or by the expiry of a blocked execution; see `cause`
+         * @enum {string}
+         */
+        WorkflowExecutionState: "active" | "waiting" | "blocked" | "completed" | "stopped" | "canceled";
+        /**
+         * @description State of the step:
+         *     * `running` - Being run now
+         *     * `waiting` - A wait that has not ended
+         *     * `awaiting_effect` - Its effect (an email, a record change…) was sent and its result is being confirmed
+         *     * `retryable` - Failed and will be tried again
+         *     * `completed` - Done
+         *     * `skipped` - Skipped by someone after it blocked
+         *     * `stopped` - The execution left the workflow at this step
+         *     * `blocked` - Blocked: the execution waits for someone to resolve it
+         *     * `canceled` - The execution was canceled at this step
+         * @enum {string}
+         */
+        WorkflowExecutionStepState: "running" | "waiting" | "awaiting_effect" | "retryable" | "completed" | "skipped" | "stopped" | "blocked" | "canceled";
+        /**
+         * @description `list_workflow_pieces` (F7, task B4): the pieces that publishing a workflow accepts, as the internal API lists them for the editor
+         *     (`ListPublishableWorkflowPieces`): every registered trigger and every step the runtime runs, each with the CRM plan it needs. In this
+         *     host the steps that run come from the static list of CoreBundle (`RunnableWorkflowSteps`), which a contract test in symfony keeps
+         *     equal to the real handlers.
+         */
+        "WorkflowPiece-workflow_piece.read": {
+            /**
+             * @description Identifier of the piece: the `catalogId` of a trigger or node in the `definition` of a workflow.
+             * @example wait-duration
+             */
+            catalog_id?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description What the piece is: a trigger, a step, a wait or a container («For each»).
+             * @example wait
+             */
+            kind?: components["schemas"]["WorkflowPieceKind"];
+            /**
+             * @description The CRM plan the piece needs by itself. A workflow with a `crm_pro` piece is not published on CRM Essentials.
+             * @example crm_essentials
+             */
+            required_plan?: components["schemas"]["WorkflowRequiredPlan"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description `list_workflow_pieces` (F7, task B4): the pieces that publishing a workflow accepts, as the internal API lists them for the editor
+         *     (`ListPublishableWorkflowPieces`): every registered trigger and every step the runtime runs, each with the CRM plan it needs. In this
+         *     host the steps that run come from the static list of CoreBundle (`RunnableWorkflowSteps`), which a contract test in symfony keeps
+         *     equal to the real handlers.
+         */
+        "WorkflowPiece.jsonld-workflow_piece.read": {
+            /**
+             * @description Identifier of the piece: the `catalogId` of a trigger or node in the `definition` of a workflow.
+             * @example wait-duration
+             */
+            catalog_id?: string;
+            /** @description Hydra IRI for this entity (e.g. "/audiences/01HXXXX..."). Populated by the SDK from the response `@id`; consumers can use it to deep-link or correlate cross-resource relationships. */
+            iri?: string;
+            /**
+             * @description What the piece is: a trigger, a step, a wait or a container («For each»).
+             * @example wait
+             */
+            kind?: components["schemas"]["WorkflowPieceKind"];
+            /**
+             * @description The CRM plan the piece needs by itself. A workflow with a `crm_pro` piece is not published on CRM Essentials.
+             * @example crm_essentials
+             */
+            required_plan?: components["schemas"]["WorkflowRequiredPlan"];
+            /** @description Trailing UUID segment of the entity IRI. Convenience derived from `iri`; absent when the IRI doesn't end in a UUID. */
+            uuid?: string;
+        };
+        /**
+         * @description Kind of piece:
+         *     * `trigger` - Starts the workflow for a subject
+         *     * `step` - Does something or decides a branch
+         *     * `wait` - Waits for a time, a date or an event
+         *     * `loop` - Runs its body once for each item of a list («For each»)
+         * @enum {string}
+         */
+        WorkflowPieceKind: "trigger" | "step" | "wait" | "loop";
+        /**
+         * @description CRM plan the piece needs to be published:
+         *     * `crm_essentials` - Any CRM plan
+         *     * `crm_pro` - The CRM Pro plan
+         * @enum {string}
+         */
+        WorkflowRequiredPlan: "crm_essentials" | "crm_pro";
+        /**
+         * @description State of the workflow:
+         *     * `draft` - Never published
+         *     * `active` - Published, with its entries open and not paused
+         *     * `paused` - Published, but its entries are closed or the whole workflow is paused
+         *     * `commercial-paused` - Paused because the account lost the CRM plan its published version needs
+         * @enum {string}
+         */
+        WorkflowStatus: "draft" | "active" | "paused" | "commercial-paused";
+        /**
+         * @description The record of the execution:
+         *     * `visible` - It exists and the user can read it, so `label` is its name (also a received webhook request, whose `label` is null)
+         *     * `hidden` - A protected record: the user cannot read it (its kind, or the pipeline of an opportunity), so there is no name or detail
+         *     * `deleted` - It no longer exists
+         * @enum {string}
+         */
+        WorkflowSubjectState: "visible" | "hidden" | "deleted";
+        /**
+         * @description What the execution runs for:
+         *     * `contact`, `company`, `opportunity`, `task`, `note` - A CRM record
+         *     * `meeting` - A meeting (the subject of the meeting triggers)
+         *     * `subscription` - A contact's subscription to an audience
+         *     * `order`, `cart` - An order or an abandoned cart of a store
+         *     * `survey_response` - An answer to a survey
+         *     * `opportunity_contact` - A contact of an opportunity (the pair)
+         *     * `meeting_contact` - A contact of a meeting (the pair)
+         *     * `webhook_request` - A request received by a webhook trigger; it is not a record
+         * @enum {string}
+         */
+        WorkflowSubjectType: "contact" | "company" | "opportunity" | "task" | "meeting" | "note" | "subscription" | "order" | "cart" | "survey_response" | "opportunity_contact" | "meeting_contact" | "webhook_request";
+        /**
+         * @description Entries of one trigger of the published version:
+         *     * `open` - The trigger admits new entries
+         *     * `paused` - The trigger was paused on its own and admits none
+         * @enum {string}
+         */
+        WorkflowTriggerEntryState: "open" | "paused";
     };
     responses: never;
     parameters: never;
@@ -73350,6 +78927,1251 @@ export interface operations {
                 };
                 content: {
                     "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_ai_agents: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Part of the name of the agent, case-insensitive. Up to 120 characters.
+                 * @example investigador
+                 */
+                search?: string;
+                /**
+                 * @description Only agents in this state. Without it, every agent but the archived ones.
+                 * @example published
+                 */
+                status?: components["schemas"]["AiAgentStatus"];
+                /**
+                 * @description Page number, starting at 1.
+                 * @example 1
+                 */
+                page?: number;
+                /**
+                 * @description Agents per page. Default 25, maximum 100.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgent collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgent-ai_agent.list"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["AiAgent.jsonld-ai_agent.list"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description A filter value is not valid: `status` outside the allowed values, `search` longer than 120 characters, or `page` / `itemsPerPage` outside their range. Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    create_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new AiAgent resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiAgent.AiAgentCreateInput"];
+                "application/ld+json": components["schemas"]["AiAgent.AiAgentCreateInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description AiAgent resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgent-ai_agent.read"];
+                    "application/ld+json": components["schemas"]["AiAgent.jsonld-ai_agent.read"];
+                };
+            };
+            /** @description The body is not valid JSON or a field has the wrong type. Send a JSON object with the documented field types. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The key or token does not have the `automations.manage` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing.
+             *
+             *     `economic_entitlement_unavailable`: The account does not have CRM Pro, and AI agents are part of it. Reads keep working. Nothing was changed; an administrator has to upgrade the plan.
+             *
+             *     `ai_not_included`: The plan of the account does not include AI (`maia.access`). Nothing was changed; an administrator has to change the plan.
+             *
+             *     `ai_agent_automatic_write_not_allowed`: The request comes from Maia (header `x-easymailing-agent: maia`) and the definition sets a tool that writes in `auto` (automatic) mode. Maia never does that: a person has to set it in Easymailing › Settings › AI agents. Leave the tool in `approval` mode, or remove it.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `validation_failed`: A field of the agent is not valid: `name` over 120 characters, `description` over 500, `icon` that is not a key like `agent-spark`, `access` outside `team` / `managers`, or `period_cap` that is not a positive `{amount, currency}` in EUR. Read `violations[].propertyPath`.
+             *
+             *     `ai_agent_definition_invalid`: The definition in `draft` is not valid. `violations[].propertyPath` gives the path (for example `draft.tools[1].type`) and `violations[].code` the reason: `invalid_type`, `invalid_value`, `too_long`, `too_many`, `required`, `out_of_range`, `unknown_field`, `unknown_tool`, `duplicate_tool`, `invalid_domain` or `duplicate_domain`. Nothing was saved; fix that part and send it again.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    propose_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new AiAgentProposal resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiAgentProposal.AiAgentProposeInput"];
+                "application/ld+json": components["schemas"]["AiAgentProposal.AiAgentProposeInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description AiAgentProposal resource created */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgentProposal-ai_agent_proposal.read"];
+                    "application/ld+json": components["schemas"]["AiAgentProposal.jsonld-ai_agent_proposal.read"];
+                };
+            };
+            /** @description The body is not valid JSON or a field has the wrong type. Send a JSON object with the documented field types. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The key or token does not have the `automations.manage` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing.
+             *
+             *     `economic_entitlement_unavailable`: The account does not have CRM Pro, and AI agents are part of it. Reads keep working. Nothing was changed; an administrator has to upgrade the plan.
+             *
+             *     `ai_not_included`: The plan of the account does not include AI (`maia.access`). Nothing was changed; an administrator has to change the plan.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `ai_credits_exhausted`: The included AI balance is used up and extra spending is off. Nothing was spent or started. An administrator can turn on extra spending in Settings › Plan.
+             *
+             *     `ai_overage_exhausted`: The extra spending limit is reached. An administrator can raise it in Settings › Plan.
+             *
+             *     `ai_agents_cap_reached`: The cap for all agents in this billing period is reached. An administrator can raise it in Settings › Plan; it starts again with the next period.
+             *
+             *     `ai_overage_unlimited`: The account has extra spending without a limit, which agents do not use. An administrator has to set a limit in Settings › Plan.
+             *
+             *     `ai_payment_pending`: There is an unpaid charge for extra spending that blocks new AI use. An administrator has to pay it; it is never reported as «balance used up».
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `validation_failed`: `description` is missing, empty or longer than 2,000 characters. Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_output_invalid`: The model did not return a proposal that could be cleaned into a valid agent. The call is charged. Describe the agent with more detail and try once more. */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support.
+             *
+             *     `ai_unavailable`: The AI provider failed after three attempts. Nothing is charged for a failed call. Retry in a minute; do not retry in a loop.
+             */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent. Get it from `list_ai_agents`.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgent resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgent-ai_agent.read"];
+                    "application/ld+json": components["schemas"]["AiAgent.jsonld-ai_agent.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    update_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated AiAgent resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiAgent.AiAgentUpdateInput"];
+                "application/ld+json": components["schemas"]["AiAgent.AiAgentUpdateInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description AiAgent resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgent-ai_agent.read"];
+                    "application/ld+json": components["schemas"]["AiAgent.jsonld-ai_agent.read"];
+                };
+            };
+            /** @description The body is not valid JSON or a field has the wrong type. Send a JSON object with the documented field types. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The key or token does not have the `automations.manage` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing.
+             *
+             *     `economic_entitlement_unavailable`: The account does not have CRM Pro, and AI agents are part of it. Reads keep working. Nothing was changed; an administrator has to upgrade the plan.
+             *
+             *     `ai_not_included`: The plan of the account does not include AI (`maia.access`). Nothing was changed; an administrator has to change the plan.
+             *
+             *     `ai_agent_automatic_write_not_allowed`: The request comes from Maia (header `x-easymailing-agent: maia`) and the definition sets a tool that writes in `auto` (automatic) mode. Maia never does that: a person has to set it in Easymailing › Settings › AI agents. Leave the tool in `approval` mode, or remove it.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_archived`: The agent is archived and cannot change. Archiving is not undone through the API; create a new agent, or ask an administrator to restore it in Easymailing. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `validation_failed`: A field of the agent is not valid: `name` over 120 characters, `description` over 500, `icon` that is not a key like `agent-spark`, `access` outside `team` / `managers`, or `period_cap` that is not a positive `{amount, currency}` in EUR. Read `violations[].propertyPath`.
+             *
+             *     `ai_agent_definition_invalid`: The definition in `draft` is not valid. `violations[].propertyPath` gives the path (for example `draft.tools[1].type`) and `violations[].code` the reason: `invalid_type`, `invalid_value`, `too_long`, `too_many`, `required`, `out_of_range`, `unknown_field`, `unknown_tool`, `duplicate_tool`, `invalid_domain` or `duplicate_domain`. Nothing was saved; fix that part and send it again.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    archive_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgent resource created */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgent-ai_agent.read"];
+                    "application/ld+json": components["schemas"]["AiAgent.jsonld-ai_agent.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The key or token does not have the `automations.manage` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing.
+             *
+             *     `economic_entitlement_unavailable`: The account does not have CRM Pro, and AI agents are part of it. Reads keep working. Nothing was changed; an administrator has to upgrade the plan.
+             *
+             *     `ai_not_included`: The plan of the account does not include AI (`maia.access`). Nothing was changed; an administrator has to change the plan.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    publish_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgent resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgent-ai_agent.read"];
+                    "application/ld+json": components["schemas"]["AiAgent.jsonld-ai_agent.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The key or token does not have the `automations.manage` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing.
+             *
+             *     `economic_entitlement_unavailable`: The account does not have CRM Pro, and AI agents are part of it. Reads keep working. Nothing was changed; an administrator has to upgrade the plan.
+             *
+             *     `ai_not_included`: The plan of the account does not include AI (`maia.access`). Nothing was changed; an administrator has to change the plan.
+             *
+             *     `ai_agent_automatic_write_not_allowed`: The request comes from Maia (header `x-easymailing-agent: maia`) and the definition sets a tool that writes in `auto` (automatic) mode. Maia never does that: a person has to set it in Easymailing › Settings › AI agents. Leave the tool in `approval` mode, or remove it.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_archived`: The agent is archived and cannot change. Archiving is not undone through the API; create a new agent, or ask an administrator to restore it in Easymailing. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `ai_agent_name_required`: The agent has no name. Set it with `update_ai_agent`.
+             *
+             *     `ai_agent_definition_invalid`: The draft cannot be published: it has no instructions (`violations[].propertyPath` = `draft.instructions`, code `required`), or another part is not valid as in `update_ai_agent`.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_ai_agent_runs: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Only runs in this state.
+                 * @example completed
+                 */
+                state?: components["schemas"]["AiAgentRunState"];
+                /**
+                 * @description Page number, starting at 1.
+                 * @example 1
+                 */
+                page?: number;
+                /**
+                 * @description Runs per page. Default 25, maximum 100.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgentRun collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgentRun-ai_agent_run.read"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["AiAgentRun.jsonld-ai_agent_run.read"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description A filter value is not valid: `state` outside the allowed values, or `page` / `itemsPerPage` outside their range. Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    run_ai_agent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent. Get it from `list_ai_agents`.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The new AiAgentRun resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AiAgentRun.AiAgentRunInput"];
+                "application/ld+json": components["schemas"]["AiAgentRun.AiAgentRunInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description AiAgentRun resource created */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgentRun-ai_agent_run.read"];
+                    "application/ld+json": components["schemas"]["AiAgentRun.jsonld-ai_agent_run.read"];
+                };
+            };
+            /** @description The body is not valid JSON or a field has the wrong type. Send a JSON object with the documented field types. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The key or token does not have the `automations.read` capability, or the person is not allowed to use this agent (access `managers` needs `automations.manage`; `version: draft` too). Ask an administrator, or use a key or token that has it; the response does not say which permission is missing.
+             *
+             *     `economic_entitlement_unavailable`: The account does not have CRM Pro, and AI agents are part of it. Reads keep working. Nothing was changed; an administrator has to upgrade the plan.
+             *
+             *     `ai_not_included`: The plan of the account does not include AI (`maia.access`). Nothing was changed; an administrator has to change the plan.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`.
+             *
+             *     `unknown_record`: The record in `record` does not exist in this account, or the user cannot see it. Nothing was started.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `agent_unavailable`: The agent is archived. Nothing was started. Use another agent from `list_ai_agents`.
+             *
+             *     `ai_agent_not_published`: `version` is `published` and the agent was never published. Publish it with `publish_ai_agent`, or ask with `version: draft`.
+             *
+             *     `client_request_reused`: That `client_request_id` was used with a different body. Use a new key for a new task.
+             *
+             *     `ai_credits_exhausted`: The included AI balance is used up and extra spending is off. Nothing was spent or started. An administrator can turn on extra spending in Settings › Plan.
+             *
+             *     `ai_overage_exhausted`: The extra spending limit is reached. An administrator can raise it in Settings › Plan.
+             *
+             *     `ai_agents_cap_reached`: The cap for all agents in this billing period is reached. An administrator can raise it in Settings › Plan; it starts again with the next period.
+             *
+             *     `ai_agent_cap_reached`: This agent reached its own cap for the period (`period_cap`). Raise it with `update_ai_agent`, or use another agent.
+             *
+             *     `ai_credits_insufficient`: What is left of the balance or of the cap is less than the maximum cost of one task of this agent (`limits.max_cost`). Add balance or raise the cap, or lower `max_cost` in the draft and publish it.
+             *
+             *     `ai_overage_unlimited`: The account has extra spending without a limit, which agents do not use. An administrator has to set a limit in Settings › Plan.
+             *
+             *     `ai_payment_pending`: There is an unpaid charge for extra spending that blocks new AI use. An administrator has to pay it; it is never reported as «balance used up».
+             *
+             *     `ai_agent_run_confirmation_required`: Reserved: not returned today, because a run asked through the API never writes. When runs can write (with approval), it will mean that the request comes from Maia (header `x-easymailing-agent: maia`), the version that would run has a tool that writes in `auto` (automatic) mode and the body does not carry `confirmed: true`. Nothing is started or charged; confirm with the person and repeat with `confirmed: true`.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `validation_failed`: `task` is missing, empty or longer than 4,000 characters; `record` is not the IRI of a contact, company or opportunity; `response_format` or `version` outside their values; `fields` missing with `response_format: fields`, over 30 items, with a repeated or invalid `path` or an unknown `type`; or `client_request_id` over 64 characters. Read `violations[].propertyPath`.
+             *
+             *     `ai_agent_record_needs_crm_read`: `record` was sent but the agent does not have the `crm_read` tool, so it could not read it. Remove `record` and put the facts in `task`, or add the tool to the agent.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_ai_agent_run: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+                /**
+                 * @description UUID of the run, from the answer of `run_ai_agent`.
+                 * @example d4a8f3c1-7b52-4e09-8c16-5a2e9d0b4f73
+                 */
+                runUuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgentRun resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgentRun-ai_agent_run.read"];
+                    "application/ld+json": components["schemas"]["AiAgentRun.jsonld-ai_agent_run.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`.
+             *
+             *     `ai_agent_run_not_found`: The run does not exist for this agent, it belongs to someone else and the reader is not an administrator of automations, or it is older than 30 days. A `runUuid` that is not a valid UUID also gives 404.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_ai_agent_versions: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Page number, starting at 1.
+                 * @example 1
+                 */
+                page?: number;
+                /**
+                 * @description Versions per page. Default 25, maximum 100.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the agent.
+                 * @example 6e2f0a97-4b1c-4d35-9a8e-2c7d5f1b3e40
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description AiAgentVersion collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AiAgentVersion-ai_agent_version.read"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["AiAgentVersion.jsonld-ai_agent_version.read"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `ai_agent_not_found`: The agent does not exist in this account. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_ai_agents`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `page` or `itemsPerPage` outside their range. Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
                 };
             };
             /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
@@ -78719,7 +85541,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `delete_subscription_form`. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -78810,7 +85632,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `pause_subscription_form`. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -78901,7 +85723,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `publish_subscription_form`. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -78992,7 +85814,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `resume_subscription_form`. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -79074,7 +85896,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `pause_subscription_form`: there is no unpublish for those forms, pausing takes them offline. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -79162,7 +85984,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `update_subscription_form`. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -79259,7 +86081,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["Error"];
                 };
             };
-            /** @description The form was created in the new Easymailing panel and cannot be changed through the API. Edit it in the panel. */
+            /** @description The form was created in the Customer App (`generation: current`) and this operation cannot change it. Use `update_subscription_form` and `update_subscription_form_popup_behavior`. */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -107154,6 +113976,8 @@ export interface operations {
              *
              *     `opportunity_custom_probability_not_allowed`: A custom `probability` needs an open stage in a pipeline with `allow_custom_probability`. Leave `probability` out or send `null`.
              *
+             *     `opportunity_primary_contact_required`: The opportunity has contacts, so `primary_contact` cannot be `null`. Send the IRI of one of its contacts, or remove all the contacts first.
+             *
              *     `opportunity_stage_pipeline_mismatch`: The stage does not belong to the pipeline. Take the stage from `get_pipeline` of the right pipeline.
              *
              *     `opportunity_entry_requirements_missing`: The destination stage requires fields the opportunity does not have yet. `violations` lists them; send them in the same request and try again. Nothing was changed.
@@ -107371,6 +114195,8 @@ export interface operations {
              *     `opportunity_currency_not_allowed`: The pipeline does not accept that currency (it allows only its reference currency unless `allow_multiple_currencies` is on). Use the right currency or change the pipeline.
              *
              *     `opportunity_custom_probability_not_allowed`: A custom `probability` needs an open stage in a pipeline with `allow_custom_probability`. Leave `probability` out or send `null`.
+             *
+             *     `opportunity_primary_contact_required`: The opportunity has contacts, so `primary_contact` cannot be `null`. Send the IRI of one of its contacts, or remove all the contacts first.
              *
              *     `opportunity_field_read_only`: The body has a property that cannot be changed here (for example `pipeline` or `stage`). Use the move operations.
              */
@@ -115958,6 +122784,2138 @@ export interface operations {
             };
         };
     };
+    list_subscription_form_templates: {
+        parameters: {
+            query: {
+                /**
+                 * @description UUID of the audience that will own the form. Get it from `list_audiences`.
+                 * @example 0df14405-90ff-4287-b3e4-ef088901ee6f
+                 */
+                audience: string;
+                /**
+                 * @description `embedded` or `popup`.
+                 * @example embedded
+                 */
+                type: string;
+                /**
+                 * @description Channels the form will collect: `email`, `sms` or both. Must be exactly the channels of the form you are going to create.
+                 * @example [
+                 *       "email"
+                 *     ]
+                 */
+                "channels[]": string[];
+                /**
+                 * @description Language code for the template names.
+                 * @example en
+                 */
+                locale?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionFormTemplate collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionFormTemplate-subscription_form_template.read"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["SubscriptionFormTemplate.jsonld-subscription_form_template.read"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description `audience`, `type` or `channels[]` is missing or not valid. Send all three. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The audience does not exist or belongs to another account. Check it with `list_audiences`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_subscription_forms: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Return only forms whose title contains this text.
+                 * @example newsletter
+                 */
+                title?: string;
+                /**
+                 * @description UUID of an audience. Get it from `list_audiences`.
+                 * @example 0df14405-90ff-4287-b3e4-ef088901ee6f
+                 */
+                audience?: string;
+                /**
+                 * @description Return only forms in this status. Each value is described in the response.
+                 * @example form.status.published
+                 */
+                status?: string;
+                /**
+                 * @description Return only forms of this type: `embedded` or `popup`.
+                 * @example popup
+                 */
+                type?: string;
+                /**
+                 * @description Return only forms that collect this channel: `email` or `sms`.
+                 * @example email
+                 */
+                channel?: string;
+                /**
+                 * @description Sort by title: `asc` or `desc`.
+                 * @example asc
+                 */
+                "order[title]"?: string;
+                /**
+                 * @description Sort by type: `asc` or `desc`.
+                 * @example asc
+                 */
+                "order[type]"?: string;
+                /**
+                 * @description Sort by the name of the audience: `asc` or `desc`.
+                 * @example asc
+                 */
+                "order[audience_name]"?: string;
+                /**
+                 * @description Sort by creation date: `asc` or `desc`.
+                 * @example desc
+                 */
+                "order[created_at]"?: string;
+                /**
+                 * @description Sort by last change: `asc` or `desc`.
+                 * @example desc
+                 */
+                "order[updated_at]"?: string;
+                /**
+                 * @description Page number, starting at 1.
+                 * @example 1
+                 */
+                page?: number;
+                /**
+                 * @description Forms per page. Default 30, maximum 100.
+                 * @example 30
+                 */
+                itemsPerPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example [
+                     *       {
+                     *         "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *         "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *         "channels": [
+                     *           "email"
+                     *         ],
+                     *         "converted_at": null,
+                     *         "created_at": "2026-11-02T09:15:00+01:00",
+                     *         "generation": "current",
+                     *         "status": "form.status.published",
+                     *         "subscriber_count": 128,
+                     *         "title": "Newsletter sign-up",
+                     *         "type": "embedded",
+                     *         "updated_at": "2026-11-09T17:40:00+01:00",
+                     *         "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08"
+                     *       }
+                     *     ]
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.list"][];
+                    /**
+                     * @example [
+                     *       {
+                     *         "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *         "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *         "channels": [
+                     *           "email"
+                     *         ],
+                     *         "converted_at": null,
+                     *         "created_at": "2026-11-02T09:15:00+01:00",
+                     *         "generation": "current",
+                     *         "status": "form.status.published",
+                     *         "subscriber_count": 128,
+                     *         "title": "Newsletter sign-up",
+                     *         "type": "embedded",
+                     *         "updated_at": "2026-11-09T17:40:00+01:00",
+                     *         "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08"
+                     *       }
+                     *     ]
+                     */
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["SubscriptionForm.jsonld-subscription_form.list"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    create_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The new SubscriptionForm resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionForm.SubscriptionFormCreateInput"];
+                "application/ld+json": components["schemas"]["SubscriptionForm.SubscriptionFormCreateInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description SubscriptionForm resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": null,
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.unpublished",
+                     *       "subscriber_count": 0,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-02T09:15:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": null,
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.unpublished",
+                     *       "subscriber_count": 0,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-02T09:15:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability.
+             *
+             *     `plan_upgrade_required`: Popup forms are not included in the plan of the account. Nothing was changed. Embedded forms work on any plan; to use popups the account owner has to upgrade, and the extension `upgrade` names the capability (`popup_forms`) the plan lacks.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The audience does not exist or belongs to another account. Check it with `list_audiences`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `validation_failed`: See `violations[].propertyPath`: `title`, `audience`, `type` or `channels` missing or invalid; `locale` is required when the account has several languages, or is not one of them; `template_id` is not an active template with the same type, channels and GDPR state as the audience.
+             *
+             *     `no_compatible_template`: You did not send `template_id` and there is no active template for that type, channels and GDPR state. Try other channels or ask support.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-09T17:40:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-09T17:40:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    update_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated SubscriptionForm resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionForm.SubscriptionFormUpdateInput"];
+                "application/ld+json": components["schemas"]["SubscriptionForm.SubscriptionFormUpdateInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description SubscriptionForm resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": true,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-10T10:05:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": true,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-10T10:05:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Use `update_embedded_form` or `update_popup_form`, or convert it first with `convert_subscription_form`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `validation_failed`: See `violations[].propertyPath`: for example `groups` contains a group that does not belong to the audience of the form, `locale` is not an account language, or `title` is empty. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    delete_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm resource deleted */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Use `delete_form`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    convert_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": "2026-11-11T10:02:00+01:00",
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 640,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:02:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": "2026-11-11T10:02:00+01:00",
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 640,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:02:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `form_already_current`: The form is already managed in the Customer App. Nothing to do. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `form_conversion_unavailable`: The installed design cannot be converted (for example the confirmation email is missing, or the form has an older publication that is not compatible). A person has to review it in the Customer App. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    duplicate_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The new SubscriptionForm resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionForm.SubscriptionFormDuplicateInput"];
+                "application/ld+json": components["schemas"]["SubscriptionForm.SubscriptionFormDuplicateInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description SubscriptionForm resource created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/8e1f0b34-2a6c-4d7e-b9a0-5c4d3e2f1a0b",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-11T10:30:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": null,
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.unpublished",
+                     *       "subscriber_count": 0,
+                     *       "title": "Newsletter sign-up (Black Friday)",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:30:00+01:00",
+                     *       "uuid": "8e1f0b34-2a6c-4d7e-b9a0-5c4d3e2f1a0b",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/8e1f0b34-2a6c-4d7e-b9a0-5c4d3e2f1a0b",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-11T10:30:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": null,
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.unpublished",
+                     *       "subscriber_count": 0,
+                     *       "title": "Newsletter sign-up (Black Friday)",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:30:00+01:00",
+                     *       "uuid": "8e1f0b34-2a6c-4d7e-b9a0-5c4d3e2f1a0b",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Convert it first with `convert_subscription_form`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `validation_failed`: See `violations[].propertyPath`: `title` is longer than 255 characters. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    pause_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.paused",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:20:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.paused",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:20:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Use `pause_form`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `form_not_published`: The form has never been published, so there is nothing to pause or resume. Publish it first with `publish_subscription_form`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    publish_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:02:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-11T10:02:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Use `publish_form`, or convert it first with `convert_subscription_form`.
+             *
+             *     `form_publication_conflict`: The form changed while it was being published, so nothing was published. Read it again with `get_subscription_form` and publish again.
+             */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `design_required`: The form has no design and one could not be generated from its template (`status` is `form.status.draft`). A person has to open it in the Customer App editor and save it; then publish again.
+             *
+             *     `account_not_approved`: The account is not approved to send yet. Ask support.
+             *
+             *     `sender_emails_missing`: The audience has no default From and Reply-To email. Set them in the audience settings with `update_audience`.
+             *
+             *     `consent_purpose_missing`: The audience has GDPR enabled and a channel of the form is covered by no purpose. Enable a purpose that covers it in the audience, then add it with `update_subscription_form`.
+             *
+             *     `confirmation_email_required`: Double opt-in is on and the confirmation email has no content. A person has to write it in the Customer App.
+             *
+             *     `invalid_design`: The saved design can no longer be published (for example a field it uses was archived). A person has to review it in the Customer App editor.
+             *
+             *     `sms_sender_missing`: The form asks for double opt-in by SMS and the audience has no active default SMS sender. Set one in the audience with `update_audience` (`notifications.sms_sender`; see `list_sms_senders`), then publish again.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    resume_subscription_form: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionForm resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-12T09:00:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": false,
+                     *       "popup_behavior": null,
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "embedded",
+                     *       "updated_at": "2026-11-12T09:00:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability.
+             *
+             *     `plan_upgrade_required`: Popup forms are not included in the plan of the account. Nothing was changed. Embedded forms work on any plan; to use popups the account owner has to upgrade, and the extension `upgrade` names the capability (`popup_forms`) the plan lacks.
+             */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Use `resume_form`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `form_not_published`: The form has never been published, so there is nothing to pause or resume. Publish it first with `publish_subscription_form`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    update_subscription_form_popup_behavior: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The updated SubscriptionForm resource */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubscriptionForm.SubscriptionFormPopupBehaviorInput"];
+                "application/ld+json": components["schemas"]["SubscriptionForm.SubscriptionFormPopupBehaviorInput.jsonld"];
+            };
+        };
+        responses: {
+            /** @description SubscriptionForm resource updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": true,
+                     *       "popup_behavior": {
+                     *         "exclude_urls": [],
+                     *         "frequency_days": 30,
+                     *         "hide_on_desktop": false,
+                     *         "hide_on_mobile": false,
+                     *         "hide_on_tablet": false,
+                     *         "include_urls": [],
+                     *         "on_exit": true,
+                     *         "on_load_scroll_enabled": false,
+                     *         "on_load_scroll_percentage": 50,
+                     *         "on_load_time_enabled": true,
+                     *         "on_load_time_seconds": 8,
+                     *         "schedule_enabled": false,
+                     *         "schedule_end_at": null,
+                     *         "schedule_start_at": null
+                     *       },
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "popup",
+                     *       "updated_at": "2026-11-10T11:00:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/json": components["schemas"]["SubscriptionForm-subscription_form.read"];
+                    /**
+                     * @example {
+                     *       "@id": "/subscription_forms/3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "audience": "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f",
+                     *       "available_purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "channels": [
+                     *         "email"
+                     *       ],
+                     *       "consent_mode": "all_required",
+                     *       "converted_at": null,
+                     *       "created_at": "2026-11-02T09:15:00+01:00",
+                     *       "crm_data_policy": {
+                     *         "company": "fill_empty",
+                     *         "contact": "fill_empty"
+                     *       },
+                     *       "email_double_opt_in": true,
+                     *       "generation": "current",
+                     *       "groups": [
+                     *         "/audiences/0df14405-90ff-4287-b3e4-ef088901ee6f/groups/9b2e4a10-6d57-4f7b-8c0e-1a3b5c7d9e21"
+                     *       ],
+                     *       "locale": "en",
+                     *       "pending_changes": true,
+                     *       "popup_behavior": {
+                     *         "exclude_urls": [],
+                     *         "frequency_days": 30,
+                     *         "hide_on_desktop": false,
+                     *         "hide_on_mobile": false,
+                     *         "hide_on_tablet": false,
+                     *         "include_urls": [],
+                     *         "on_exit": true,
+                     *         "on_load_scroll_enabled": false,
+                     *         "on_load_scroll_percentage": 50,
+                     *         "on_load_time_enabled": true,
+                     *         "on_load_time_seconds": 8,
+                     *         "schedule_enabled": false,
+                     *         "schedule_end_at": null,
+                     *         "schedule_start_at": null
+                     *       },
+                     *       "purposes": [
+                     *         {
+                     *           "name": "Marketing emails",
+                     *           "uuid": "a41c7f02-1b3d-4e5a-9f60-7c8d9e0f1a2b"
+                     *         }
+                     *       ],
+                     *       "share_url": "https://acme.easymailing.cloud/app/public/f/s/CB8vQHYrr54mPUJbfpXHV7",
+                     *       "sms_double_opt_in": false,
+                     *       "status": "form.status.published",
+                     *       "subscriber_count": 128,
+                     *       "title": "Newsletter sign-up",
+                     *       "type": "popup",
+                     *       "updated_at": "2026-11-10T11:00:00+01:00",
+                     *       "uuid": "3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08",
+                     *       "welcome_email_enabled": true
+                     *     }
+                     */
+                    "application/ld+json": components["schemas"]["SubscriptionForm.jsonld-subscription_form.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `classic_form_read_only`: This is a classic form (`generation: classic`), which this operation does not handle. Use `update_popup_form`, or convert it first with `convert_subscription_form`. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `validation_failed`: See `violations[].propertyPath`: the form is not a popup (`popup_behavior`), `schedule_end_at` is not after `schedule_start_at`, a date is not `YYYY-MM-DD`, or a value is outside its allowed list (`on_load_scroll_percentage`, `frequency_days`). */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_subscription_form_statistics: {
+        parameters: {
+            query: {
+                /**
+                 * @description First day of the period, as `YYYY-MM-DD`.
+                 * @example 2026-10-01
+                 */
+                start: string;
+                /**
+                 * @description Last day of the period, as `YYYY-MM-DD`. At most 366 days after `start`.
+                 * @example 2026-11-11
+                 */
+                end: string;
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the form. Get it from `list_subscription_forms`.
+                 * @example 3f1c7a52-8d4e-4b0a-9c61-2e5a7d9b1f08
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description SubscriptionFormStatistics resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubscriptionFormStatistics-subscription_form_statistics.read"];
+                    "application/ld+json": components["schemas"]["SubscriptionFormStatistics.jsonld-subscription_form_statistics.read"];
+                };
+            };
+            /** @description `end` is before `start` or the period is longer than 366 days. Send a valid period. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The credential is not allowed to do this (see Permissions). Use a key or token with a higher role or the required capability. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The form does not exist or belongs to another account. Check the UUID with `list_subscription_forms`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `classic_form_statistics_unavailable`: This is a classic form. Read its counters in `stats` of `get_audience_form`.
+             *
+             *     `validation_failed`: `start` or `end` is missing or is not a `YYYY-MM-DD` date. Read `violations[].propertyPath`.
+             */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
     list_support_tickets: {
         parameters: {
             query?: {
@@ -119789,6 +128747,586 @@ export interface operations {
                     "Retry-After"?: string;
                     /** @description Requests left in the current window. */
                     "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_workflow_pieces: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WorkflowPiece collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowPiece-workflow_piece.read"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["WorkflowPiece.jsonld-workflow_piece.read"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_workflows: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Part of the title of the workflow, case-insensitive. Up to 120 characters.
+                 * @example leads
+                 */
+                search?: string;
+                /**
+                 * @description Only workflows in this state.
+                 * @example active
+                 */
+                status?: components["schemas"]["WorkflowStatus"];
+                /**
+                 * @description Only workflows whose `display_status` is this one.
+                 * @example error
+                 */
+                display_status?: components["schemas"]["WorkflowDisplayStatus"];
+                /**
+                 * @description Only published workflows whose entries are open (`open`) or paused as a whole (`paused`), or workflows under commercial review (`commercial-paused`).
+                 * @example open
+                 */
+                entry_state?: "open" | "paused" | "commercial-paused";
+                /**
+                 * @description `paused`: workflows paused as a whole or under commercial review, whose executions do not move on. `running`: published workflows in neither case.
+                 * @example running
+                 */
+                execution_state?: "running" | "paused";
+                /**
+                 * @description `true` lists only workflows with at least one blocked execution. `false` or no value does not filter.
+                 * @example true
+                 */
+                needs_attention?: boolean;
+                /**
+                 * @description Page number, starting at 1.
+                 * @example 1
+                 */
+                page?: number;
+                /**
+                 * @description Workflows per page. Default 25, maximum 100.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workflow collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workflow-workflow.list"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["Workflow.jsonld-workflow.list"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description A filter value is not valid: `status`, `display_status`, `entry_state`, `execution_state` or `needs_attention` outside the allowed values, `search` longer than 120 characters, or `page` / `itemsPerPage` outside their range. Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_workflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the workflow. Get it from `list_workflows`.
+                 * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Workflow resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workflow-workflow.read"];
+                    "application/ld+json": components["schemas"]["Workflow.jsonld-workflow.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `workflow_not_found`: The workflow does not exist in this account, or it was deleted. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_workflows`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    list_workflow_executions: {
+        parameters: {
+            query?: {
+                /**
+                 * @description Only executions in this state.
+                 * @example blocked
+                 */
+                state?: components["schemas"]["WorkflowExecutionState"];
+                /**
+                 * @description Only executions running on this published version (`versions[].revision` of `get_workflow`).
+                 * @example 2
+                 */
+                revision?: number;
+                /**
+                 * @description Only executions for this kind of subject.
+                 * @example contact
+                 */
+                subject_type?: components["schemas"]["WorkflowSubjectType"];
+                /**
+                 * @description Only executions for this record (`subject.uuid`), for example a contact from `list_contacts`. Case-insensitive.
+                 * @example 7d1f0c2e-4b3a-4e8d-9c6b-2a1f0e9d8c7b
+                 */
+                subject_uuid?: string;
+                /**
+                 * @description Part of the name of the record of the execution, case-insensitive and literal (`%` and `_` are plain characters). Up to 120 characters; surrounding spaces are ignored.
+                 * @example ana
+                 */
+                search?: string;
+                /**
+                 * @description Only executions that started at this instant or later. ISO 8601 with its offset.
+                 * @example 2026-11-01T00:00:00+00:00
+                 */
+                created_from?: string;
+                /**
+                 * @description Only executions that started before this instant (excluded). ISO 8601 with its offset; not before `created_from`.
+                 * @example 2026-11-11T00:00:00+00:00
+                 */
+                created_before?: string;
+                /**
+                 * @description Executions per page. Default 25, maximum 50.
+                 * @example 25
+                 */
+                itemsPerPage?: number;
+                /**
+                 * @description Opaque cursor of the next page, taken from the `hydra:next` link of the previous response. Use it only with the same workflow and filters.
+                 * @example MjAyNi0xMS0xMCAwOTowMDowMC4wMDAwMDB8NDI
+                 */
+                "cursor[gt]"?: string;
+            };
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the workflow. Get it from `list_workflows`.
+                 * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+                 */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WorkflowExecution collection */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowExecution-workflow_execution.list"][];
+                    "application/ld+json": {
+                        "hydra:member": components["schemas"]["WorkflowExecution.jsonld-workflow_execution.list"][];
+                        "hydra:search"?: {
+                            "@type"?: string;
+                            "hydra:mapping"?: {
+                                "@type"?: string;
+                                property?: string | null;
+                                required?: boolean;
+                                variable?: string;
+                            }[];
+                            "hydra:template"?: string;
+                            "hydra:variableRepresentation"?: string;
+                        };
+                        "hydra:totalItems"?: number;
+                        /**
+                         * @example {
+                         *       "@id": "string",
+                         *       "hydra:first": "string",
+                         *       "hydra:last": "string",
+                         *       "hydra:next": "string",
+                         *       "hydra:previous": "string",
+                         *       "type": "string"
+                         *     }
+                         */
+                        "hydra:view"?: {
+                            /** Format: iri-reference */
+                            "@id"?: string;
+                            "@type"?: string;
+                            /** Format: iri-reference */
+                            "hydra:first"?: string;
+                            /** Format: iri-reference */
+                            "hydra:last"?: string;
+                            /** Format: iri-reference */
+                            "hydra:next"?: string;
+                            /** Format: iri-reference */
+                            "hydra:previous"?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `workflow_not_found`: The workflow does not exist in this account, or it was deleted. A `uuid` that is not a valid UUID also gives 404. Find the right one with `list_workflows`. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description A filter value is not valid: `state` or `subject_type` outside the allowed values, `subject_uuid` not a UUID, `search` longer than 120 characters, `revision` not a positive integer, an instant without its offset or a range that ends before it starts, `itemsPerPage` outside 1 to 50, or a `cursor[gt]` that was not taken unchanged from a `hydra:next` link (`cursor[lt]` is not supported). Read `violations[].propertyPath`. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ValidationError"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    get_workflow_execution: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /**
+                 * @description UUID of the workflow. Get it from `list_workflows`.
+                 * @example 3f6c2a1e-8b4d-4c7a-9e10-5d2b7a9c4e61
+                 */
+                uuid: string;
+                /**
+                 * @description UUID of the execution. Get it from `list_workflow_executions`.
+                 * @example c1d2e3f4-a5b6-4c7d-8e9f-0a1b2c3d4e5f
+                 */
+                executionUuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description WorkflowExecution resource */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowExecution-workflow_execution.read"];
+                    "application/ld+json": components["schemas"]["WorkflowExecution.jsonld-workflow_execution.read"];
+                };
+            };
+            /** @description Missing, invalid, expired or deactivated credentials, or the account is not active, suspended or expired. An unknown API key or token answers `{"message": …}` as `application/json`; the other cases are problem+json with the reason in `detail`. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationError"];
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description The key or token does not have the `automations.read` capability. Ask an administrator, or use a key or token that has it; the response does not say which permission is missing. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /**
+             * @description `workflow_not_found`: The workflow does not exist in this account, or it was deleted. Find the right one with `list_workflows`.
+             *
+             *     `workflow_execution_not_found`: The execution does not exist in this workflow, or it runs for a record the user cannot read. An `executionUuid` that is not a valid UUID also gives 404. Find it with `list_workflow_executions`.
+             */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Too many requests with the same API key (a fixed window of one minute). `Retry-After` says when to try again. */
+            429: {
+                headers: {
+                    /** @description Moment from which to retry, as `Y-m-d H:i:s` in the server time zone (not seconds). */
+                    "Retry-After"?: string;
+                    /** @description Requests left in the current window. */
+                    "X-RateLimit-Remaining"?: number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Error"];
+                };
+            };
+            /** @description `tenant_account_not_ready`: The account access model is not ready yet. Retry later; if it persists, contact support. */
+            503: {
+                headers: {
                     [name: string]: unknown;
                 };
                 content: {
