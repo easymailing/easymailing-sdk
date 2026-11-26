@@ -10,6 +10,7 @@ namespace Easymailing\Sdk\Generated\Dto;
 final class ContactFilterField_jsonld_contact_filter_field_read
 {
     public function __construct(
+        public readonly ?string $audience = null,
         public readonly ?bool $audience_required = null,
         /** @var list<array<string,mixed>>|null */
         public readonly ?array $categories = null,
@@ -33,6 +34,7 @@ final class ContactFilterField_jsonld_contact_filter_field_read
     public static function fromArray(array $data): self
     {
         return new self(
+            audience: $data['audience'] ?? null,
             audience_required: $data['audience_required'] ?? null,
             categories: $data['categories'] ?? null,
             id: $data['id'] ?? null,
@@ -52,6 +54,7 @@ final class ContactFilterField_jsonld_contact_filter_field_read
     public function toArray(): array
     {
         return [
+            'audience' => $this->audience,
             'audience_required' => $this->audience_required,
             'categories' => $this->categories,
             'id' => $this->id,
@@ -70,6 +73,7 @@ final class ContactFilterField_jsonld_contact_filter_field_read
     public function with(mixed ...$fields): self
     {
         return new self(
+            audience: array_key_exists('audience', $fields) ? $fields['audience'] : $this->audience,
             audience_required: array_key_exists('audience_required', $fields) ? $fields['audience_required'] : $this->audience_required,
             categories: array_key_exists('categories', $fields) ? $fields['categories'] : $this->categories,
             id: array_key_exists('id', $fields) ? $fields['id'] : $this->id,
